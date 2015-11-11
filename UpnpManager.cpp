@@ -47,6 +47,7 @@ UpnpManager::UpnpManager()
 
 bool UpnpManager::WriteInfoService(UpnpRoot *uStruct)
 {
+    return true;
     for(int i = 0;i< uStruct->upnpListDevice.size();i++)
     {
         int device = uStruct->upnpListDevice[i].IdDevice;
@@ -173,6 +174,8 @@ std::vector< std::vector<Dictionnaire> >  UpnpManager::ParseAndAddActionParamete
                                 if(dic[k][count].name != NULL && dic[k][count].value!=NULL)
                                 {
                                     Dictionnaire d;
+                                    d.name = new char[strlen(dic[k][count].name)+1];
+                                    d.value = new char[strlen(dic[k][count].value)+1];
                                     strcpy(d.name,dic[k][count].name);
                                     strcpy(d.value,dic[k][count].value);
                                     retour[count].push_back(d);
@@ -260,7 +263,8 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                                 if(listDictState[k][count].name != NULL && listDictState[k][count].value!=NULL)
                                 {
                                     Dictionnaire d;
-                                    //TODO MEMORY LEAK
+                                    d.name = new char[strlen(listDictState[k][count].name)+1];
+                                    d.value = new char[strlen(listDictState[k][count].value)+1];
                                     strcpy(d.name,listDictState[k][count].name);
                                     strcpy(d.value,listDictState[k][count].value);
                                     ListService->ListAction[i].ListParametreAction[j].DicEtat.push_back(d);

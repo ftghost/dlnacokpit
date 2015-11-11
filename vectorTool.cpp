@@ -56,6 +56,8 @@ bool vectorTool::InsertOrModifyVector(std::vector<Dictionnaire> &res,char * name
 	}
 
 	Dictionnaire d;
+        d.name = new char[strlen(name)+1];
+        d.value = new char[strlen(value)+1];
 	strcpy(d.name,name);
 	strcpy(d.value,value);
 	res.push_back(d);
@@ -65,7 +67,35 @@ bool vectorTool::InsertOrModifyVector(std::vector<Dictionnaire> &res,char * name
    
  
 
-
+bool vectorTool::CleanVector(std::vector<Dictionnaire> &dict)
+{
+    for(int i=0;i<dict.size();i++)
+    {
+        if(dict[i].id != NULL)
+        {
+            delete dict[i].id;
+            dict[i].id =NULL;
+        }
+        if(dict[i].name != NULL)
+        {
+            delete dict[i].name;
+            dict[i].name =NULL;
+        }
+        if(dict[i].value != NULL)
+        {
+            delete dict[i].value;
+            dict[i].value =NULL;
+        }
+        if(dict[i].parentId != NULL)
+        {
+            delete dict[i].parentId;
+            dict[i].parentId =NULL;
+        }
+    }
+    dict.clear();
+    dict.swap(dict);
+    return true;
+}
 
 
 char* vectorTool::get_value_of_arg(std::vector<Dictionnaire> dict,char * arg)

@@ -56,6 +56,8 @@ void xmlTool::private_get_list_arg_value(IXML_NodeList* nodelist)
                              const char * test = ixmlNode_getNodeValue(ixmlNodeList_item(nodeListTmp, 0));
                              if(test !=NULL)
                              {
+                                dict.name = new char[strlen(ixmlNode_getNodeName(tmpNode))+1];
+                                dict.value = new char[strlen(ixmlNode_getNodeValue(ixmlNodeList_item(nodeListTmp, 0)))+1]; 
                                 strcpy(dict.value ,ixmlNode_getNodeValue(ixmlNodeList_item(nodeListTmp, 0))); 
                                 strcpy(dict.name , ixmlNode_getNodeName(tmpNode)); 
                              }
@@ -96,6 +98,8 @@ void xmlTool::private_get_list_arg_value(IXML_NodeList* nodelist)
 std::vector<Dictionnaire> xmlTool::get_list_arg_value_by_char(char* docchar, const char* item , const char* item1)
 {
     std::vector<Dictionnaire> res;
+    Dictionnaire dic; 
+    bool adD = false;
     try
     {
         if(docchar ==NULL || item==NULL)
@@ -121,7 +125,6 @@ std::vector<Dictionnaire> xmlTool::get_list_arg_value_by_char(char* docchar, con
             
             if (xml.isStartElement()==true && xml.name()!=NULL)
             {
-               Dictionnaire dic; 
                if(xml.name()!=NULL)
                {
                    if(xml.name()=="container"  ||   xml.name()=="item")
@@ -147,26 +150,52 @@ std::vector<Dictionnaire> xmlTool::get_list_arg_value_by_char(char* docchar, con
                            {
                                if (attr.name().toString() == QLatin1String("id")) 
                                {
+                                   dic.id = new char[strlen(attr.value().toString().toStdString().c_str())+1];
                                    strcpy(dic.id,attr.value().toString().toStdString().c_str());
                                }   
                                if (attr.name().toString() == QLatin1String("parentID")) 
                                {
+                                   dic.parentId = new char[strlen(attr.value().toString().toStdString().c_str())+1];
                                    strcpy(dic.parentId,attr.value().toString().toStdString().c_str());
                                }   
                            }
 
                        }
                    }
-                   
+                   if(xml.name()=="res")
+                   {
+                     
+                       foreach(const QXmlStreamAttribute &attr, xml.attributes()) 
+                       {
+                           if(attr.name() != NULL && attr.value()!=NULL)
+                           {
+                               if (attr.name().toString() == QLatin1String("protocolInfo")) 
+                               {
+                                   dic.protocol = new char[strlen(attr.value().toString().toStdString().c_str())+1];
+                                   strcpy(dic.protocol,attr.value().toString().toStdString().c_str());
+                               }   
+                           }
+
+                       }
+                       QString val = xml.readElementText();
+                      if(val!=NULL)
+                      {
+                        dic.Playurl = new char[strlen(val.toStdString().c_str())+1];
+                        strcpy(dic.Playurl,val.toStdString().c_str());
+                      }
+                   }
                    if(xml.name()==item) 
                    {
+                       
                       QString val = xml.readElementText();
                       if(val!=NULL)
                       {
+                       adD = true;   
                        //TODO MEMORY LEAK      
+                       dic.name = new char[strlen(xml.name().toString().toStdString().c_str())+1];
+                       dic.value = new char[strlen(val.toStdString().c_str())+1]; 
                        strcpy(dic.name,xml.name().toString().toStdString().c_str());
                        strcpy(dic.value,val.toStdString().c_str());
-                       res.push_back(dic);      
                       }
                    }
                    
@@ -180,6 +209,8 @@ std::vector<Dictionnaire> xmlTool::get_list_arg_value_by_char(char* docchar, con
                 break;
             }
       }
+      if(adD==true)  
+        res.push_back(dic);    
       xml.clear();
     }
     catch(...)

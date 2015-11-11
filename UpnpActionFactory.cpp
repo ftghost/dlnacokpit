@@ -112,6 +112,7 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
         else
         {
            Action.DicReponse.clear();
+           Action.DicReponse.swap(Action.DicReponse);
            for(int j =0;j<Action.ListParametreAction.size();j++)
            {
                    char * InOut = vectorTool::get_value_of_arg(Action.ListParametreAction[j].Dic,"direction");
@@ -132,6 +133,8 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
                          {
                              char * result = xmlTool::get_argument_value(Action.xmlActionResponse ,ParameterName);
                              Dictionnaire d;
+                             d.name = new char[strlen(ParameterName)+1];
+                             d.value = new char[strlen(result)+1];
                              strcpy(d.name,ParameterName);
                              strcpy(d.value,result);
                              Action.DicReponse.push_back(d);

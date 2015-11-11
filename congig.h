@@ -30,11 +30,12 @@ typedef struct
 
 typedef struct
 {
-    char id_name[5000];
-    char name[5000];
-    char value[5000];
-    char id[5000];
-    char parentId[5000];
+    char *name;
+    char *value;
+    char *id;
+    char *parentId;
+    char *protocol;
+    char *Playurl;
     bool IsContainer;
     bool IsItem;
 }Dictionnaire;

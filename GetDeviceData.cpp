@@ -48,6 +48,7 @@ std::vector<Dictionnaire>  GetDeviceData::GetNexttData(Dictionnaire resPre)
 
                     bool resulttat = UpnpActionFactory::GetInstance().CreateAction(actionBrowseDirectory,"Browse",(char*)urlControl,(char*)ServiceType,data,u.UrlBase);
                     char * XmlResult = vectorTool::get_value_of_arg(actionBrowseDirectory.DicReponse,"Result");
+//                    qDebug() << "XmlResult : " <<  XmlResult;
                     std::vector<Dictionnaire> res1 = xmlTool::get_list_arg_value_by_char(XmlResult,"title","");
                     if(res1.size() > 0)
                     {
@@ -56,6 +57,8 @@ std::vector<Dictionnaire>  GetDeviceData::GetNexttData(Dictionnaire resPre)
                         sprintf(buffer,"%d",startingIndex);
                         qDebug() << "Index : " <<  buffer;
                         vectorTool::InsertOrModifyVector(data,"StartingIndex",buffer);  
+                        res1.clear();
+                        res1.swap(res1);
                     }
                     else
                     {
@@ -64,6 +67,8 @@ std::vector<Dictionnaire>  GetDeviceData::GetNexttData(Dictionnaire resPre)
                 }
             }
         }
+        data.clear();
+        data.swap(data);
     return res;
 }
 
@@ -92,12 +97,19 @@ std::vector<Dictionnaire>  GetDeviceData::GetRootData()
             startingIndex = startingIndex+1;
             sprintf(buffer,"%d",startingIndex);
             vectorTool::InsertOrModifyVector(data,"StartingIndex",buffer);  
+            res1.clear();
+            res1.swap(res1);
         }
         else
         {
+            res1.clear();
+            res1.swap(res1);
             cont  = false;
         }
     }
+    data.clear();
+    data.swap(data);
+    
     return res;
 }
 
@@ -272,18 +284,21 @@ void GetDeviceData::run()
                                 DataManager::GetInstance().AddTrackToList(&res3[l],res2[k].value);
                                 qDebug() << "Add track : " <<  res3[l].value << " to Album Name :" << res2[k].value ;
                             }
+                            res3.clear();
+                            res3.swap(res3);
                         }
                       }
+                      res2.clear();
+                      res2.swap(res2);
                       Init = true;
                   }
-                  
+                  resArstist.clear();
+                  resArstist.swap(resArstist);
               }
             }
         }
     }
-    
-                      
-                   
-    
+    resRoot.clear();
+    resRoot.swap(resRoot);
     termine(rootIndex);
 }

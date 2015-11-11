@@ -1,7 +1,7 @@
 # This file is generated automatically. Do not edit.
 # Use project properties -> Build -> Qt -> Expert -> Custom Definitions.
 TEMPLATE = app
-DESTDIR = dist/Debug/GNU-Linux-x86
+DESTDIR = dist/Debug/GNU-Linux
 TARGET = DlnaCokpit
 VERSION = 1.0.0
 CONFIG -= debug_and_release app_bundle lib_bundle
@@ -13,7 +13,7 @@ HEADERS += ChainedData.h DataManager.h DataStock.h GetDeviceData.h JavaScriptOpe
 FORMS +=
 RESOURCES += Ressource.qrc
 TRANSLATIONS +=
-OBJECTS_DIR = build/Debug/GNU-Linux-x86
+OBJECTS_DIR = build/Debug/GNU-Linux
 MOC_DIR = 
 RCC_DIR = 
 UI_DIR = 
