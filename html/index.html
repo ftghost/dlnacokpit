@@ -1,0 +1,37 @@
+<html>
+<body>
+<script type="text/javascript">
+ 
+
+ 
+ 
+function displayMessage(){
+    alert("Hello display");
+    return "Done!";
+}
+ 
+myoperations.submit();
+ 
+</script>
+ 
+<p>Test Example to call Qt function from Javascript </p>
+ 
+<input type="button" value="Click me!" onclick="test()">
+ 
+</body>
+<script type="text/javascript">
+function test(){
+    var i="toto";
+    while(i!="")
+    {
+        var i = myoperations.display();
+        nouveauDiv = document.createElement("div");
+        nouveauDiv.innerHTML = "<h1>"+i+"</h1>";
+        // ajoute l'élément qui vient d'être créé et son contenu au DOM
+        mon_div = document.getElementById("org_div1");
+        document.body.insertBefore(nouveauDiv, mon_div);
+    }
+}
+</script>
+
+</html>
