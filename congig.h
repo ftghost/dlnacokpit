@@ -16,6 +16,7 @@
 
 
 
+enum ChainedType { ARTIST, ALBUM, TRACK };
 
 
 
@@ -36,6 +37,7 @@ typedef struct
     char *parentId;
     char *protocol;
     char *Playurl;
+    char *Imgurl;
     bool IsContainer;
     bool IsItem;
 }Dictionnaire;

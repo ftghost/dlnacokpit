@@ -74,6 +74,48 @@ ChainedData::~ChainedData(void)
 //FIN Constructeur
 
 //**********RECHERCHE*************/
+
+void * ChainedData::SearchTrackFull(void * val)
+{
+	ChainedData * chainedData = this->GetFirst();
+	ChainedData * chaineDataAlbum;
+	ChainedData * chaineDataTrack;
+	while(chainedData!=NULL)
+	{
+		if(chainedData->GetLastAlbum()!=NULL)
+		{	
+			chaineDataAlbum = chainedData->GetLastAlbum()->GetAlbumRoot();
+			while(chaineDataAlbum!=NULL)
+			{
+				if(chaineDataAlbum->GetLastTrack()!=NULL)
+				{
+						chaineDataTrack = chaineDataAlbum->GetLastTrack()->GetTrackRoot();
+                                                Dictionnaire * d = (Dictionnaire *)chaineDataTrack->ReturnValue();
+						if(strstr(d->value,(char*)val)!=NULL)
+						{
+							return chaineDataTrack->ReturnValue();
+						}
+						while(chaineDataTrack->GetNextTrack() != NULL)
+						{
+							Dictionnaire * d = (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
+							if(strstr(d->value,(char*)val)!=NULL)
+							{
+								return d;
+							}
+                                                        chaineDataTrack = chaineDataTrack->GetNextTrack();
+						}
+
+				}
+				chaineDataAlbum = chaineDataAlbum->GetNextAlbum();
+			}
+			
+		}
+		chainedData = chainedData->GetNextArtist();
+	}
+	return NULL;    
+}
+
+
 void * ChainedData::SearchArtist(void * val)
 {
 	ChainedData * chainedData = this->GetFirst();

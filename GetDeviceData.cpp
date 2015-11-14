@@ -48,7 +48,7 @@ std::vector<Dictionnaire>  GetDeviceData::GetNexttData(Dictionnaire resPre)
 
                     bool resulttat = UpnpActionFactory::GetInstance().CreateAction(actionBrowseDirectory,"Browse",(char*)urlControl,(char*)ServiceType,data,u.UrlBase);
                     char * XmlResult = vectorTool::get_value_of_arg(actionBrowseDirectory.DicReponse,"Result");
-//                    qDebug() << "XmlResult : " <<  XmlResult;
+                    qDebug() << "XmlResult : " <<  XmlResult;
                     std::vector<Dictionnaire> res1 = xmlTool::get_list_arg_value_by_char(XmlResult,"title","");
                     if(res1.size() > 0)
                     {
@@ -120,7 +120,6 @@ UpnpListService GetDeviceData::GetServiceContentDirectory()
     {
         
         NulllistService.IdService = -1;
-        u = UpnpManager::GetInstance().GetStructureDeviceByIndex(rootIndex);
         for(int i=0;i<u.upnpListDevice.size();i++)
         {
             if(u.upnpListDevice[i].IsUnknow == false)
@@ -213,32 +212,129 @@ bool   GetDeviceData::GetSerciceType()
 }
 
 
+UpnpListService GetDeviceData::GetServiceConnectionManager()
+{
+ UpnpListService NulllistService;
+    try
+    {
+        
+        NulllistService.IdService = -1;
+        for(int i=0;i<u.upnpListDevice.size();i++)
+        {
+            if(u.upnpListDevice[i].IsUnknow == false)
+            {
+
+                if(u.upnpListDevice[i].Isreader == false)
+                {
+                   for(int j=0;j<u.upnpListService.size();j++)
+                   {
+                       if(u.upnpListService[j].IsUnknow == false)
+                       {
+                          if(u.upnpListService[j].IsConnectionManager == true)
+                          {
+                              return u.upnpListService[j];
+                          }
+                       }
+                   }
+                }
+            }
+        }
+        return NulllistService;
+    }
+    catch(...)
+    {
+        return NulllistService;
+    }   
+}
+
+UpnpListAction GetDeviceData::GetActionConnectionManager(char * ActionName)
+{
+UpnpListAction NulllistAction;
+    try
+    {
+        
+        NulllistAction.IdAction=-1;
+        int indexAction = 0;
+        for(int i=0;i<serviceConnectionManager.ListAction.size();i++)
+        {
+           char * actionName = vectorTool::get_value_of_arg(serviceConnectionManager.ListAction[i].Dic,"name");
+           if(actionName == NULL)
+           {
+                  continue;
+           }
+           else
+           {
+            if(strcmp(actionName,ActionName)==0)
+            {
+               return serviceConnectionManager.ListAction[i];
+            }
+           }
+        }
+        return NulllistAction;
+    }
+    catch(...)
+    {
+        return NulllistAction;
+    }   
+}
+
 
 void GetDeviceData::run()
 {
+    bool deviceType = true;
+    //Root
+    u = UpnpManager::GetInstance().GetStructureDeviceByIndex(rootIndex);
+    if(u.idRoot ==-1) 
+    {
+      termine(rootIndex,false,deviceType);
+      return;
+    }
     //Service
     serviceContentDirectory = GetServiceContentDirectory();
     if(serviceContentDirectory.IdService==-1)
     {
-      termine(rootIndex);
+      termine(rootIndex,false,deviceType);
       return;
     }
     qDebug() << "Service content Directory trouvé" << serviceContentDirectory.IdService;  
+    
+    serviceConnectionManager = GetServiceConnectionManager();
+
+    if(serviceConnectionManager.IdService==-1)
+    {
+      termine(rootIndex,false,deviceType);
+      return;
+    }
+    qDebug() << "Service Connectoin Manager trouvé" << serviceConnectionManager.IdService;  
+    
     
     
     //Action
     actionBrowseDirectory = GetActionContentDirectory("Browse");
     if(actionBrowseDirectory.IdAction==-1)
     {
-      termine(rootIndex);
+      termine(rootIndex,false,deviceType);
       return;
     }
-    qDebug() << "Action browse content Dire.IdService;  ctory trouvé" << actionBrowseDirectory.IdAction;
+    qDebug() << "Action browse content Directory Service trouvé" << actionBrowseDirectory.IdAction;
+    
+    actionConnectionManager = GetActionConnectionManager("PrepareForConnection");
+    if(actionConnectionManager.IdAction==-1)
+    {
+        strcpy(InstanceId,"0");
+    }
+    else
+    {
+        //TODO CALL PrepareForConnection
+        strcpy(InstanceId,"0");
+    }
+    qDebug() << "Action browse content Directory Service trouvé" << actionBrowseDirectory.IdAction;
+    
     
     //Url de controle#include "ChainedData.h"
     if(GetSerciceUrlControl()== false)
     {
-      termine(rootIndex);
+      termine(rootIndex,false,deviceType);
       return;        
     }
     qDebug() << "Url de control trouvé" << urlControl;  
@@ -246,11 +342,13 @@ void GetDeviceData::run()
     //Service type
     if(GetSerciceType()==false)
     {
-      termine(rootIndex);
+      termine(rootIndex,false,deviceType);
       return;    
     }
-    qDebug() << "Service type trouvé" << urlControl;  
+    qDebug() << "Service type trouvé" << ServiceType;  
     //
+    
+    
     bool Init = false;
     std::vector<Dictionnaire> res;
     std::vector<Dictionnaire> resRoot = GetRootData();
@@ -283,6 +381,7 @@ void GetDeviceData::run()
                             {
                                 DataManager::GetInstance().AddTrackToList(&res3[l],res2[k].value);
                                 qDebug() << "Add track : " <<  res3[l].value << " to Album Name :" << res2[k].value ;
+                                 Init = true;
                             }
                             res3.clear();
                             res3.swap(res3);
@@ -290,7 +389,6 @@ void GetDeviceData::run()
                       }
                       res2.clear();
                       res2.swap(res2);
-                      Init = true;
                   }
                   resArstist.clear();
                   resArstist.swap(resArstist);
@@ -300,5 +398,8 @@ void GetDeviceData::run()
     }
     resRoot.clear();
     resRoot.swap(resRoot);
-    termine(rootIndex);
+    if( Init == true)
+        termine(rootIndex,true,deviceType);
+    else
+        termine(rootIndex,false,deviceType);
 }

@@ -6,6 +6,7 @@
  */
 
 #include "vectorTool.h"
+#include <QDebug>
 
 
 
@@ -138,6 +139,7 @@ std::vector< std::vector<Dictionnaire> > vectorTool::strip_xml_arg(std::vector<D
          std::vector<Dictionnaire>::iterator itTmp = dict.begin() ;
          for (std::vector<Dictionnaire>::iterator it = dict.begin() ; it != dict.end(); ++it)
          {
+             
              if(strcmp(it->name,arg)==0)
              {
                  if(first==true)

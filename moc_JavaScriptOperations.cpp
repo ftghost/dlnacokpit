@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_JavaScriptOperations_t {
-    QByteArrayData data[4];
-    char stringdata0[37];
+    QByteArrayData data[5];
+    char stringdata0[41];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -32,10 +32,12 @@ static const qt_meta_stringdata_JavaScriptOperations_t qt_meta_stringdata_JavaSc
 QT_MOC_LITERAL(0, 0, 20), // "JavaScriptOperations"
 QT_MOC_LITERAL(1, 21, 6), // "submit"
 QT_MOC_LITERAL(2, 28, 0), // ""
-QT_MOC_LITERAL(3, 29, 7) // "display"
+QT_MOC_LITERAL(3, 29, 7), // "display"
+QT_MOC_LITERAL(4, 37, 3) // "val"
 
     },
-    "JavaScriptOperations\0submit\0\0display"
+    "JavaScriptOperations\0submit\0\0display\0"
+    "val"
 };
 #undef QT_MOC_LITERAL
 
@@ -54,11 +56,11 @@ static const uint qt_meta_data_JavaScriptOperations[] = {
 
  // slots: name, argc, parameters, tag, flags
        1,    0,   24,    2, 0x0a /* Public */,
-       3,    0,   25,    2, 0x0a /* Public */,
+       3,    1,   25,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
-    QMetaType::QString,
+    QMetaType::QString, QMetaType::QString,    4,
 
        0        // eod
 };
@@ -70,7 +72,7 @@ void JavaScriptOperations::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->submit(); break;
-        case 1: { QString _r = _t->display();
+        case 1: { QString _r = _t->display((*reinterpret_cast< QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
         default: ;
         }

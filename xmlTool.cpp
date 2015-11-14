@@ -238,6 +238,10 @@ std::vector<Dictionnaire> xmlTool::get_list_arg_value(IXML_Document* doc, const 
     {
        private_get_list_arg_value(nodeList);
     }
+    for(int i=0;i<ListOfValue.size();i++)
+    {
+        qDebug()<< ListOfValue[i].name <<"$$$"<<ListOfValue[i].value;
+    }
     return ListOfValue;
 }
  

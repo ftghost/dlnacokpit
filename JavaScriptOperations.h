@@ -24,7 +24,7 @@ public Q_SLOTS:
     
  
     Q_INVOKABLE 
-    QString display();
+    QString display(QString val);
 
     private:
         QWebView * view;

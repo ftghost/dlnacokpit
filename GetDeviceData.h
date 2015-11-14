@@ -20,21 +20,27 @@ public:
     GetDeviceData(int);
     GetDeviceData(const GetDeviceData& orig);
     virtual ~GetDeviceData();
+    char * GetInstanceId();
 
 signals:
-    void termine(int index);
+    void termine(int index,bool isOk,bool IsServer);
     
 private:
+    char InstanceId[10];
     int rootIndex;
     UpnpRoot u;
     UpnpListService serviceContentDirectory;
     UpnpListAction  actionBrowseDirectory;
+    UpnpListService serviceConnectionManager;
+    UpnpListAction  actionConnectionManager;    
     char urlControl[500]; 
     char ServiceType[500]; 
     bool GetSerciceType();
     bool GetSerciceUrlControl();
     UpnpListService GetServiceContentDirectory();
     UpnpListAction GetActionContentDirectory(char *);
+    UpnpListService GetServiceConnectionManager();
+    UpnpListAction GetActionConnectionManager(char *);
     std::vector<Dictionnaire>  GetRootData();
     std::vector<Dictionnaire>  GetNexttData(Dictionnaire );
     void run();

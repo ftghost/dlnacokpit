@@ -52,10 +52,10 @@ static const uint qt_meta_data_DataManager[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,   19,    2, 0x0a /* Public */,
+       1,    3,   19,    2, 0x0a /* Public */,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void, QMetaType::Int, QMetaType::Bool, QMetaType::Bool,    2,    2,    2,
 
        0        // eod
 };
@@ -66,7 +66,7 @@ void DataManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         DataManager *_t = static_cast<DataManager *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->parseTermine((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 0: _t->parseTermine((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2])),(*reinterpret_cast< bool(*)>(_a[3]))); break;
         default: ;
         }
     }

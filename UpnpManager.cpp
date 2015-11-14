@@ -29,7 +29,9 @@ UpnpManager::UpnpManager()
  UpnpRoot UpnpManager::GetStructureDeviceByIndex(int index)
  {
     
-    int a=0;
+    UpnpRoot u ;
+    u.idRoot = -1;
+    int a =-1;
     for (int i=0; i< UpnpServiceArray.size() ;i++)
     {
         if(UpnpServiceArray[i].idRoot == index)
@@ -37,6 +39,10 @@ UpnpManager::UpnpManager()
             a=i;
             break;
         }
+    }
+    if(a==-1)
+    {
+        return u;
     }
     return UpnpServiceArray[a];
  }
@@ -303,7 +309,6 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
          UpnpListDevice upnpListDevice;
          upnpListDevice.IdDevice = i;
          upnpListDevice.Dic = deviceArray[i];
-         uStruct->upnpListDevice.push_back(upnpListDevice);
          //Get and Add device type
          char * deviceType = vectorTool::get_value_of_arg(upnpListDevice.Dic,"deviceType");
          if(deviceType != 0)
@@ -328,6 +333,11 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                     upnpListDevice.IsUnknow = true;
                 }
             }
+            uStruct->upnpListDevice.push_back(upnpListDevice);
+         }
+         else
+         {
+             return false;
          }
          //Get and Add icon information
          nbDevice = vectorTool::count_number_of_arg(dict,"mimetype");
@@ -362,9 +372,10 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                  char *pch = strstr (ServiceType,"RenderingControl");
                  if(pch!=NULL)
                  {
+                    upnpListService.IsConnectionManager = false; 
                     upnpListService.IsRenderingControl = true;
                     upnpListService.IsContentDirectory = false;
-                    upnpListService.IsAvTransport = false;qDebug() << "SISContentDirectory" <<  ServiceType;
+                    upnpListService.IsAvTransport = false;
                     upnpListService.IsUnknow = false;
                     qDebug() << "SIsRenderingControl" ;
                  }
@@ -373,6 +384,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                     pch = strstr (ServiceType,"AVTransport");
                     if(pch!=NULL)
                     {
+                        upnpListService.IsConnectionManager = false;
                         upnpListService.IsRenderingControl = false;
                         upnpListService.IsContentDirectory = false;
                         upnpListService.IsAvTransport = true;
@@ -384,6 +396,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                         pch = strstr (ServiceType,"ContentDirectory");
                          if(pch!=NULL)
                         {
+                            upnpListService.IsConnectionManager = false; 
                             upnpListService.IsRenderingControl = false;
                             upnpListService.IsContentDirectory = true;
                             upnpListService.IsAvTransport = false;
@@ -392,11 +405,25 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                         }
                         else
                         {
+                            pch = strstr (ServiceType,"ConnectionManager"); 
+                             if(pch!=NULL)
+                            {
+                                upnpListService.IsConnectionManager = true; 
+                                upnpListService.IsRenderingControl = false;
+                                upnpListService.IsContentDirectory = false;
+                                upnpListService.IsAvTransport = false;
+                                upnpListService.IsUnknow = false;
+                                qDebug() << "SISConnectionManager" ;
+                            }
+                            else
+                            {
+                            upnpListService.IsConnectionManager = false;            
                             upnpListService.IsRenderingControl = false;
                             upnpListService.IsContentDirectory = false;
                             upnpListService.IsAvTransport = false;
                             upnpListService.IsUnknow = true;     
                             qDebug() << "SIIsUnknow" ;
+                            }
                         }
                              
                     }

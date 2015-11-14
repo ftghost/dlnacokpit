@@ -32,14 +32,16 @@ void JavaScriptOperations::submit()
 }
 
 
-QString JavaScriptOperations::display()
+QString JavaScriptOperations::display(QString val)
 {
     
     qDebug() << "In display method";
-    Dictionnaire *d = DataManager::GetInstance().GetNextArstist(i);
-    i++;
+    Dictionnaire *d = DataManager::GetInstance().SearchTrackFull((char*)val.toStdString().c_str());
     if(d!=NULL)
+    {
+        DataManager::GetInstance().Play(d);
        return QString::fromUtf8(d->value);
+    }
     else
         return QString::fromUtf8("");
 }
