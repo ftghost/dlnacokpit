@@ -225,6 +225,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
         {
             if(ReadyToParseArg == true)
             {
+                
                 if(vectorTool::count_number_of_arg(listDict[i],"relatedStateVariable")==1)
                 {
                    UpnpListParametreAction upnpListParametreAction;
@@ -472,21 +473,26 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                             {
                                 char save[500];
                                 memset(save,'\0',500);
+                                memset(uStruct->Icon,'\0',100);
                                 char * mimeType= vectorTool::get_value_of_arg(uStruct->upnpListIcon[nbIcon].Dic,"mimetype");
                                 if(strcmp(mimeType,"image/jpeg")==0)
                                 {
-                                    sprintf(save,"./icone/%s.jpeg",realIconName);
+                                    sprintf(save,"./html/%s.jpeg",realIconName);
+                                    sprintf(uStruct->Icon,"%s.jpeg",realIconName);
                                 }
                                 else  if(strcmp(mimeType,"image/png")==0)
                                 {
-                                   sprintf(save,"./icone/%s.png",realIconName); 
+                                   sprintf(save,"./html/%s.png",realIconName);
+                                   sprintf(uStruct->Icon,"%s.png",realIconName);
                                 }
                                 else
                                 {
-                                    sprintf(save,"./icone/%s.png",realIconName);
+                                    sprintf(save,"./html/%s.png",realIconName);
+                                    sprintf(uStruct->Icon,"f%s.png",realIconName);
                                 }
                                 
-                                                        
+                                            
+                               sprintf(uStruct->Icon,"%s%s",uStruct->UrlBase,iconName);           
                                 
                                 strcpy(uStruct->PathIcon,save);
                                 if(htmlTool::downloadAndSave(uStruct->UrlBase,iconName,save) == true)

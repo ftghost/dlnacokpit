@@ -52,7 +52,6 @@ CCADMIN=CCadmin
 
 # build
 build: .build-post
-
 .build-pre:
 # Add your pre 'build' code here...
 
@@ -64,6 +63,8 @@ build: .build-post
 	mkdir -p ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/icone
 	mkdir -p ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/html
 	cp -R ./html  ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/
+	mkdir -p ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/image
+	cp -R ./image  ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/
 # clean
 clean: .clean-post
 

@@ -29,14 +29,22 @@ public:
     TransportManager(const TransportManager& orig);
     virtual ~TransportManager();
     char * GetInstanceId();
+    char * GetIconPath();
     bool PrepareUri(Dictionnaire * d);
     bool Play();
+    bool Pause();
+    bool Stop();
+    bool Next();
     
 
 signals:
     void termine(int index,bool IsOk,bool IsServer);
     
 private:
+    bool isStop;
+    bool isNext;
+    bool isPause;
+    
     int rootIndex;
     UpnpRoot u;
     UpnpListService serviceConnectionManager;
@@ -44,6 +52,10 @@ private:
     UpnpListService serviceAvTransportManager;
     UpnpListAction  actionSetUriAvTransportManager;    
     UpnpListAction  actionPlayAvTransportManager;    
+    UpnpListAction  actionPauseAvTransportManager;  
+    UpnpListAction  actionStopAvTransportManager;  
+    UpnpListAction  actionNextAvTransportManager;  
+    
     char urlControl[500]; 
     char ServiceType[500]; 
     char InstanceId[10];

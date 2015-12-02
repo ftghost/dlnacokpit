@@ -352,12 +352,78 @@ void GetDeviceData::run()
     bool Init = false;
     std::vector<Dictionnaire> res;
     std::vector<Dictionnaire> resRoot = GetRootData();
-    std::vector<Dictionnaire> resArstist;
+    bool Art = false;
+    std::vector<char *> search;
+    search.push_back("audio");
+    search.push_back("music");
+    search.push_back("artist");
+    Dictionnaire d;
+    for(int i =0 ; i< search.size();i++)
+    {
+        d= vectorTool::get_value_of_value(resRoot,search[i]);
+        if(d.res!=-1)
+        {
+            if(strcmp(search[i],"artist")==0)
+            {
+                break;
+            }
+            else
+            {
+                i=0;
+                resRoot.clear();
+                resRoot.swap(resRoot);
+                resRoot=GetNexttData(d);
+            }
+        }
+    }
+    
+    
+             
+   
+    
+   
+        
+                  std::vector<Dictionnaire> resArstist=GetNexttData(d);
+                  for(int j=0;j<resArstist.size();j++)
+                  {
+                      qDebug() << "Arstist Name " << resArstist[j].name <<" Value " <<resArstist[j].value; 
+                      DataManager::GetInstance().AddDataToList(&resArstist[j]);
+                      std::vector<Dictionnaire> res2=GetNexttData(resArstist[j]);
+                      for(int k=0;k<res2.size();k++)
+                      {
+                        qDebug() << "Album Name " << res2[k].value ;
+                        if(strcmp("All - full name",res2[k].value)!=0 && strcmp("All Songs",res2[k].value)!=0)
+                        {
+                            DataManager::GetInstance().AddAlbumToList(&res2[k],resArstist[j].value);
+                            std::vector<Dictionnaire> res3=GetNexttData(res2[k]);
+                            for(int l=0;l<res3.size();l++)
+                            {
+                                DataManager::GetInstance().AddTrackToList(&res3[l],res2[k].value);
+                                qDebug() << "Add track : " <<  res3[l].value << " to Album Name :" << res2[k].value ;
+                                 Init = true;
+                            }
+                            res3.clear();
+                            res3.swap(res3);
+                        }
+                      }
+                      res2.clear();
+                      res2.swap(res2);
+                  }
+                  resArstist.clear();
+                  resArstist.swap(resArstist);
+    
+    
+    
+    /*
     for(int i=0;i<resRoot.size();i++)
     {
         qDebug() << "Name " << resRoot[i].name <<" Value " <<resRoot[i].value;
-        if(strcmp(resRoot[i].value,"Audio") == 0  )
+        if(strcasestr(resRoot[i].value,"Audio") != NULL || strcasestr(resRoot[i].value,"Music") != NULL  )
         {
+            while(strcasestr(resRoot[i].value,"arstist") == NULL)
+            {
+                
+            }
             res=GetNexttData(resRoot[i]);
             for(int j=0;j<res.size();j++)
             {
@@ -395,7 +461,7 @@ void GetDeviceData::run()
               }
             }
         }
-    }
+    }*/
     resRoot.clear();
     resRoot.swap(resRoot);
     if( Init == true)

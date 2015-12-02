@@ -1,37 +1,306 @@
 <html>
-<body>
-<script type="text/javascript">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+
+
+
+*{
+	box-sizing: border-box;
+}
+
+.header
+{
+	height : 5%;
+	width : 40%;
+	overflow_x : auto;
+	white-space: nowrap;	
+}
+
+.header select
+{
+    max-width : 35%;
+    width: auto;
+    max-height : 100%;
+    vertical-align : top;
+}
+
+.header input
+{
+    max-width : 40%;
+    width: 30%;
+    width: auto;
+    max-height : 100%;
+    vertical-align : top;
+}
+
+.main
+{
+	position:relative;
+	max-height : 75%;
+	height : 75%;
+	width : 100%;
+	overflow : auto;
+}
+
+.main img
+{
+    max-width : 100%;
+    width: auto;
+    max-height : 5%;
+}	
+
+
+.footer
+{
+	height : 5%;
+	width : 20%;
+	overflow_x : auto;
+	white-space: nowrap;	
+}
+
+.header img {
+    max-width : 100%;
+    width: auto;
+    max-height : 100%;
+	}
+
+
+.footer img {
+	max-width : 100%;
+     width: auto;
+    max-height : 100%;
+	}
+
+.playlist 
+{
+	height : 5%;
+	width : 60%;
+	overflow_x : auto;
+	white-space: nowrap;
+}	
+	
+.playlist img
+{
+    max-width : 100%;
+    width: auto;
+    max-height : 100%;
+}	
+
+
+.maincontainer 
+{
+	max-width : 8%;
+	max-height : 100%;
+	height : auto;
+	width : auto;
+	padding-bottom : 5px;
+	padding-right : 5px;
+	padding-left : 5px;
+}
+
+.maincontainer img
+{
+	max-width : 100%;
+	width: auto;
+	height : auto;
+        max-height : 100%
+}
+
+
+
+.container 
+{
+	max-width : 20%;
+	height : 150%;
+	width : auto;
+	overflow_x : auto;
+	white-space: nowrap;
+	display: inline-block;
+	padding-bottom : 5px;
+	padding-right : 5px;
+	padding-left : 5px;
+}
+
+.container img
+{
+	max-width : 200%;
+	width: auto;
+	height : auto;
+        max-height : 200%
+}
+
+.caption {
+    display: block;
+}
+
+
+
+
+div.main , div.maincontainer { float: left; }
+	
+div.header , 	div.playlist  { float: left; }
+div.header, div.container  { display: inline-block;}
+	
+div.footer, div.playlist  { float: left; }
+div.footer, div.container  { display: inline-block;}
+
+</style>
+
+</head>
+ 
+ 
  
 
- 
- 
-function displayMessage(){
-    alert("Hello display");
-    return "Done!";
-}
- 
-myoperations.submit();
- 
-</script>
- 
-<p>Test Example to call Qt function from Javascript </p>
-<input type="text" value="""" id="tt">
-<input type="button" value="Click me!" onclick="test()">
+<body>
+<div  class="header">    
+        <select id="searchSelected">
+		<option value ="Artiste">Artiste</option>
+		<option value ="Album">Album</option>
+		<option value ="Morceau" selected>Morceau</option>
+		<option value ="Video">Video</option>
+	</select>
+        <input type="text" value="" id="search"></input>
+        <img src="search.jpeg"  onclick=search()></img>
+</div>        
+<div class="playlist" id="searchResult">
+       	
+</div>	
+<br><br><br><br><br>        
+<div class="main">
+	
+</div>    
+
+<div class="footer" id="reader">
+	<img src="play.png"  onclick=play()></img>
+	<img src="pause.png" onclick=pause()></img>
+	<img src="next.png"  onclick=next()></img>  
+	<img src="stop.png"  onclick=stop()></img>
+</div>    
+
+<div class="playlist">
+	
+</div>
+    
+
  
 </body>
+
+
+
+
+
 <script type="text/javascript">
+var ArrayReader = new Array();    
 function test(){
-         var i="toto";
+        var i="toto";
         var j= document.getElementById("tt").value;
-        alert(j);
         var i = myoperations.display(j);
         nouveauDiv = document.createElement("div");
-        nouveauDiv.innerHTML = "<h1>"+i+"</h1>";
+        nouveauDiv.innerHTML = "<h1>"+i+"</h1>";   
         // ajoute l'élément qui vient d'être créé et son contenu au DOM
         mon_div = document.getElementById("org_div1");
         document.body.insertBefore(nouveauDiv, mon_div);
-   
 }
+
+function AddToQueue(evt)
+{
+  alert(evt.target.myParam);   
+  myoperations.display(evt.target.myParam);  
+}
+
+function  search()
+{
+    mydiv = document.getElementById('searchResult');
+    while (mydiv.firstChild) {
+      mydiv.removeChild(mydiv.firstChild);
+    }
+  
+  var i = document.getElementById("search").value;
+  var e = document.getElementById("searchSelected");
+  var j = e.options[e.selectedIndex].value;
+  var  res = new Array(); 
+  var res=myoperations.search(i,j);
+  var resArray = res.toString().split(",");
+  for(n=0;n<resArray.length;n++)
+  {
+    var elm = document.createElement("div");
+    elm.className = "container";
+    var elem = document.createElement("img");
+    elem.src="pause.png";
+    elem.addEventListener('click', AddToQueue, false); 
+    elem.myParam = resArray[n];
+    elm.appendChild(elem);
+    var elem1 = document.createElement("span");
+    elem1.className = "caption";
+    elem1.innerHTML="<marquee scrollamount='3'>"+resArray[n]+"</marquee>";
+    elm.appendChild(elem1);
+    document.getElementById("searchResult").appendChild(elm);
+   }
+}
+
+
+
+function play()
+{
+   myoperations.play(); 
+}
+
+function pause()
+{
+   myoperations.pause(); 
+}
+
+function next()
+{
+   myoperations.next(); 
+}
+
+function stop()
+{
+   myoperations.stop(); 
+}
+
+
+
+
+
+function SetReader(evt)
+{
+  /*
+   for(var j=0;j<ArrayReader.length;j++)
+   {
+        var elm = document.getElementById(ArrayReader[j]);
+        if(i!=ArrayReader[j])      width: auto;
+        max-height : 100%
+        {
+           elm.className = "img"; 
+        }
+        else
+        {
+            elm.className="selected";
+        }
+   }*/
+    alert(evt.target.myParam);      
+    myoperations.SetReader(evt.target.myParam);
+}
+
+
+
+
+ 
+
+function AddReader(i,j)
+{
+    ArrayReader.push(j);
+    var elem = document.createElement("img");
+    elem.src=i;
+    elem.id=j;
+    elem.addEventListener('click', SetReader, false);
+    elem.myParam = j;
+    document.getElementById("reader").appendChild(elem);
+}   
+
 </script>
 
 </html>

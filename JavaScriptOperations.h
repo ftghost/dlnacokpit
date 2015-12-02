@@ -10,6 +10,7 @@
 #include <QObject>
 #include <QtWebKitWidgets/QWebView>
 
+
 class JavaScriptOperations : public QObject
 {
 Q_OBJECT    
@@ -18,14 +19,32 @@ public:
     JavaScriptOperations(const JavaScriptOperations& orig);
     virtual ~JavaScriptOperations();
     
-public Q_SLOTS:
-    Q_INVOKABLE
-    void submit();
+
     
- 
+public Q_SLOTS:
+    void  AddReaderReceive(int,char *);
+    
     Q_INVOKABLE 
     QString display(QString val);
 
+    Q_INVOKABLE 
+    void SetReader(QString val);
+
+    Q_INVOKABLE 
+    void play();
+
+    Q_INVOKABLE 
+    void pause();
+    
+    Q_INVOKABLE 
+    void stop();
+    
+    Q_INVOKABLE 
+    void next();
+
+    Q_INVOKABLE 
+    QVariantList search(QString val,QString type);
+    
     private:
         QWebView * view;
         int i;

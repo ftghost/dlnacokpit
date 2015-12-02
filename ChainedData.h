@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "congig.h"
+#include <QList>
 
 
 
@@ -35,7 +36,7 @@ public:
 	bool AddArtist(void * val);
 	bool AddTrack(void * val,char * Artist);
 	/*********************/
-        void * SearchTrackFull(void * val);
+        QList<Dictionnaire *> SearchTrackFull(void * val);
 	void * SearchArtist(void * val);
 	void * SearchAlbum(void * val);
 	void * SearchTrack(void * val);

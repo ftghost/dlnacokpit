@@ -127,6 +127,34 @@ char* vectorTool::get_value_of_arg(std::vector<Dictionnaire> dict,char * arg)
    return ret;
 }
 
+Dictionnaire  vectorTool::get_value_of_value(std::vector<Dictionnaire> dict,char * arg)
+{
+   Dictionnaire d; 
+   
+   if(arg!=NULL)
+   {
+    if(dict.size()>0)  
+    {
+     for (std::vector<Dictionnaire>::iterator it = dict.begin() ; it != dict.end(); ++it)
+     {
+        if(it->name!=NULL)
+        {
+            if(strcasestr(it->value,arg)!=NULL) 
+            {
+                it->res = 0;
+                return *it;
+            }  
+        }
+     }
+    }
+   }
+   d.res = -1;
+   return d;
+}
+
+
+
+
 
 std::vector< std::vector<Dictionnaire> > vectorTool::strip_xml_arg(std::vector<Dictionnaire> dict,char * arg)
 {

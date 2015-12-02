@@ -31,6 +31,7 @@ typedef struct
 
 typedef struct
 {
+    int res;
     char *name;
     char *value;
     char *id;
@@ -122,6 +123,7 @@ typedef struct
   Upnp_Discovery * u; 
   IXML_Document* xmlDoc;
   char * UrlBase;
+  char Icon[100];
   char PathIcon[500];
   int idRoot ;
   std::vector<UpnpListDevice> upnpListDevice;

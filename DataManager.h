@@ -19,6 +19,8 @@ Q_OBJECT
 public slots:
   void  parseTermine(int,bool,bool);
     
+ signals:
+  void  AddReader(int,char *);
  
 
 public:
@@ -30,11 +32,19 @@ public:
      void AddTrackToList(Dictionnaire *d,char *);
      Dictionnaire *  SearchArstist(char *d);
      Dictionnaire * GetNextArstist(int i);
-     Dictionnaire * SearchTrackFull(char *d);
+     QList<Dictionnaire *>   SearchTrackFull(char *d);
+     Dictionnaire *  SearchTrack(char *d);
+     QList<QString> Search(QString,QString);
      bool Play(Dictionnaire *d);
+     bool Play();
+     bool Stop();
+     bool Pause();
+     bool Next();
+     bool SetReader(int index);
      
 
 private :
+    int SelectedIndex;
     bool NewData;
     bool ready;
     bool LecteurReady;

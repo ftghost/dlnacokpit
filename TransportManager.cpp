@@ -16,6 +16,9 @@
 TransportManager::TransportManager(int index) 
 {
     rootIndex = index;
+    isStop = false;
+    isNext = false;
+    isPause = false;
 }
 
 TransportManager::TransportManager(const TransportManager& orig) 
@@ -101,7 +104,7 @@ UpnpListService TransportManager::GetServiceConnectionManager()
     std::vector<Dictionnaire> data;
     vectorTool::InsertOrModifyVector(data,"CurrentURI",d->Playurl);     
     bool resultat = UpnpActionFactory::GetInstance().CreateAction(actionSetUriAvTransportManager,"SetAVTransportURI",(char*)urlControl,(char*)ServiceType,data,u.UrlBase); 
-    return true;
+    return resultat;
  }
  
  bool TransportManager::Play()
@@ -111,8 +114,29 @@ UpnpListService TransportManager::GetServiceConnectionManager()
     return true;
  }
 
-
-
+ bool TransportManager::Pause()
+ {
+    std::vector<Dictionnaire> data;
+    vectorTool::InsertOrModifyVector(data,"InstanceID",InstanceId);  
+    bool resultat = UpnpActionFactory::GetInstance().CreateAction(actionPauseAvTransportManager,"Pause",(char*)urlControl,(char*)ServiceType,data,u.UrlBase);     
+    return true;
+ }
+ 
+ bool TransportManager::Stop()
+ {
+    std::vector<Dictionnaire> data;
+    vectorTool::InsertOrModifyVector(data,"InstanceID",InstanceId);  
+    bool resultat = UpnpActionFactory::GetInstance().CreateAction(actionStopAvTransportManager,"Stop",(char*)urlControl,(char*)ServiceType,data,u.UrlBase);     
+    return resultat;
+ }
+ 
+  bool TransportManager::Next()
+ {
+    std::vector<Dictionnaire> data;
+    vectorTool::InsertOrModifyVector(data,"InstanceID",InstanceId);  
+    bool resultat = UpnpActionFactory::GetInstance().CreateAction(actionNextAvTransportManager,"Next",(char*)urlControl,(char*)ServiceType,data,u.UrlBase);     
+    return resultat;
+ }
 
 UpnpListAction TransportManager::GetActionConnectionManager(char * ActionName)
 {
@@ -213,7 +237,10 @@ UpnpListAction NulllistAction;
     }       
  }
 
-
+char * TransportManager::GetIconPath()
+{
+    return u.Icon;
+}
 
 
 void TransportManager::run()
@@ -256,16 +283,82 @@ void TransportManager::run()
     }
     
     actionPlayAvTransportManager = GetActionAvTransportManager("Play");
+    if(actionPlayAvTransportManager.IdAction == -1)
     {
-      if(actionPlayAvTransportManager.IdAction == -1)
-      {
-        termine(rootIndex,false,deviceType);
-        return;   
-      }
+      termine(rootIndex,false,deviceType);
+      return;   
     }
    
+    actionPauseAvTransportManager= GetActionAvTransportManager("Pause");
+    if(actionPauseAvTransportManager.IdAction != -1)
+    {
+        if(actionPauseAvTransportManager.ListParametreAction.size()==0)
+        {
+          Dictionnaire d;
+          d.name = new char[strlen("direction")+1];
+          d.value = new char[strlen("in")+1];
+          strcpy(d.name,"direction");
+          strcpy(d.value,"in");
+          Dictionnaire d1;
+          d1.name = new char[strlen("name")+1];
+          d1.value = new char[strlen("InstanceID")+1];
+          strcpy(d1.name,"name");
+          strcpy(d1.value,"InstanceID");
+          UpnpListParametreAction ListParametreAction;
+          ListParametreAction.Dic.push_back(d);
+          ListParametreAction.Dic.push_back(d1);
+          actionPauseAvTransportManager.ListParametreAction.push_back(ListParametreAction);
+        }
+        isPause = true; 
+    }
     
     
+    actionStopAvTransportManager= GetActionAvTransportManager("Stop");
+    if(actionStopAvTransportManager.IdAction != -1)
+    {
+        if(actionStopAvTransportManager.ListParametreAction.size()==0)
+        {
+          Dictionnaire d;
+          d.name = new char[strlen("direction")+1];
+          d.value = new char[strlen("in")+1];
+          strcpy(d.name,"direction");
+          strcpy(d.value,"in");
+          Dictionnaire d1;
+          d1.name = new char[strlen("name")+1];
+          d1.value = new char[strlen("InstanceID")+1];
+          strcpy(d1.name,"name");
+          strcpy(d1.value,"InstanceID");
+          UpnpListParametreAction ListParametreAction;
+          ListParametreAction.Dic.push_back(d);
+          ListParametreAction.Dic.push_back(d1);
+          actionStopAvTransportManager.ListParametreAction.push_back(ListParametreAction);
+        }
+        
+        isStop = true;
+    }
+    
+    actionNextAvTransportManager= GetActionAvTransportManager("Next");
+    if(actionNextAvTransportManager.IdAction != -1)
+    {
+         if(actionNextAvTransportManager.ListParametreAction.size()==0)
+        {
+          Dictionnaire d;
+          d.name = new char[strlen("direction")+1];
+          d.value = new char[strlen("in")+1];
+          strcpy(d.name,"direction");
+          strcpy(d.value,"in");
+          Dictionnaire d1;
+          d1.name = new char[strlen("name")+1];
+          d1.value = new char[strlen("InstanceID")+1];
+          strcpy(d1.name,"name");
+          strcpy(d1.value,"InstanceID");
+          UpnpListParametreAction ListParametreAction;
+          ListParametreAction.Dic.push_back(d);
+          ListParametreAction.Dic.push_back(d1);
+          actionNextAvTransportManager.ListParametreAction.push_back(ListParametreAction);
+        }
+        isNext = true;   
+    }
     
     //Url de controle
     if(GetSerciceUrlControl()== false)

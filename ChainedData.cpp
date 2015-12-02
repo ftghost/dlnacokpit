@@ -1,6 +1,7 @@
 #include "ChainedData.h"
 #include <QDebug>
 
+
 //Constructeur
 
 ChainedData::ChainedData()
@@ -75,8 +76,9 @@ ChainedData::~ChainedData(void)
 
 //**********RECHERCHE*************/
 
-void * ChainedData::SearchTrackFull(void * val)
+QList<Dictionnaire *>  ChainedData::SearchTrackFull(void * val)
 {
+        QList<Dictionnaire *> dList;
 	ChainedData * chainedData = this->GetFirst();
 	ChainedData * chaineDataAlbum;
 	ChainedData * chaineDataTrack;
@@ -91,16 +93,16 @@ void * ChainedData::SearchTrackFull(void * val)
 				{
 						chaineDataTrack = chaineDataAlbum->GetLastTrack()->GetTrackRoot();
                                                 Dictionnaire * d = (Dictionnaire *)chaineDataTrack->ReturnValue();
-						if(strstr(d->value,(char*)val)!=NULL)
+						if(strcasestr(d->value,(char*)val)!=NULL)
 						{
-							return chaineDataTrack->ReturnValue();
+							dList.push_back(d);
 						}
 						while(chaineDataTrack->GetNextTrack() != NULL)
 						{
 							Dictionnaire * d = (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
-							if(strstr(d->value,(char*)val)!=NULL)
+							if(strcasestr(d->value,(char*)val)!=NULL)
 							{
-								return d;
+								dList.push_back(d);
 							}
                                                         chaineDataTrack = chaineDataTrack->GetNextTrack();
 						}
@@ -112,7 +114,7 @@ void * ChainedData::SearchTrackFull(void * val)
 		}
 		chainedData = chainedData->GetNextArtist();
 	}
-	return NULL;    
+	return dList;    
 }
 
 

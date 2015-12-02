@@ -76,13 +76,13 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
                                 if ( i_res != UPNP_E_SUCCESS )
                                 {
                                     settings.endGroup();
-                                    return -1;
+                                    return false;
                                 }
                            }
                            else
                            {
                                settings.endGroup();
-                               return -1;
+                               return false;
                            }
                        }
                        else
@@ -92,7 +92,7 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
                             if ( i_res != UPNP_E_SUCCESS )
                             {
                                settings.endGroup();
-                               return -1;
+                               return false;
 
                             } 
                        }

@@ -19,6 +19,7 @@ DataManager::DataManager()
     NewData = true;
     ready = false;
     LecteurReady = false;
+    SelectedIndex = -1;
 }
 
 
@@ -50,6 +51,7 @@ void DataManager::parseTermine(int index,bool isOk,bool deviceType)
       {
         MyLecteur.push_back(index);
         LecteurReady=true;
+        AddReader(index,getDeviceTransport[index]->GetIconPath());
       }
   }
   
@@ -58,7 +60,10 @@ void DataManager::parseTermine(int index,bool isOk,bool deviceType)
 }
 
 
-
+bool DataManager::SetReader(int i)
+{
+    SelectedIndex= i;
+}
 
 
 Dictionnaire * DataManager::GetNextArstist(int i)
@@ -89,15 +94,27 @@ Dictionnaire * DataManager::GetNextArstist(int i)
 
 
 
-Dictionnaire * DataManager::SearchTrackFull(char *d)
+Dictionnaire *  DataManager::SearchTrack(char *d)
 {
-    Dictionnaire * dic= NULL; 
+    Dictionnaire *  dic = NULL; 
     if(ready == false)
     {
-        return  NULL; 
+        return  dic; 
     }
-    dic=(Dictionnaire *)chainedData->SearchTrackFull(d);
-//    qDebug() << dic->value;
+    dic = (Dictionnaire *)chainedData->SearchTrack(d);
+    return dic;
+}
+
+
+
+QList<Dictionnaire *>  DataManager::SearchTrackFull(char *d)
+{
+    QList<Dictionnaire *>  dic; 
+    if(ready == false)
+    {
+        return  dic; 
+    }
+    dic = chainedData->SearchTrackFull(d);
     return dic;
 }
 
@@ -144,19 +161,76 @@ void DataManager::AddDataToList(Dictionnaire *d)
 
 bool DataManager::Play(Dictionnaire* d)
 {
-    for(int i=0;i<MyLecteur.size();i++)
+    if(SelectedIndex==-1)return false;
+    bool res = getDeviceTransport[SelectedIndex]->PrepareUri(d);
+    if(res == true)
     {
-        bool res = getDeviceTransport[MyLecteur[i]]->PrepareUri(d);
-        if(res == true)
-        {
-            getDeviceTransport[MyLecteur[i]]->Play();
-        }
+       getDeviceTransport[SelectedIndex]->Play();
     }
+
 
     return true;
 }
 
 
+bool DataManager::Play()
+{
+    if(SelectedIndex==-1)return false;
+    getDeviceTransport[SelectedIndex]->Play();
+    return true;
+}
+
+
+bool DataManager::Pause()
+{
+    if(SelectedIndex==-1)return false;
+    getDeviceTransport[SelectedIndex]->Pause();
+    return true;
+}
+
+bool DataManager::Next()
+{
+    if(SelectedIndex==-1)return false;
+    getDeviceTransport[SelectedIndex]->Next();
+    return true;
+}
+
+bool DataManager::Stop()
+{
+    if(SelectedIndex==-1)return false;
+    getDeviceTransport[SelectedIndex]->Stop();
+    return true;
+}
+
+
+ QList<QString> DataManager::Search(QString val,QString type)
+ {
+      QList<QString> list;
+      if(type=="Arstite")
+      {
+        
+      }
+      if(type=="Album")
+      {
+          
+      }
+      if(type=="Morceau")
+      {
+         QList<Dictionnaire*> dList=SearchTrackFull((char*)val.toStdString().c_str());
+         for(int i=0;i<dList.size();i++)
+         {
+             list.push_back(dList[i]->value);
+         }
+      }
+      
+      if(type=="Video")
+      {
+          
+      }
+          
+      
+      return list;
+ }
 
 
 
