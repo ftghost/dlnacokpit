@@ -71,7 +71,10 @@ QVariantList JavaScriptOperations::search(QString val,QString type)
   QList<QString> qlS = DataManager::GetInstance().Search(val, type);
   QVariantList newList;
   foreach( QString item, qlS )
-        newList << item;
+  {
+    newList << item.replace(",","#");
+    qDebug() << item;
+  }
   return newList;
 }
 
@@ -81,6 +84,7 @@ QVariantList JavaScriptOperations::search(QString val,QString type)
 QString JavaScriptOperations::display(QString val)
 {
     qDebug() << val;
+    QString val1 = val.replace("#",",");
     Dictionnaire * d =DataManager::GetInstance().SearchTrack((char*)val.toStdString().c_str());
     if(d!=NULL)
     {

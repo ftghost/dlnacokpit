@@ -126,6 +126,7 @@ UpnpListService TransportManager::GetServiceConnectionManager()
  {
     std::vector<Dictionnaire> data;
     vectorTool::InsertOrModifyVector(data,"InstanceID",InstanceId);  
+    
     bool resultat = UpnpActionFactory::GetInstance().CreateAction(actionStopAvTransportManager,"Stop",(char*)urlControl,(char*)ServiceType,data,u.UrlBase);     
     return resultat;
  }

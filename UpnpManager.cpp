@@ -209,6 +209,11 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
     bool ReadyToParseArg = false;
     for(int i=0;i<listDict.size();i++)
     {
+        if(strcmp(listDict[i][0].value,"Stop")==0)
+        {
+            qDebug() << "Stop";
+            qDebug() << listDict[i].size();
+        }
         if(listDict[i].size() == 1)
         {
             ReadyToParseArg = true;
@@ -225,9 +230,11 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
         {
             if(ReadyToParseArg == true)
             {
-                
-                if(vectorTool::count_number_of_arg(listDict[i],"relatedStateVariable")==1)
+                int c = vectorTool::count_number_of_arg(listDict[i],"relatedStateVariable");
+                qDebug() << c;
+                if(c==1)
                 {
+                    
                    UpnpListParametreAction upnpListParametreAction;
                    upnpListParametreAction.IdParametre = IdParametre;
                    upnpListParametreAction.IdDevice = ListService->IdDevice;
@@ -296,7 +303,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
          return false;
      }
      
-     //Get device
+     //Get device=NULL
      std::vector< std::vector<Dictionnaire> > deviceArray = vectorTool::strip_xml_arg(dict,"deviceType");
      long l = deviceArray.size();
      if(l != nbDevice )

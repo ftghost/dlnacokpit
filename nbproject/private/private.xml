@@ -9,18 +9,12 @@
         <group>
             <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/xmlTool.cpp</file>
             <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/congig.h</file>
-            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/GetDeviceData.cpp</file>
-            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/Ressource.qrc</file>
-            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/DataManager.h</file>
-            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/JavaScriptOperations.cpp</file>
-            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/TransportManager.cpp</file>
-            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/ChainedData.cpp</file>
-            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/GetDeviceData.h</file>
-            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/JavaScriptOperations.h</file>
-            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/moc_JavaScriptOperations.cpp</file>
-            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/ChainedData.h</file>
             <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/main.cpp</file>
             <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/UpnpActionFactory.cpp</file>
+            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/vectorTool.cpp</file>
+            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/ChainedData.cpp</file>
+            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/UpnpManager.cpp</file>
+            <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/TransportManager.cpp</file>
             <file>file:/home/ghost/NetBeansProjects/DlnaCokpit/DataManager.cpp</file>
         </group>
     </open-files>

@@ -7,5 +7,6 @@
         <file>html/pause.png</file>
         <file>html/stop.png</file>
         <file>html/search.jpeg</file>
+        <file>html/guer.jpeg</file>
     </qresource>
 </RCC>

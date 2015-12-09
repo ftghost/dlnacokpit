@@ -167,21 +167,23 @@ std::vector< std::vector<Dictionnaire> > vectorTool::strip_xml_arg(std::vector<D
          std::vector<Dictionnaire>::iterator itTmp = dict.begin() ;
          for (std::vector<Dictionnaire>::iterator it = dict.begin() ; it != dict.end(); ++it)
          {
-             
-             if(strcmp(it->name,arg)==0)
+             if(it->name!=NULL)
              {
-                 if(first==true)
-                 {  
-                    first = false; 
-                    itTmp = it;
-                 }
-                 else
-                 {
-                     std::vector<Dictionnaire>::iterator itTmpReal = it;
-                     std::vector<Dictionnaire> DicTmp(itTmp,itTmpReal);
-                     ret.push_back(DicTmp);
-                     itTmp = it;
-                 }
+                if(strcmp(it->name,arg)==0)
+                {
+                    if(first==true)
+                    {  
+                       first = false; 
+                       itTmp = it;
+                    }
+                    else
+                    {
+                        std::vector<Dictionnaire>::iterator itTmpReal = it;
+                        std::vector<Dictionnaire> DicTmp(itTmp,itTmpReal);
+                        ret.push_back(DicTmp);
+                        itTmp = it;
+                    }
+                }
              }
          } 
          if(first==false)

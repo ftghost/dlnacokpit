@@ -60,9 +60,9 @@ void xmlTool::private_get_list_arg_value(IXML_NodeList* nodelist)
                                 dict.value = new char[strlen(ixmlNode_getNodeValue(ixmlNodeList_item(nodeListTmp, 0)))+1]; 
                                 strcpy(dict.value ,ixmlNode_getNodeValue(ixmlNodeList_item(nodeListTmp, 0))); 
                                 strcpy(dict.name , ixmlNode_getNodeName(tmpNode)); 
+                                ListOfValue.push_back(dict);   
                              }
                              
-                             ListOfValue.push_back(dict);   
                              try
                              {
                                  ixmlNodeList_free( nodeListTmp );
@@ -173,17 +173,35 @@ std::vector<Dictionnaire> xmlTool::get_list_arg_value_by_char(char* docchar, con
                                {
                                    dic.protocol = new char[strlen(attr.value().toString().toStdString().c_str())+1];
                                    strcpy(dic.protocol,attr.value().toString().toStdString().c_str());
-                               }   
+                               }  
+                               if (attr.name().toString() == QLatin1String("bitrate")) 
+                               {
+                                   dic.BitRate = new char[strlen(attr.value().toString().toStdString().c_str())+1];
+                                   strcpy(dic.BitRate,attr.value().toString().toStdString().c_str());
+                               }  
+
                            }
 
                        }
                        QString val = xml.readElementText();
-                      if(val!=NULL)
-                      {
-                        dic.Playurl = new char[strlen(val.toStdString().c_str())+1];
-                        strcpy(dic.Playurl,val.toStdString().c_str());
-                      }
+                       if(val!=NULL)
+                       {
+                          dic.Playurl = new char[strlen(val.toStdString().c_str())+1];
+                          strcpy(dic.Playurl,val.toStdString().c_str());
+                       }
                    }
+                   
+                   if(xml.name()=="albumArtURI")
+                   {
+                     QString val = xml.readElementText();
+                     if(val!=NULL)
+                     {
+                        dic.Imgurl = new char[strlen(val.toStdString().c_str())+1];
+                        strcpy(dic.Imgurl,val.toStdString().c_str());
+                     }  
+                   }
+                   
+                   
                    if(xml.name()==item) 
                    {
                        

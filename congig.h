@@ -32,13 +32,14 @@ typedef struct
 typedef struct
 {
     int res;
-    char *name;
-    char *value;
-    char *id;
-    char *parentId;
-    char *protocol;
-    char *Playurl;
-    char *Imgurl;
+    char *name=NULL;
+    char *value=NULL;
+    char *id=NULL;
+    char *parentId=NULL;
+    char *protocol=NULL;
+    char *Playurl=NULL;
+    char *Imgurl=NULL;
+    char *BitRate=NULL;
     bool IsContainer;
     bool IsItem;
 }Dictionnaire;

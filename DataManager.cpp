@@ -220,6 +220,14 @@ bool DataManager::Stop()
          for(int i=0;i<dList.size();i++)
          {
              list.push_back(dList[i]->value);
+             if(dList[i]->Imgurl == NULL)
+             {
+                 list.push_back("guer.jpeg");
+             }
+             else
+             {
+                list.push_back(dList[i]->Imgurl);
+             }
          }
       }
       

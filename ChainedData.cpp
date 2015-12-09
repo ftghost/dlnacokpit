@@ -136,6 +136,7 @@ void * ChainedData::SearchArtist(void * val)
 		}
 		chainedData = chainedData->GetNextArtist();
 	}
+        return NULL;
 }
 
 
@@ -351,6 +352,10 @@ bool ChainedData::SetLastArtist(ChainedData * Value)
 bool ChainedData::AddArtist(void * Value)
 {
         Dictionnaire * d =(Dictionnaire *)Value;
+        if(SearchArtistPrivate(d->value)!=NULL) 
+        {
+            return true;
+        }
         qDebug() << "aDD ARSTIST" << (Dictionnaire *)d->value;
 	//Create new class
 	ChainedData *chainedData = new ChainedData();
@@ -481,6 +486,74 @@ bool ChainedData::SetLastTrack(ChainedData * Value)
 bool ChainedData::AddTrack(void * val ,char * Album)
 {
 	//Search Album
+        Dictionnaire * d1 = (Dictionnaire *)val;
+        Dictionnaire *d  =(Dictionnaire *)SearchTrack(d1->value);
+        char * pch = strstr(d1->value,".mp3");
+        if(pch!=NULL)
+        {
+            pch[0] ='\0';
+        }
+        else
+        {
+            pch = strstr(d1->value,".flac");
+            if(pch!=NULL)
+            {
+                pch[0] ='\0';
+            }
+        }
+        qDebug() << d1->value;
+        if(d!=NULL)
+        {
+            if(d->Imgurl == NULL)
+            {
+                Dictionnaire * d1 = (Dictionnaire *)val;
+                if(d1->Imgurl != NULL)
+                {
+                    if(d->Imgurl != NULL) delete d->Imgurl;
+                    d->Imgurl = new char[strlen(d1->Imgurl)+1];
+                    strcpy(d->Imgurl,d1->Imgurl);
+                }
+                
+            }
+            
+            if(d1->Playurl != NULL && d->Playurl)
+            {
+                if(d1->BitRate != NULL && d->BitRate != NULL)
+                {
+                    int id1 =0;
+                    int id =0;
+                    try
+                    {
+                        id1 = atoi(d1->BitRate);
+                    }
+                    catch(...)
+                    {
+                        id1=0;
+                    }
+
+                    try
+                    {
+                        id = atoi(d->BitRate);
+                    }
+                    catch(...)
+                    {
+                        id=0;
+                    }
+                    if(id1 > id)
+                    {
+                        if(d->Playurl != NULL) delete d->Playurl;
+                        d->Playurl = new char[strlen(d1->Playurl)+1];
+                        strcpy(d->Playurl,d1->Playurl);
+                    }
+                }
+            }
+            return true;
+        }
+        
+       
+        
+        
+        
 	ChainedData * chainedData = SearchAlbumPrivate(Album);
 	if(chainedData == NULL)
 	{
@@ -500,6 +573,7 @@ bool ChainedData::AddTrack(void * val ,char * Album)
 
 bool ChainedData::AddTrack(void * Value,ChainedData *chainedAlbum)
 {
+        
 	bool ret = false;
 	switch (chainedAlbum->chainedType)
 	{
@@ -570,6 +644,12 @@ bool ChainedData::AddAlbum(void * val ,char * Artist)
     
 	//Search Artist
         Dictionnaire * d = (Dictionnaire *)val;
+        if(SearchAlbumPrivate(d->value)!=NULL)
+        {
+            return true;
+        }
+
+        
         qDebug() << "Add album " << d->value << "Arstist :"<<Artist;
 	ChainedData * chainedData = SearchArtistPrivate(Artist);
  	if(chainedData == NULL)

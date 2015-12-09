@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
     QWebView *view;
     view = new QWebView();
     view->setContextMenuPolicy(Qt::NoContextMenu);
+    view->setAttribute(Qt::WA_AcceptTouchEvents, false);
     JavaScriptOperations * java = new JavaScriptOperations(view);
     view->page()->mainFrame()->addToJavaScriptWindowObject("myoperations",java);
     view->load(QUrl("qrc:///html/index.html"));
