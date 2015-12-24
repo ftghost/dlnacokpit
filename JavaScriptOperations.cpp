@@ -23,24 +23,35 @@ JavaScriptOperations::JavaScriptOperations(QWebView * View)
     view = View;
     i=0;
     QObject::connect(&DataManager::GetInstance(), SIGNAL(AddReader(int,char *)),this, SLOT(AddReaderReceive(int,char *)));
+    QObject::connect(&DataManager::GetInstance(), SIGNAL(AddToScreen(char *,char*)),this, SLOT(AddMainContent(char *,char *)));
 }
 
 
 void JavaScriptOperations::AddReaderReceive(int i ,char * Icon)
 {
-   qDebug() << Icon;
+   //qDebug() << Icon;
    const QString arg = QString::fromUtf8(Icon); 
    const QString arg1 = QString::number(i);
    QString info = QString("AddReader('%1','%2')").arg(arg,arg1);
-   qDebug() << info;
+   //qDebug() << info;
+   view->page()->mainFrame()->evaluateJavaScript(info);
+}
+
+void  JavaScriptOperations::AddMainContent(char * name , char * url)
+{
+
+   QString arg2 = QString::fromUtf8(name); 
+   const QString arg = arg2.replace("'","|");
+   const QString arg1 =  QString::fromUtf8(url); 
+   QString info = QString("AddMainContent('%1','%2')").arg(arg,arg1);
+   //qDebug() << info;
    view->page()->mainFrame()->evaluateJavaScript(info);
 }
 
 
-
 void JavaScriptOperations::SetReader(QString val)
 {
-  qDebug() << val;    
+  //qDebug() << val;    
   DataManager::GetInstance().SetReader(val.toInt());  
 }
 
@@ -65,15 +76,17 @@ void JavaScriptOperations::play()
   DataManager::GetInstance().Play();  
 }
 
-QVariantList JavaScriptOperations::search(QString val,QString type)
+QVariantList JavaScriptOperations::search(QString val,QString Type)
 {
-    
+  type = Type;  
   QList<QString> qlS = DataManager::GetInstance().Search(val, type);
   QVariantList newList;
   foreach( QString item, qlS )
   {
-    newList << item.replace(",","#");
-    qDebug() << item;
+    QString i1 = item.replace(",","#");
+    QString i2 = i1.replace("'","|");
+    newList << i2;
+    //qDebug() << item;
   }
   return newList;
 }
@@ -83,13 +96,23 @@ QVariantList JavaScriptOperations::search(QString val,QString type)
 
 QString JavaScriptOperations::display(QString val)
 {
-    qDebug() << val;
+    //qDebug() << val;
     QString val1 = val.replace("#",",");
-    Dictionnaire * d =DataManager::GetInstance().SearchTrack((char*)val.toStdString().c_str());
-    if(d!=NULL)
+    QString val2 = val1.replace("|","'");
+    if(type=="Morceau")
     {
-       DataManager::GetInstance().Play(d);
+        Dictionnaire * d =DataManager::GetInstance().SearchTrack((char*)val2.toStdString().c_str());
+        if(d!=NULL)
+        {
+           DataManager::GetInstance().Play(d);
+        }
     }
+    
+    if(type=="Album")
+    {
+        DataManager::GetInstance().PlayAlbum((char*)val2.toStdString().c_str());
+    }
+    
     return "";
 }
 

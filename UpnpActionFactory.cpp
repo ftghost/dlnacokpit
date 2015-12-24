@@ -19,11 +19,12 @@ UpnpActionFactory::UpnpActionFactory()
   
        
 }
-
+pthread_mutex_t UpnpActionFactory::mutexAction;
 UpnpActionFactory UpnpActionFactory::m_instance=UpnpActionFactory();
 
 bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,char *url,char * ServiceType,std::vector<Dictionnaire> data,char *UrlBase)
 {
+    pthread_mutex_lock(&mutexAction);
     try
     {
         //Get ini file
@@ -76,6 +77,7 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
                                 if ( i_res != UPNP_E_SUCCESS )
                                 {
                                     settings.endGroup();
+                                    pthread_mutex_unlock(&mutexAction);
                                     return false;
                                 }
                            }
@@ -87,11 +89,12 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
                        }
                        else
                        {
-                            qDebug() << "Parametre Name : " << ParameterName<<" ** : "<<ParameterValue;  
+                            //qDebug() << "Parametre Name : " << ParameterName<<" ** : "<<ParameterValue;  
                             int  i_res = UpnpAddToAction(&Action.xmlActionRequest, ActionName,ServiceType,ParameterName, ParameterValue );
                             if ( i_res != UPNP_E_SUCCESS )
                             {
                                settings.endGroup();
+                               pthread_mutex_unlock(&mutexAction);
                                return false;
 
                             } 
@@ -106,7 +109,8 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
         int  i_res = UpnpSendAction( UpnpDiscover::GetInstance().GetHandle(), url,ServiceType, NULL, Action.xmlActionRequest, &Action.xmlActionResponse );
         if ( i_res != UPNP_E_SUCCESS )
         {
-            char * result = xmlTool::get_argument_value(Action.xmlActionResponse ,"Result");
+            qDebug() << i_res;
+            pthread_mutex_unlock(&mutexAction);
             return false;
         }
         else
@@ -145,10 +149,12 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
         }
         ixmlDocument_free( Action.xmlActionRequest );
         ixmlDocument_free( Action.xmlActionResponse );
+        pthread_mutex_unlock(&mutexAction);
         return true;
     }
     catch(...)
     {
+        pthread_mutex_unlock(&mutexAction);
         return false;
     }
 }

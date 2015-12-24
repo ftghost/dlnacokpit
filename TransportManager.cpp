@@ -99,6 +99,15 @@ UpnpListService TransportManager::GetServiceConnectionManager()
 }
 
 
+ bool TransportManager::PrepareNextUri(Dictionnaire * d)
+ {
+    std::vector<Dictionnaire> data;
+    vectorTool::InsertOrModifyVector(data,"NextURI",d->Playurl);     
+    bool resultat = UpnpActionFactory::GetInstance().CreateAction(actionSetNextUriAvTransportManager,"SetNextAVTransportURI",(char*)urlControl,(char*)ServiceType,data,u.UrlBase); 
+    return resultat;
+ }
+
+
  bool TransportManager::PrepareUri(Dictionnaire * d)
  {
     std::vector<Dictionnaire> data;
@@ -182,7 +191,6 @@ UpnpListAction NulllistAction;
         {
             if(u.upnpListDevice[i].IsUnknow == false)
             {
-
                 if(u.upnpListDevice[i].Isreader == true)
                 {
                    for(int j=0;j<u.upnpListService.size();j++)
@@ -262,7 +270,7 @@ void TransportManager::run()
         if(actionConnectionManager.IdAction !=-1 )
         {
             //TODO CALL PrepareForConnection
-            qDebug() << "Service Connectoin Manager trouvé" << serviceConnectionManager.IdService;  
+            //qDebug() << "Service Connectoin Manager trouvé" << serviceConnectionManager.IdService;  
         }
     }
     strcpy(InstanceId,"0");
@@ -282,6 +290,13 @@ void TransportManager::run()
       termine(rootIndex,false,deviceType);
       return;   
     }
+    
+    
+    //Get SetUri ACtion
+    actionSetNextUriAvTransportManager = GetActionAvTransportManager("SetNextAVTransportURI");
+  
+    
+    
     
     actionPlayAvTransportManager = GetActionAvTransportManager("Play");
     if(actionPlayAvTransportManager.IdAction == -1)
@@ -367,7 +382,7 @@ void TransportManager::run()
       termine(rootIndex,false,deviceType);
       return;       
     }
-    qDebug() << "Url de control trouvé" << urlControl;  
+    //qDebug() << "Url de control trouvé" << urlControl;  
     
     //Service type
     if(GetSerciceType()==false)
@@ -375,7 +390,7 @@ void TransportManager::run()
       termine(rootIndex,false,deviceType);
       return;    
     }
-    qDebug() << "Service type trouvé" << ServiceType;  
+    //qDebug() << "Service type trouvé" << ServiceType;  
     //
     
     

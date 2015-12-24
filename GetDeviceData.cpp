@@ -27,6 +27,8 @@ GetDeviceData::~GetDeviceData() {
 
 std::vector<Dictionnaire>  GetDeviceData::GetNexttData(Dictionnaire resPre)
 {
+        int indexplus = 20; 
+        int indexmoins=1;
         std::vector<Dictionnaire> res;   
         std::vector<Dictionnaire> data;
         int index =0;
@@ -34,6 +36,7 @@ std::vector<Dictionnaire>  GetDeviceData::GetNexttData(Dictionnaire resPre)
         char buffer [50];
         sprintf(buffer,"%d",startingIndex);
         vectorTool::InsertOrModifyVector(data,"StartingIndex",buffer);  
+        vectorTool::InsertOrModifyVector(data,"Filter","@id,@parentID,@restricted,dc:title,upnp:class,res,upnp:albumArtURI");
         if(resPre.IsItem == true)
         {
             return res;
@@ -46,25 +49,40 @@ std::vector<Dictionnaire>  GetDeviceData::GetNexttData(Dictionnaire resPre)
                 while(cont==true)
                 {
 
-                    bool resulttat = UpnpActionFactory::GetInstance().CreateAction(actionBrowseDirectory,"Browse",(char*)urlControl,(char*)ServiceType,data,u.UrlBase);
-                    char * XmlResult = vectorTool::get_value_of_arg(actionBrowseDirectory.DicReponse,"Result");
-                    qDebug() << "XmlResult : " <<  XmlResult;
-                    std::vector<Dictionnaire> res1 = xmlTool::get_list_arg_value_by_char(XmlResult,"title","");
-                    if(res1.size() > 0)
+                    bool resultat = UpnpActionFactory::GetInstance().CreateAction(actionBrowseDirectory,"Browse",(char*)urlControl,(char*)ServiceType,data,u.UrlBase);
+                    if(resultat == true)
                     {
-                        res.insert(res.end(), res1.begin(), res1.end());
-                        startingIndex = startingIndex+1;
-                        sprintf(buffer,"%d",startingIndex);
-                        qDebug() << "Index : " <<  buffer;
-                        vectorTool::InsertOrModifyVector(data,"StartingIndex",buffer);  
-                        res1.clear();
-                        res1.swap(res1);
+                        char * XmlResult = vectorTool::get_value_of_arg(actionBrowseDirectory.DicReponse,"Result");
+                        //qDebug() << "XmlResult : " <<  XmlResult;
+                        std::vector<Dictionnaire> res1 = xmlTool::get_list_arg_value_by_char(XmlResult,"title","");
+                        if(res1.size() > 0)
+                        {
+                            if(res1.size()<indexplus)
+                            {
+                                cont=false;
+                            }
+                            res.insert(res.end(), res1.begin(), res1.end());
+                            startingIndex = startingIndex+indexplus;
+                            sprintf(buffer,"%d",startingIndex);
+                            //qDebug() << "Index : " <<  buffer;
+                            vectorTool::InsertOrModifyVector(data,"StartingIndex",buffer);  
+                            res1.clear();
+                            res1.swap(res1);
+                            
+                        }
+                        else
+                        {
+                            cont = false;
+                        }
                     }
                     else
                     {
-                        cont = false;
+                        cont=false;
                     }
-                }
+                }    
+             
+   
+
             }
         }
         data.clear();
@@ -83,18 +101,20 @@ std::vector<Dictionnaire>  GetDeviceData::GetRootData()
     char buffer [50];
     sprintf(buffer,"%d",startingIndex);
     vectorTool::InsertOrModifyVector(data,"StartingIndex",buffer);  
+    vectorTool::InsertOrModifyVector(data,"Filter","@id,@parentID,@restricted,dc:title,dc:date,upnp:class,res,upnp:albumArtURI");
+    
     
    bool cont = true;
    while(cont==true)
    {
         bool resulttat = UpnpActionFactory::GetInstance().CreateAction(actionBrowseDirectory,"Browse",(char*)urlControl,(char*)ServiceType,data,u.UrlBase);
         char * XmlResult = vectorTool::get_value_of_arg(actionBrowseDirectory.DicReponse,"Result");
-        qDebug() << "XmlResult : " <<  XmlResult;
+        //qDebug() << "XmlResult : " <<  XmlResult;
         std::vector<Dictionnaire> res1 = xmlTool::get_list_arg_value_by_char(XmlResult,"title","");
         if(res1.size() > 0)
         {
             res.insert(res.end(), res1.begin(), res1.end());
-            startingIndex = startingIndex+1;
+            startingIndex = startingIndex+20;
             sprintf(buffer,"%d",startingIndex);
             vectorTool::InsertOrModifyVector(data,"StartingIndex",buffer);  
             res1.clear();
@@ -296,7 +316,7 @@ void GetDeviceData::run()
       termine(rootIndex,false,deviceType);
       return;
     }
-    qDebug() << "Service content Directory trouvé" << serviceContentDirectory.IdService;  
+    //qDebug() << "Service content Directory trouvé" << serviceContentDirectory.IdService;  
     
     serviceConnectionManager = GetServiceConnectionManager();
 
@@ -305,7 +325,7 @@ void GetDeviceData::run()
       termine(rootIndex,false,deviceType);
       return;
     }
-    qDebug() << "Service Connectoin Manager trouvé" << serviceConnectionManager.IdService;  
+    //qDebug() << "Service Connectoin Manager trouvé" << serviceConnectionManager.IdService;  
     
     
     
@@ -316,7 +336,7 @@ void GetDeviceData::run()
       termine(rootIndex,false,deviceType);
       return;
     }
-    qDebug() << "Action browse content Directory Service trouvé" << actionBrowseDirectory.IdAction;
+    //qDebug() << "Action browse content Directory Service trouvé" << actionBrowseDirectory.IdAction;
     
     actionConnectionManager = GetActionConnectionManager("PrepareForConnection");
     if(actionConnectionManager.IdAction==-1)
@@ -328,7 +348,7 @@ void GetDeviceData::run()
         //TODO CALL PrepareForConnection
         strcpy(InstanceId,"0");
     }
-    qDebug() << "Action browse content Directory Service trouvé" << actionBrowseDirectory.IdAction;
+    //qDebug() << "Action browse content Directory Service trouvé" << actionBrowseDirectory.IdAction;
     
     
     //Url de controle#include "ChainedData.h"
@@ -337,7 +357,7 @@ void GetDeviceData::run()
       termine(rootIndex,false,deviceType);
       return;        
     }
-    qDebug() << "Url de control trouvé" << urlControl;  
+    //qDebug() << "Url de control trouvé" << urlControl;  
     
     //Service type
     if(GetSerciceType()==false)
@@ -345,7 +365,7 @@ void GetDeviceData::run()
       termine(rootIndex,false,deviceType);
       return;    
     }
-    qDebug() << "Service type trouvé" << ServiceType;  
+    //qDebug() << "Service type trouvé" << ServiceType;  
     //
     
     
@@ -377,21 +397,18 @@ void GetDeviceData::run()
         }
     }
     
-    
-             
-   
-    
-   
-        
+      
+
                   std::vector<Dictionnaire> resArstist=GetNexttData(d);
+                  //qDebug() << resArstist.size();
                   for(int j=0;j<resArstist.size();j++)
                   {
-                      qDebug() << "Arstist Name " << resArstist[j].name <<" Value " <<resArstist[j].value; 
+                      //qDebug() << "Arstist Name " << resArstist[j].name <<" Value " <<resArstist[j].value; 
                       DataManager::GetInstance().AddDataToList(&resArstist[j]);
                       std::vector<Dictionnaire> res2=GetNexttData(resArstist[j]);
                       for(int k=0;k<res2.size();k++)
                       {
-                        qDebug() << "Album Name " << res2[k].value ;
+                        //qDebug() << "Album Name " << res2[k].value ;
                         if(strcmp("All - full name",res2[k].value)!=0 && strcmp("All Songs",res2[k].value)!=0)
                         {
                             DataManager::GetInstance().AddAlbumToList(&res2[k],resArstist[j].value);
@@ -399,8 +416,8 @@ void GetDeviceData::run()
                             for(int l=0;l<res3.size();l++)
                             {
                                 DataManager::GetInstance().AddTrackToList(&res3[l],res2[k].value);
-                                qDebug() << "Add track : " <<  res3[l].value << " to Album Name :" << res2[k].value ;
-                                 Init = true;
+                                //qDebug() << "Add track : " <<  res3[l].value << " to Album Name :" << res2[k].value ;
+                                Init = true;
                             }
                             res3.clear();
                             res3.swap(res3);
@@ -413,55 +430,7 @@ void GetDeviceData::run()
                   resArstist.swap(resArstist);
     
     
-    
-    /*
-    for(int i=0;i<resRoot.size();i++)
-    {
-        qDebug() << "Name " << resRoot[i].name <<" Value " <<resRoot[i].value;
-        if(strcasestr(resRoot[i].value,"Audio") != NULL || strcasestr(resRoot[i].value,"Music") != NULL  )
-        {
-            while(strcasestr(resRoot[i].value,"arstist") == NULL)
-            {
-                
-            }
-            res=GetNexttData(resRoot[i]);
-            for(int j=0;j<res.size();j++)
-            {
-              qDebug() << "Name " << res[j].name <<" Value " <<res[j].value;  
-              if(strcmp(res[j].value,"Artists") == 0 )
-              {
-                  resArstist=GetNexttData(res[j]);
-                  for(int j=0;j<resArstist.size();j++)
-                  {
-                      qDebug() << "Arstist Name " << resArstist[j].name <<" Value " <<resArstist[j].value; 
-                      DataManager::GetInstance().AddDataToList(&resArstist[j]);
-                      std::vector<Dictionnaire> res2=GetNexttData(resArstist[j]);
-                      for(int k=0;k<res2.size();k++)
-                      {
-                        qDebug() << "Album Name " << res2[k].value ;
-                        if(strcmp("All - full name",res2[k].value)!=0 && strcmp("All Songs",res2[k].value)!=0)
-                        {
-                            DataManager::GetInstance().AddAlbumToList(&res2[k],resArstist[i].value);
-                            std::vector<Dictionnaire> res3=GetNexttData(res2[k]);
-                            for(int l=0;l<res3.size();l++)
-                            {
-                                DataManager::GetInstance().AddTrackToList(&res3[l],res2[k].value);
-                                qDebug() << "Add track : " <<  res3[l].value << " to Album Name :" << res2[k].value ;
-                                 Init = true;
-                            }
-                            res3.clear();
-                            res3.swap(res3);
-                        }
-                      }
-                      res2.clear();
-                      res2.swap(res2);
-                  }
-                  resArstist.clear();
-                  resArstist.swap(resArstist);
-              }
-            }
-        }
-    }*/
+        
     resRoot.clear();
     resRoot.swap(resRoot);
     if( Init == true)

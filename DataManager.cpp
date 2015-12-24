@@ -1,6 +1,7 @@
 #include "DataManager.h"
 #include "UpnpManager.h"
 #include <QDebug>
+#include <QList>
 
 
 
@@ -37,8 +38,12 @@ void DataManager::parseTermine(int index,bool isOk,bool deviceType)
   {
     if(deviceType == false)  
         delete getDeviceTransport[index];  
-    if(deviceType == true)     
+    if(deviceType == true)  
+    {
         delete getDeviceData[index];  
+        NbServeur--;
+     
+    }
   }
   else
   {
@@ -46,6 +51,11 @@ void DataManager::parseTermine(int index,bool isOk,bool deviceType)
       {
           ready = true;
           delete getDeviceData[index]; 
+          NbServeur--;
+          if(NbServeur == 0)
+          {
+            CanaddToScreen(); 
+          }
       }
       if(deviceType == false)
       {
@@ -56,8 +66,56 @@ void DataManager::parseTermine(int index,bool isOk,bool deviceType)
   }
   
       
-  qDebug() << "Deleted Index" << index;
+  //qDebug() << "Deleted Index" << index;
 }
+
+
+void DataManager::CanaddToScreen()
+{
+    
+        ChainedData * ChainedDataAdd = chainedData;
+        ChainedDataAdd = chainedData->GetFirst();
+	ChainedData * chaineDataAlbum;
+
+	while(ChainedDataAdd!=NULL)
+	{
+		if(ChainedDataAdd->GetLastAlbum()!=NULL)
+		{
+			chaineDataAlbum = ChainedDataAdd->GetLastAlbum()->GetAlbumRoot();
+                        Dictionnaire *d = (Dictionnaire *)chaineDataAlbum->ReturnValue(); 
+                        if(d->Imgurl !=NULL)
+                        {
+                            AddToScreen(d->value,d->Imgurl);
+                        }
+                        else
+                        {
+                            AddToScreen(d->value,"guer.jpeg");
+                        }
+			qDebug()<<d->value;
+                        
+			while(chaineDataAlbum->GetNextAlbum() != NULL)
+			{
+				d = (Dictionnaire *)chaineDataAlbum->GetNextAlbum()->ReturnValue();
+                                if(d->Imgurl !=NULL)
+                                    AddToScreen(d->value,d->Imgurl);
+                                else
+                                {
+                                    AddToScreen(d->value,"guer.jpeg");
+                                }
+                                qDebug()<<d->value;
+				chaineDataAlbum = chaineDataAlbum->GetNextAlbum();
+			}
+		}
+		ChainedDataAdd = ChainedDataAdd->GetNextArtist();
+	} 
+    
+    
+   
+            
+    
+    //AddToScreen(name,url);
+}
+
 
 
 bool DataManager::SetReader(int i)
@@ -88,7 +146,7 @@ Dictionnaire * DataManager::GetNextArstist(int i)
         }
     }
             
-    //qDebug() << dic->value;
+    ////qDebug() << dic->value;
     return dic;
 }
 
@@ -106,6 +164,16 @@ Dictionnaire *  DataManager::SearchTrack(char *d)
 }
 
 
+QList<Dictionnaire *>  DataManager::SearchAlbumFull(char *d)
+{
+    QList<Dictionnaire *>  dic; 
+    if(ready == false)
+    {
+        return  dic; 
+    }
+    dic=chainedData->SearchAlbumFull(d);
+    return dic;   
+}
 
 QList<Dictionnaire *>  DataManager::SearchTrackFull(char *d)
 {
@@ -114,7 +182,7 @@ QList<Dictionnaire *>  DataManager::SearchTrackFull(char *d)
     {
         return  dic; 
     }
-    dic = chainedData->SearchTrackFull(d);
+    dic=chainedData->SearchTrackFull(d);
     return dic;
 }
 
@@ -127,7 +195,7 @@ Dictionnaire * DataManager::SearchArstist(char *d)
         return  NULL; 
     }
     dic=(Dictionnaire *)chainedData->SearchArtist(d);
-    qDebug() << dic->value;
+    //qDebug() << dic->value;
     return dic;
 }
 
@@ -157,6 +225,69 @@ void DataManager::AddDataToList(Dictionnaire *d)
     }
     
 }
+
+
+bool DataManager::SetSameUri()
+{
+    if(chaineDataTrack != NULL)
+    {
+        Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->ReturnValue();
+        if(dic!=NULL)
+        {
+            getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);   
+            chaineDataTrack = chaineDataTrack->GetNextTrack();
+        }
+    }
+}
+
+
+
+bool DataManager::SetNextUri()
+{
+    if(chaineDataTrack->GetNextTrack() != NULL)
+    {
+        Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
+        if(dic!=NULL)
+        {
+            getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);   
+            chaineDataTrack = chaineDataTrack->GetNextTrack();
+        }
+    }
+}
+
+
+
+
+bool DataManager::PlayAlbum(char * val)
+{
+    if(SelectedIndex==-1)return false;
+    ChainedData * d = chainedData->SearchAlbumPrivate(val);
+    Dictionnaire * dic =NULL;
+    if(d!=NULL)
+    {
+        if(d->GetLastTrack() != NULL)
+        {
+            chaineDataTrack = d->GetLastTrack()->GetTrackRoot();
+            dic=(Dictionnaire *)chaineDataTrack->ReturnValue();
+            if(dic!=NULL)
+            {
+                bool res = getDeviceTransport[SelectedIndex]->PrepareUri(dic);
+                if(res == true)
+                {
+                   getDeviceTransport[SelectedIndex]->Play();
+                }   
+                if(chaineDataTrack->GetNextTrack() != NULL)
+		{
+                   dic= (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
+                   getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);   
+                   chaineDataTrack = chaineDataTrack->GetNextTrack();
+                }
+            }
+        }
+     }
+}
+
+
 
 
 bool DataManager::Play(Dictionnaire* d)
@@ -212,8 +343,21 @@ bool DataManager::Stop()
       }
       if(type=="Album")
       {
-          
+        QList<Dictionnaire*> dList=SearchAlbumFull((char*)val.toStdString().c_str());
+         for(int i=0;i<dList.size();i++)
+         {
+             list.push_back(dList[i]->value);
+             if(dList[i]->Imgurl == NULL)
+             {
+                 list.push_back("guer.jpeg");
+             }
+             else
+             {
+                list.push_back(dList[i]->Imgurl);
+             }
+         }
       }
+      
       if(type=="Morceau")
       {
          QList<Dictionnaire*> dList=SearchTrackFull((char*)val.toStdString().c_str());
@@ -245,7 +389,7 @@ bool DataManager::Stop()
 bool DataManager::EventNewDeviceAdded(int index)
 {
     //TODO GESTION DU TABLEAU
-    qDebug() << "Index" << index;
+    //qDebug() << "Index" << index;
     if(index > NbDeviceMax || index == -1) return false;
     /*
     getDeviceData[index] = new GetDeviceData(index);
@@ -268,6 +412,7 @@ bool DataManager::EventNewDeviceAdded(int index)
             }
             else
             {
+               NbServeur++; 
                getDeviceData[index] = new GetDeviceData(index);
                QObject::connect(getDeviceData[index], SIGNAL(termine(int,bool,bool)), &DataManager::GetInstance() , SLOT(parseTermine(int,bool,bool)));
                getDeviceData[index]->start();

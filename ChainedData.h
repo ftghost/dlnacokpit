@@ -37,11 +37,15 @@ public:
 	bool AddTrack(void * val,char * Artist);
 	/*********************/
         QList<Dictionnaire *> SearchTrackFull(void * val);
+        QList<Dictionnaire *> SearchAlbumFull(void * val);
 	void * SearchArtist(void * val);
 	void * SearchAlbum(void * val);
 	void * SearchTrack(void * val);
 	void * SearchAll(void *val);
 	void * ReturnValue();
+      	ChainedData * SearchArtistPrivate(void * val);
+	ChainedData * SearchAlbumPrivate(void * val);
+
 
 private:
 	/**********************/
@@ -71,8 +75,6 @@ private:
 	/*********************/
 	bool AddTrack(void * val,ChainedData *chainedArstist);
 	bool AddAlbum(void * val,ChainedData *chainedAlbum);
-	ChainedData * SearchArtistPrivate(void * val);
-	ChainedData * SearchAlbumPrivate(void * val);
 
 	//Pointeur d'identification
 	//root element et premiere element liste artiste

@@ -13,22 +13,30 @@
  std::vector<Dictionnaire> xmlTool::ListOfValue ;
  char * xmlTool::get_argument_value(IXML_Document* doc, const char* item)
   {
-    char *ret = NULL;     
-    if(doc!=NULL && item != NULL)
+    char *ret = NULL;      
+    try
     {
-        IXML_NodeList *nodeList = NULL;
-        IXML_Node *textNode = NULL;
-        IXML_Node *tmpNode = NULL;
-        nodeList = ixmlDocument_getElementsByTagName(doc, (char *)item);
-        if(nodeList) 
+        
+        if(doc!=NULL && item != NULL)
         {
-            if((tmpNode = ixmlNodeList_item(nodeList, 0))) 
+            IXML_NodeList *nodeList = NULL;
+            IXML_Node *textNode = NULL;
+            IXML_Node *tmpNode = NULL;
+            nodeList = ixmlDocument_getElementsByTagName(doc, (char *)item);
+            if(nodeList) 
             {
-                textNode = ixmlNode_getFirstChild(tmpNode);
-                ret = strdup(ixmlNode_getNodeValue(textNode));
+                if((tmpNode = ixmlNodeList_item(nodeList, 0))) 
+                {
+                    textNode = ixmlNode_getFirstChild(tmpNode);
+                    ret = (char*) ixmlNode_getNodeValue(textNode);
+                }
+                ixmlNodeList_free( nodeList );
             }
-            ixmlNodeList_free( nodeList );
         }
+    }
+    catch(...)
+    {
+        return NULL;
     }
     return ret;
  }
@@ -92,7 +100,64 @@ void xmlTool::private_get_list_arg_value(IXML_NodeList* nodelist)
  
 
 
-
+char *  xmlTool::get_lastChange(char* docchar)
+{
+    char * res = NULL;
+    try
+    {
+        if(docchar ==NULL )
+        {
+            return res;
+        }
+        QXmlStreamReader xml(docchar);
+        while(!xml.atEnd() && !xml.hasError()) 
+        {
+            if(xml.isEndDocument()==true)
+            {
+                break;
+            }
+            
+            if(xml.isStartDocument()==true)
+            {
+                xml.readNext();
+                continue;
+            }  
+            
+            if (xml.name()!=NULL)
+            {
+                qDebug() << xml.name();
+               if(xml.name()!=NULL)
+               {  
+                  if(xml.name()=="TransportState")
+                  {
+                       foreach(const QXmlStreamAttribute &attr, xml.attributes()) 
+                       {
+                           if(attr.name() != NULL && attr.value()!=NULL)
+                           {  
+                               if (attr.name().toString() == QLatin1String("val")) 
+                               {
+                                   res = new char[strlen(attr.value().toString().toStdString().c_str())+1];
+                                   strcpy(res,attr.value().toString().toStdString().c_str());
+                               }    
+                           }
+                       }
+                  }
+               }          
+            }
+            xml.readNext();
+            if(xml.hasError()) 
+            {
+                break;
+            }
+        }
+        xml.clear();        
+    }
+    catch(...)
+    {
+        return res;
+    }
+    return res;
+}
 
 
 std::vector<Dictionnaire> xmlTool::get_list_arg_value_by_char(char* docchar, const char* item , const char* item1)
@@ -125,10 +190,17 @@ std::vector<Dictionnaire> xmlTool::get_list_arg_value_by_char(char* docchar, con
             
             if (xml.isStartElement()==true && xml.name()!=NULL)
             {
+               
                if(xml.name()!=NULL)
                {
                    if(xml.name()=="container"  ||   xml.name()=="item")
                    {
+                       if(adD == true)
+                       {
+                          adD = false;
+                          res.push_back(dic);  
+                       }
+                       
                        if(xml.name()=="container")
                        {
                            dic.IsContainer = true;
@@ -159,7 +231,6 @@ std::vector<Dictionnaire> xmlTool::get_list_arg_value_by_char(char* docchar, con
                                    strcpy(dic.parentId,attr.value().toString().toStdString().c_str());
                                }   
                            }
-
                        }
                    }
                    if(xml.name()=="res")
@@ -188,7 +259,7 @@ std::vector<Dictionnaire> xmlTool::get_list_arg_value_by_char(char* docchar, con
                        {
                           dic.Playurl = new char[strlen(val.toStdString().c_str())+1];
                           strcpy(dic.Playurl,val.toStdString().c_str());
-                       }
+                       }                        
                    }
                    
                    if(xml.name()=="albumArtURI")
@@ -219,17 +290,22 @@ std::vector<Dictionnaire> xmlTool::get_list_arg_value_by_char(char* docchar, con
                    
                    
                }
-       
             }
+           
+            
             xml.readNext();
             if(xml.hasError()) 
             {
                 break;
             }
+           
       }
-      if(adD==true)  
-        res.push_back(dic);    
       xml.clear();
+       if(adD==true) 
+       {
+          res.push_back(dic);  
+          adD=false;
+       }
     }
     catch(...)
     {
@@ -258,7 +334,7 @@ std::vector<Dictionnaire> xmlTool::get_list_arg_value(IXML_Document* doc, const 
     }
     for(int i=0;i<ListOfValue.size();i++)
     {
-        qDebug()<< ListOfValue[i].name <<"$$$"<<ListOfValue[i].value;
+        //qDebug()<< ListOfValue[i].name <<"$$$"<<ListOfValue[i].value;
     }
     return ListOfValue;
 }

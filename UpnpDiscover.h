@@ -18,6 +18,9 @@ class UpnpDiscover
         virtual ~UpnpDiscover();
         static UpnpDiscover & GetInstance();
         UpnpClient_Handle GetHandle();
+        static char * LastState ;
+        static bool IsRead ;
+        
 
        
         

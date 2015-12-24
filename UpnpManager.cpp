@@ -211,8 +211,8 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
     {
         if(strcmp(listDict[i][0].value,"Stop")==0)
         {
-            qDebug() << "Stop";
-            qDebug() << listDict[i].size();
+            //qDebug() << "Stop";
+            //qDebug() << listDict[i].size();
         }
         if(listDict[i].size() == 1)
         {
@@ -231,7 +231,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
             if(ReadyToParseArg == true)
             {
                 int c = vectorTool::count_number_of_arg(listDict[i],"relatedStateVariable");
-                qDebug() << c;
+                //qDebug() << c;
                 if(c==1)
                 {
                     
@@ -321,7 +321,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
          char * deviceType = vectorTool::get_value_of_arg(upnpListDevice.Dic,"deviceType");
          if(deviceType != 0)
          {
-            qDebug() << "Device type " <<  deviceType;
+            //qDebug() << "Device type " <<  deviceType;
             char *pch = strstr (deviceType,"MediaServer");
             if(pch!=NULL)
             {
@@ -376,7 +376,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                  upnpListService.Dic = serviceArray[k];
                  //GetType Of service
                  char * ServiceType = vectorTool::get_value_of_arg(upnpListService.Dic,"serviceType");
-                 qDebug() << "Service type " <<  ServiceType;
+                 //qDebug() << "Service type " <<  ServiceType;
                  char *pch = strstr (ServiceType,"RenderingControl");
                  if(pch!=NULL)
                  {
@@ -385,7 +385,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                     upnpListService.IsContentDirectory = false;
                     upnpListService.IsAvTransport = false;
                     upnpListService.IsUnknow = false;
-                    qDebug() << "SIsRenderingControl" ;
+                    //qDebug() << "SIsRenderingControl" ;
                  }
                  else
                  {
@@ -397,7 +397,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                         upnpListService.IsContentDirectory = false;
                         upnpListService.IsAvTransport = true;
                         upnpListService.IsUnknow = false;
-                        qDebug() << "SISAVTransport" ;
+                        //qDebug() << "SISAVTransport" ;
                     }
                     else
                     {
@@ -409,7 +409,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                             upnpListService.IsContentDirectory = true;
                             upnpListService.IsAvTransport = false;
                             upnpListService.IsUnknow = false;
-                            qDebug() << "SISContentDirectory" ;
+                            //qDebug() << "SISContentDirectory" ;
                         }
                         else
                         {
@@ -421,7 +421,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                                 upnpListService.IsContentDirectory = false;
                                 upnpListService.IsAvTransport = false;
                                 upnpListService.IsUnknow = false;
-                                qDebug() << "SISConnectionManager" ;
+                                //qDebug() << "SISConnectionManager" ;
                             }
                             else
                             {
@@ -430,7 +430,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                             upnpListService.IsContentDirectory = false;
                             upnpListService.IsAvTransport = false;
                             upnpListService.IsUnknow = true;     
-                            qDebug() << "SIIsUnknow" ;
+                            //qDebug() << "SIIsUnknow" ;
                             }
                         }
                              

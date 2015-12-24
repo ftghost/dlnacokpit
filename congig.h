@@ -17,6 +17,7 @@
 
 
 enum ChainedType { ARTIST, ALBUM, TRACK };
+enum LastChangedType { PLAY, STOP , TRANSITION ,PAUSE , PAUSE_PLAY  };
 
 
 

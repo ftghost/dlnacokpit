@@ -22,7 +22,7 @@ private:
     UpnpActionFactory (const UpnpActionFactory&){}
     static UpnpActionFactory m_instance;
     UpnpActionFactory();    
-    static pthread_mutex_t mutex;
+    static pthread_mutex_t mutexAction;
 
 };
 

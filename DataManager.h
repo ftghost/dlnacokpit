@@ -18,9 +18,13 @@ Q_OBJECT
 
 public slots:
   void  parseTermine(int,bool,bool);
+
+
     
  signals:
   void  AddReader(int,char *);
+ signals:
+  void  AddToScreen(char*,char*);
  
 
 public:
@@ -33,6 +37,7 @@ public:
      Dictionnaire *  SearchArstist(char *d);
      Dictionnaire * GetNextArstist(int i);
      QList<Dictionnaire *>   SearchTrackFull(char *d);
+     QList<Dictionnaire *>   SearchAlbumFull(char *d);
      Dictionnaire *  SearchTrack(char *d);
      QList<QString> Search(QString,QString);
      bool Play(Dictionnaire *d);
@@ -41,15 +46,21 @@ public:
      bool Pause();
      bool Next();
      bool SetReader(int index);
+     void  CanaddToScreen();
+     bool PlayAlbum(char *d);
+     bool SetNextUri();
+     bool SetSameUri();
      
 
 private :
+    int NbServeur=0;
     int SelectedIndex;
     bool NewData;
     bool ready;
     bool LecteurReady;
     std::vector<int> MyLecteur;
     ChainedData * chainedData;
+    ChainedData * chaineDataTrack;
     const int NbDeviceMax=50;
     GetDeviceData *getDeviceData[50];   
     TransportManager *getDeviceTransport[50];   

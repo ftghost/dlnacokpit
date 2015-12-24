@@ -76,6 +76,47 @@ ChainedData::~ChainedData(void)
 
 //**********RECHERCHE*************/
 
+QList<Dictionnaire *>  ChainedData::SearchAlbumFull(void * val)
+{
+        QList<Dictionnaire *> dList;
+	ChainedData * chainedData = this->GetFirst();
+	ChainedData * chaineDataAlbum;
+
+	while(chainedData->GetNextArtist()!=NULL)
+	{
+		if(chainedData->GetLastAlbum()!=NULL)
+		{
+			chaineDataAlbum = chainedData->GetLastAlbum()->GetAlbumRoot();
+                        Dictionnaire *d = (Dictionnaire *)chaineDataAlbum->ReturnValue(); 
+			if(strcasestr(d->value,(char*)val)!=NULL)
+			{
+				dList.push_back((Dictionnaire*)chaineDataAlbum->ReturnValue());
+			}
+			while(chaineDataAlbum->GetNextAlbum() != NULL)
+			{
+				Dictionnaire * test = (Dictionnaire *)chaineDataAlbum->GetNextAlbum()->ReturnValue();
+                                
+				if(strcasestr(test->value,(char*)val)!=NULL)
+				{
+					dList.push_back(test);
+				}
+				chaineDataAlbum = chaineDataAlbum->GetNextAlbum();
+			}
+		}
+		chainedData = chainedData->GetNextArtist();
+	}
+	return dList;
+}
+
+
+
+
+
+
+
+
+
+
 QList<Dictionnaire *>  ChainedData::SearchTrackFull(void * val)
 {
         QList<Dictionnaire *> dList;
@@ -351,13 +392,8 @@ bool ChainedData::SetLastArtist(ChainedData * Value)
 
 bool ChainedData::AddArtist(void * Value)
 {
-        Dictionnaire * d =(Dictionnaire *)Value;
-        if(SearchArtistPrivate(d->value)!=NULL) 
-        {
-            return true;
-        }
-        qDebug() << "aDD ARSTIST" << (Dictionnaire *)d->value;
-	//Create new class
+    
+    	//Create new class
 	ChainedData *chainedData = new ChainedData();
 	//Set the value
 	chainedData->SetValue(Value);
@@ -485,7 +521,9 @@ bool ChainedData::SetLastTrack(ChainedData * Value)
 
 bool ChainedData::AddTrack(void * val ,char * Album)
 {
+    
 	//Search Album
+    /*
         Dictionnaire * d1 = (Dictionnaire *)val;
         Dictionnaire *d  =(Dictionnaire *)SearchTrack(d1->value);
         char * pch = strstr(d1->value,".mp3");
@@ -501,7 +539,7 @@ bool ChainedData::AddTrack(void * val ,char * Album)
                 pch[0] ='\0';
             }
         }
-        qDebug() << d1->value;
+        //qDebug() << d1->value;
         if(d!=NULL)
         {
             if(d->Imgurl == NULL)
@@ -549,7 +587,7 @@ bool ChainedData::AddTrack(void * val ,char * Album)
             }
             return true;
         }
-        
+        */
        
         
         
@@ -643,14 +681,27 @@ bool ChainedData::AddAlbum(void * val ,char * Artist)
 {
     
 	//Search Artist
+    /*
         Dictionnaire * d = (Dictionnaire *)val;
-        if(SearchAlbumPrivate(d->value)!=NULL)
+        Dictionnaire * d1 = (Dictionnaire *)SearchAlbumPrivate(d->value);
+        
+        if(d1!=NULL)
         {
+            if(d1->Imgurl == NULL)
+            {
+                if(d->Imgurl != NULL)
+                {
+                    if(d1->Imgurl != NULL) delete d1->Imgurl;
+                    d1->Imgurl = new char[strlen(d->Imgurl)+1];
+                    strcpy(d1->Imgurl,d->Imgurl);
+                }
+                
+            }   
             return true;
         }
-
+*/
         
-        qDebug() << "Add album " << d->value << "Arstist :"<<Artist;
+//        //qDebug() << "Add album " << d->value << "Arstist :"<<Artist;
 	ChainedData * chainedData = SearchArtistPrivate(Artist);
  	if(chainedData == NULL)
 	{

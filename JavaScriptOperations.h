@@ -18,11 +18,13 @@ public:
     JavaScriptOperations(QWebView * );
     JavaScriptOperations(const JavaScriptOperations& orig);
     virtual ~JavaScriptOperations();
-    
+    QString type="";
 
     
 public Q_SLOTS:
     void  AddReaderReceive(int,char *);
+public Q_SLOTS:    
+    void  AddMainContent(char *,char*);
     
     Q_INVOKABLE 
     QString display(QString val);

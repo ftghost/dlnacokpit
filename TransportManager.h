@@ -31,6 +31,7 @@ public:
     char * GetInstanceId();
     char * GetIconPath();
     bool PrepareUri(Dictionnaire * d);
+    bool PrepareNextUri(Dictionnaire * d);
     bool Play();
     bool Pause();
     bool Stop();
@@ -55,6 +56,7 @@ private:
     UpnpListAction  actionPauseAvTransportManager;  
     UpnpListAction  actionStopAvTransportManager;  
     UpnpListAction  actionNextAvTransportManager;  
+    UpnpListAction  actionSetNextUriAvTransportManager;
     
     char urlControl[500]; 
     char ServiceType[500]; 

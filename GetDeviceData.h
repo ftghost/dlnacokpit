@@ -12,6 +12,7 @@
 #include "congig.h"
 
 
+
 class GetDeviceData :public QThread
 {
 Q_OBJECT

@@ -7,6 +7,7 @@
 
 #include "UpnpDiscover.h"
 #include "DataManager.h"
+#include "xmlTool.h"
 #include <pthread.h>
 
 
@@ -23,7 +24,8 @@ UpnpDiscover::UpnpDiscover()
 pthread_mutex_t UpnpDiscover::mutex;
 
 UpnpDiscover UpnpDiscover::m_instance=UpnpDiscover();
-
+char * UpnpDiscover::LastState=NULL;
+bool UpnpDiscover::IsRead = false;
 
 int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
 {
@@ -32,6 +34,7 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
     struct Upnp_Discovery *d_event = NULL;
     struct Upnp_Event *e_event = NULL;
     char * name =NULL;
+    char * Sta =NULL;
     UpnpRoot uStruct;
     try
     {   
@@ -42,7 +45,7 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
             case UPNP_DISCOVERY_SEARCH_RESULT:
                 d_event = (struct Upnp_Discovery *)event;
                 uStruct = UpnpManager::GetInstance().AddDevice(d_event);
-                qDebug() << "Discover" << uStruct.idRoot;
+                //qDebug() << "Discover" << uStruct.idRoot;
                 if(uStruct.idRoot != -1)
                 {
                     DataManager::GetInstance().EventNewDeviceAdded(uStruct.idRoot);
@@ -57,8 +60,39 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
                 ret = d_event->ErrCode;
                 break; 
                 
+          
+                
             case UPNP_EVENT_RECEIVED:
                 e_event = (struct Upnp_Event *)event;
+                Sta = NULL;
+                Sta = xmlTool::get_lastChange(xmlTool::get_argument_value( e_event->ChangedVariables,"LastChange"));
+                if(Sta != NULL)
+                {
+                    if(strcmp(Sta,"STOPPED")==0 )
+                    {
+                       IsRead = false; 
+                    }
+                    if(strcmp(Sta,"PLAYING")==0 )
+                    {
+                        IsRead = true;
+                        if(IsRead == true)
+                        {
+                            if(LastState != NULL)
+                            {
+                               if(strcmp(LastState,"TRANSITIONING")==0)
+                               {
+                                   DataManager::GetInstance().SetNextUri(); //Todo set nexturi
+                                   qDebug() << "Add file";
+                               }
+                            }
+                        }
+                    }
+                    if(LastState != NULL) delete LastState;
+                    LastState = new char[strlen(Sta)+1];
+                    strcpy(LastState,Sta);
+                    
+                }
+                qDebug() << LastState<< "****" << Sta << "****" << IsRead;
                 break;
                 
             default:
