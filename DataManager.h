@@ -25,7 +25,10 @@ public slots:
   void  AddReader(int,char *);
  signals:
   void  AddToScreen(char*,char*);
- 
+ signals:
+  void  UpdateVol(char*);
+ signals:
+    void UpdateTitre(char *);
 
 public:
      static DataManager & GetInstance();
@@ -38,6 +41,7 @@ public:
      Dictionnaire * GetNextArstist(int i);
      QList<Dictionnaire *>   SearchTrackFull(char *d);
      QList<Dictionnaire *>   SearchAlbumFull(char *d);
+     QList<Dictionnaire *>   SearchArtistFull(char *d);
      Dictionnaire *  SearchTrack(char *d);
      QList<QString> Search(QString,QString);
      bool Play(Dictionnaire *d);
@@ -45,12 +49,13 @@ public:
      bool Stop();
      bool Pause();
      bool Next();
-     bool SetReader(int index);
+     char *  SetReader(int index);
      void  CanaddToScreen();
      bool PlayAlbum(char *d);
      bool SetNextUri();
      bool SetSameUri();
-     
+     bool UpdateVolume(char*);
+     bool UpdateTitre();
 
 private :
     int NbServeur=0;

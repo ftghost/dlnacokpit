@@ -217,6 +217,8 @@ div.footer, div.container  { display: inline-block;}
         <img id='istop' class="notselected" src="stop.png"  onClick='return stop()' alt="stop">
 	<img id="ipause" class="notselected" src="pause.png" onClick='return pause()' alt="pause">
 	<img id="inext" class="notselected" src="next.png"  onClick='return next()' alt="next">
+        <input id="ivolume" type="text" value="">
+        <input id="itracknamevolume" type="text" value="">
 </div>    
 
 <div class="playlist" id="playQueue">
@@ -253,7 +255,26 @@ function AddToQueue(evt)
    myoperations.display(evt.target.myParam);  
 };
 
+function AddVolInfo(vol)
+{
+    var alreadyExist = document.getElementById("ivolume");
+    if(alreadyExist !=null)
+    {
+        alreadyExist.value=vol;
+        return;
+    }
+}
 
+
+function AddTitreInfo(vol)
+{
+    var alreadyExist = document.getElementById("itracknamevolume");
+    if(alreadyExist !=null)
+    {
+        alreadyExist.value=vol;
+        return;
+    }
+}
 
 function AddMainContent(name, url)
 {
@@ -268,7 +289,7 @@ function AddMainContent(name, url)
     var elem = document.createElement("img");
     elem.src=url;
     elem.id=name;
-    //elem.addEventListener('click', AddToQueue, false); 
+    elem.addEventListener('click', AddToQueue, false); 
     elem.myParam = name;
     elm.appendChild(elem);
     var elem1 = document.createElement("span");

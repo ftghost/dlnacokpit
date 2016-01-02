@@ -99,6 +99,68 @@ void xmlTool::private_get_list_arg_value(IXML_NodeList* nodelist)
 }
  
 
+char *  xmlTool::get_VolumeChange(char* docchar)
+{
+    char * res = NULL;
+    try
+    {
+        if(docchar ==NULL )
+        {
+            return res;
+        }
+        QXmlStreamReader xml(docchar);
+        while(!xml.atEnd() && !xml.hasError()) 
+        {
+            if(xml.isEndDocument()==true)
+            {
+                break;
+            }
+            
+            if(xml.isStartDocument()==true)
+            {
+                xml.readNext();
+                continue;
+            }  
+            
+            if (xml.name()!=NULL)
+            {
+               qDebug() << "name node " << xml.name();
+               if(xml.name()!=NULL)
+               {  
+                  if(xml.name()=="Volume")
+                  {
+                       foreach(const QXmlStreamAttribute &attr, xml.attributes()) 
+                       {
+                           if(attr.name() != NULL && attr.value()!=NULL)
+                           {  
+                               if (attr.name().toString() == QLatin1String("val")) 
+                               {
+                                   res = new char[strlen(attr.value().toString().toStdString().c_str())+1];
+                                   strcpy(res,attr.value().toString().toStdString().c_str());
+                               }    
+                           }
+                       }
+                  }
+               }          
+            }
+            xml.readNext();
+            if(xml.hasError()) 
+            {
+                break;
+            }
+        }
+        xml.clear();        
+    }
+    catch(...)
+    {
+        return res;
+    }
+    return res;
+}
+
+
+
+
 
 char *  xmlTool::get_lastChange(char* docchar)
 {
@@ -125,7 +187,7 @@ char *  xmlTool::get_lastChange(char* docchar)
             
             if (xml.name()!=NULL)
             {
-                qDebug() << xml.name();
+               qDebug() << xml.name();
                if(xml.name()!=NULL)
                {  
                   if(xml.name()=="TransportState")
@@ -141,6 +203,16 @@ char *  xmlTool::get_lastChange(char* docchar)
                                }    
                            }
                        }
+                  }
+                  else
+                  {
+                       foreach(const QXmlStreamAttribute &attr, xml.attributes()) 
+                       {
+                           if(attr.name() != NULL && attr.value()!=NULL)
+                           {  
+                             qDebug() << attr.value(); 
+                           }
+                       }  
                   }
                }          
             }

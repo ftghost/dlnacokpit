@@ -1,5 +1,6 @@
 #include "DataManager.h"
 #include "UpnpManager.h"
+#include  "UpnpDiscover.h"
 #include <QDebug>
 #include <QList>
 
@@ -117,10 +118,24 @@ void DataManager::CanaddToScreen()
 }
 
 
+bool DataManager::UpdateVolume(char * vol)
+{
+    char v[5];
+    memset(v,sizeof(v),'\0');
+    strcpy(v,vol);
+    if(SelectedIndex==-1)return false;
+    qDebug()<<"Volume set to " << v;
+    getDeviceTransport[SelectedIndex]->SetVolumeExt(v);
+    UpdateVol(getDeviceTransport[SelectedIndex]->GetVolumeExt());
+    return true;
+}
 
-bool DataManager::SetReader(int i)
+
+char * DataManager::SetReader(int i)
 {
     SelectedIndex= i;
+    char * v = getDeviceTransport[SelectedIndex]->GetVolumeExt();
+    return v;
 }
 
 
@@ -162,6 +177,20 @@ Dictionnaire *  DataManager::SearchTrack(char *d)
     dic = (Dictionnaire *)chainedData->SearchTrack(d);
     return dic;
 }
+
+
+QList<Dictionnaire *>  DataManager::SearchArtistFull(char *d)
+{
+    QList<Dictionnaire *>  dic; 
+    if(ready == false)
+    {
+        return  dic; 
+    }
+    dic=chainedData->SearchArtistFull(d);
+    return dic;   
+}
+
+
 
 
 QList<Dictionnaire *>  DataManager::SearchAlbumFull(char *d)
@@ -235,7 +264,7 @@ bool DataManager::SetSameUri()
         if(dic!=NULL)
         {
             getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);   
-            chaineDataTrack = chaineDataTrack->GetNextTrack();
+            //chaineDataTrack = chaineDataTrack->GetNextTrack();
         }
     }
 }
@@ -256,11 +285,24 @@ bool DataManager::SetNextUri()
 }
 
 
-
+bool DataManager::UpdateTitre()
+{
+    if(chaineDataTrack!=NULL)
+    {
+        if(chaineDataTrack->GetPreviousTrack()!=NULL)
+        {
+            Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->GetPreviousTrack()->ReturnValue();
+            if(dic!=NULL)
+                UpdateTitre(dic->value);
+        }
+    }
+    return true;
+}
 
 bool DataManager::PlayAlbum(char * val)
 {
     if(SelectedIndex==-1)return false;
+    UpnpDiscover::GetInstance().Started = true;
     ChainedData * d = chainedData->SearchAlbumPrivate(val);
     Dictionnaire * dic =NULL;
     if(d!=NULL)
@@ -275,13 +317,8 @@ bool DataManager::PlayAlbum(char * val)
                 if(res == true)
                 {
                    getDeviceTransport[SelectedIndex]->Play();
+                   UpdateTitre(dic->value);
                 }   
-                if(chaineDataTrack->GetNextTrack() != NULL)
-		{
-                   dic= (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
-                   getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);   
-                   chaineDataTrack = chaineDataTrack->GetNextTrack();
-                }
             }
         }
      }
@@ -297,6 +334,7 @@ bool DataManager::Play(Dictionnaire* d)
     if(res == true)
     {
        getDeviceTransport[SelectedIndex]->Play();
+       UpdateTitre(d->value);
     }
 
 
@@ -337,10 +375,23 @@ bool DataManager::Stop()
  QList<QString> DataManager::Search(QString val,QString type)
  {
       QList<QString> list;
-      if(type=="Arstite")
+      if(type=="Artiste")
       {
-        
+         QList<Dictionnaire*> dList=SearchArtistFull((char*)val.toStdString().c_str());
+         for(int i=0;i<dList.size();i++)
+         {
+             list.push_back(dList[i]->value);
+             if(dList[i]->Imgurl == NULL)
+             {
+                 list.push_back("guer.jpeg");
+             }
+             else
+             {
+                list.push_back(dList[i]->Imgurl);
+             }
+         } 
       }
+      
       if(type=="Album")
       {
         QList<Dictionnaire*> dList=SearchAlbumFull((char*)val.toStdString().c_str());

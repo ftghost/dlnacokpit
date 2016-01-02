@@ -24,7 +24,30 @@ JavaScriptOperations::JavaScriptOperations(QWebView * View)
     i=0;
     QObject::connect(&DataManager::GetInstance(), SIGNAL(AddReader(int,char *)),this, SLOT(AddReaderReceive(int,char *)));
     QObject::connect(&DataManager::GetInstance(), SIGNAL(AddToScreen(char *,char*)),this, SLOT(AddMainContent(char *,char *)));
+    QObject::connect(&DataManager::GetInstance(), SIGNAL(UpdateVol(char *)),this, SLOT(UpdateVol(char *)));
+    QObject::connect(&DataManager::GetInstance(), SIGNAL(UpdateTitre(char *)),this, SLOT(UpdateTitre(char *)));
 }
+
+
+
+void JavaScriptOperations::UpdateTitre(char* vol)
+{
+   
+  QString arg1 = QString::fromUtf8(vol); 
+  qDebug() <<"JavaScriptOperations : " << arg1;   
+  QString info = QString("AddTitreInfo('%1')").arg(arg1);
+  view->page()->mainFrame()->evaluateJavaScript(info);
+}
+
+void JavaScriptOperations::UpdateVol(char* vol)
+{
+   
+  QString arg1 = QString::fromUtf8(vol); 
+  qDebug() <<"JavaScriptOperations : " << arg1;   
+  QString info = QString("AddVolInfo('%1')").arg(arg1);
+  view->page()->mainFrame()->evaluateJavaScript(info);
+}
+
 
 
 void JavaScriptOperations::AddReaderReceive(int i ,char * Icon)
@@ -52,7 +75,10 @@ void  JavaScriptOperations::AddMainContent(char * name , char * url)
 void JavaScriptOperations::SetReader(QString val)
 {
   //qDebug() << val;    
-  DataManager::GetInstance().SetReader(val.toInt());  
+  char * vol = DataManager::GetInstance().SetReader(val.toInt());  
+  QString arg1 = QString::fromUtf8(vol); 
+  QString info = QString("AddVolInfo('%1')").arg(arg1);
+  view->page()->mainFrame()->evaluateJavaScript(info);
 }
 
 
@@ -107,8 +133,7 @@ QString JavaScriptOperations::display(QString val)
            DataManager::GetInstance().Play(d);
         }
     }
-    
-    if(type=="Album")
+    else 
     {
         DataManager::GetInstance().PlayAlbum((char*)val2.toStdString().c_str());
     }

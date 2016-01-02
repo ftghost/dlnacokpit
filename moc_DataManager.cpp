@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_DataManager_t {
-    QByteArrayData data[6];
-    char stringdata0[54];
+    QByteArrayData data[8];
+    char stringdata0[76];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,11 +34,13 @@ QT_MOC_LITERAL(1, 12, 9), // "AddReader"
 QT_MOC_LITERAL(2, 22, 0), // ""
 QT_MOC_LITERAL(3, 23, 5), // "char*"
 QT_MOC_LITERAL(4, 29, 11), // "AddToScreen"
-QT_MOC_LITERAL(5, 41, 12) // "parseTermine"
+QT_MOC_LITERAL(5, 41, 9), // "UpdateVol"
+QT_MOC_LITERAL(6, 51, 11), // "UpdateTitre"
+QT_MOC_LITERAL(7, 63, 12) // "parseTermine"
 
     },
     "DataManager\0AddReader\0\0char*\0AddToScreen\0"
-    "parseTermine"
+    "UpdateVol\0UpdateTitre\0parseTermine"
 };
 #undef QT_MOC_LITERAL
 
@@ -48,23 +50,27 @@ static const uint qt_meta_data_DataManager[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       2,       // signalCount
+       4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,   29,    2, 0x06 /* Public */,
-       4,    2,   34,    2, 0x06 /* Public */,
+       1,    2,   39,    2, 0x06 /* Public */,
+       4,    2,   44,    2, 0x06 /* Public */,
+       5,    1,   49,    2, 0x06 /* Public */,
+       6,    1,   52,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    3,   39,    2, 0x0a /* Public */,
+       7,    3,   55,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int, 0x80000000 | 3,    2,    2,
     QMetaType::Void, 0x80000000 | 3, 0x80000000 | 3,    2,    2,
+    QMetaType::Void, 0x80000000 | 3,    2,
+    QMetaType::Void, 0x80000000 | 3,    2,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int, QMetaType::Bool, QMetaType::Bool,    2,    2,    2,
@@ -80,7 +86,9 @@ void DataManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         switch (_id) {
         case 0: _t->AddReader((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< char*(*)>(_a[2]))); break;
         case 1: _t->AddToScreen((*reinterpret_cast< char*(*)>(_a[1])),(*reinterpret_cast< char*(*)>(_a[2]))); break;
-        case 2: _t->parseTermine((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2])),(*reinterpret_cast< bool(*)>(_a[3]))); break;
+        case 2: _t->UpdateVol((*reinterpret_cast< char*(*)>(_a[1]))); break;
+        case 3: _t->UpdateTitre((*reinterpret_cast< char*(*)>(_a[1]))); break;
+        case 4: _t->parseTermine((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2])),(*reinterpret_cast< bool(*)>(_a[3]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -96,6 +104,18 @@ void DataManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
             typedef void (DataManager::*_t)(char * , char * );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&DataManager::AddToScreen)) {
                 *result = 1;
+            }
+        }
+        {
+            typedef void (DataManager::*_t)(char * );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&DataManager::UpdateVol)) {
+                *result = 2;
+            }
+        }
+        {
+            typedef void (DataManager::*_t)(char * );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&DataManager::UpdateTitre)) {
+                *result = 3;
             }
         }
     }
@@ -126,13 +146,13 @@ int DataManager::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 5;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 5)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 3;
+        _id -= 5;
     }
     return _id;
 }
@@ -149,5 +169,19 @@ void DataManager::AddToScreen(char * _t1, char * _t2)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
+}
+
+// SIGNAL 2
+void DataManager::UpdateVol(char * _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 2, _a);
+}
+
+// SIGNAL 3
+void DataManager::UpdateTitre(char * _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 3, _a);
 }
 QT_END_MOC_NAMESPACE

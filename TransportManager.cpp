@@ -47,7 +47,28 @@ bool   TransportManager::GetSerciceUrlControl()
         return true;
 }
 
-bool   TransportManager::GetSerciceType()
+
+bool   TransportManager::GetSerciceUrlControlRenderer()
+{
+        memset(urlControlRenderer,'\0',sizeof(urlControlRenderer));
+        char * psz_url = vectorTool::get_value_of_arg(serviceRenderingControl.Dic,"controlURL");
+        if(psz_url==NULL)
+        {
+            return false;
+        }
+
+        if(u.UrlBase[strlen(u.UrlBase)-1]=='/')
+        {
+            u.UrlBase[strlen(u.UrlBase)-1]='\0';
+        }
+        sprintf(urlControlRenderer,"%s%s",u.UrlBase,psz_url);
+        return true;
+}
+
+
+
+
+bool  TransportManager::GetSerciceType()
 {
         memset(ServiceType,'\0',sizeof(ServiceType));
         char *Serv = vectorTool::get_value_of_arg(serviceAvTransportManager.Dic,"serviceType");
@@ -61,6 +82,27 @@ bool   TransportManager::GetSerciceType()
         }
         return true;   
 }
+
+
+
+
+bool  TransportManager::GetSerciceRendererType()
+{
+        memset(ServiceTypeRenderer,'\0',sizeof(ServiceTypeRenderer));
+        char *Serv = vectorTool::get_value_of_arg(serviceRenderingControl.Dic,"serviceType");
+        if(Serv==NULL)
+        {
+            return false;
+        }
+        else
+        {
+            strcpy(ServiceTypeRenderer,Serv);
+        }
+        return true;   
+}
+
+
+
 
 
 UpnpListService TransportManager::GetServiceConnectionManager()
@@ -97,6 +139,61 @@ UpnpListService TransportManager::GetServiceConnectionManager()
         return NulllistService;
     }   
 }
+
+
+UpnpListService TransportManager::GetServiceRenderingControl()
+{
+    UpnpListService NulllistService;
+    try
+    {
+        
+        NulllistService.IdService = -1;
+        for(int i=0;i<u.upnpListDevice.size();i++)
+        {
+            if(u.upnpListDevice[i].IsUnknow == false)
+            {
+
+                if(u.upnpListDevice[i].Isreader == true)
+                {
+                   for(int j=0;j<u.upnpListService.size();j++)
+                   {
+                       if(u.upnpListService[j].IsUnknow == false)
+                       {
+                          if(u.upnpListService[j].IsRenderingControl == true)
+                          {
+                              return u.upnpListService[j];
+                          }
+                       }
+                   }
+                }
+            }
+        }
+        return NulllistService;
+    }
+    catch(...)
+    {
+        return NulllistService;
+    }   
+}
+
+
+bool TransportManager::SetVolume(char  * vol)
+ {
+    std::vector<Dictionnaire> data;
+    vectorTool::InsertOrModifyVector(data,"DesiredVolume",vol);  
+    vectorTool::InsertOrModifyVector(data,"InstanceID",InstanceId); 
+    bool resultat = UpnpActionFactory::GetInstance().CreateAction(actionSetVolumeRenderingControl,"SetVolume",(char*)urlControlRenderer,(char*)ServiceTypeRenderer,data,u.UrlBase); 
+    return resultat;
+ }
+
+bool TransportManager::GetVolume()
+ {
+    std::vector<Dictionnaire> data;
+    vectorTool::InsertOrModifyVector(data,"InstanceID",InstanceId);    
+    bool resultat = UpnpActionFactory::GetInstance().CreateAction(actionGetVolumeRenderingControl,"GetVolume",(char*)urlControlRenderer,(char*)ServiceTypeRenderer,data,u.UrlBase); 
+    return resultat;
+ }
+
 
 
  bool TransportManager::PrepareNextUri(Dictionnaire * d)
@@ -215,6 +312,39 @@ UpnpListAction NulllistAction;
  }
  
  
+ 
+ UpnpListAction TransportManager::GetActionRenderingControl(char * ActionName)
+ {
+  UpnpListAction NulllistAction;
+    try
+    {
+        
+        NulllistAction.IdAction=-1;
+        int indexAction = 0;
+        for(int i=0;i<serviceRenderingControl.ListAction.size();i++)
+        {
+           char * actionName = vectorTool::get_value_of_arg(serviceRenderingControl.ListAction[i].Dic,"name");
+           if(actionName == NULL)
+           {
+                  continue;
+           }
+           else
+           {
+            if(strcmp(actionName,ActionName)==0)
+            {
+               return serviceRenderingControl.ListAction[i];
+            }
+           }
+        }
+        return NulllistAction;
+    }
+    catch(...)
+    {
+        return NulllistAction;
+    }           
+ }
+ 
+ 
  UpnpListAction TransportManager::GetActionAvTransportManager(char * ActionName)
  {
     UpnpListAction NulllistAction;
@@ -252,6 +382,19 @@ char * TransportManager::GetIconPath()
 }
 
 
+bool TransportManager::SetVolumeExt(char * vol)
+{
+    strcpy(volume,vol);
+    return true;
+}
+
+char * TransportManager::GetVolumeExt()
+{
+    return volume;
+}
+
+
+
 void TransportManager::run()
 {
     bool deviceType = false;
@@ -274,6 +417,9 @@ void TransportManager::run()
         }
     }
     strcpy(InstanceId,"0");
+    
+    
+    serviceRenderingControl = GetServiceRenderingControl();
     
     
     
@@ -375,6 +521,39 @@ void TransportManager::run()
         }
         isNext = true;   
     }
+    
+    actionSetVolumeRenderingControl= GetActionRenderingControl("SetVolume");
+    if(actionSetVolumeRenderingControl.IdAction != -1)
+    {
+        qDebug() << "Volume ok";
+    }
+    
+    
+    
+    
+   
+    //qDebug() << "Url de control trouvé" << urlControl;  
+    
+    //Service type
+    if(GetSerciceRendererType()==true)
+    {
+        if(GetSerciceUrlControlRenderer()==true)
+        {
+           actionGetVolumeRenderingControl= GetActionRenderingControl("GetVolume");
+            {
+                GetVolume();
+                char * vol =vectorTool::get_value_of_arg(actionGetVolumeRenderingControl.DicReponse,"CurrentVolume");
+                if(vol!=NULL)
+                {
+                    strcpy(volume,vol);
+                    qDebug() << "Volume ok : " << vol;
+                }
+            }  
+        }
+    }
+    
+   
+    
     
     //Url de controle
     if(GetSerciceUrlControl()== false)

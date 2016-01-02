@@ -38,6 +38,7 @@ public:
 	/*********************/
         QList<Dictionnaire *> SearchTrackFull(void * val);
         QList<Dictionnaire *> SearchAlbumFull(void * val);
+        QList<Dictionnaire *> SearchArtistFull(void * val);
 	void * SearchArtist(void * val);
 	void * SearchAlbum(void * val);
 	void * SearchTrack(void * val);

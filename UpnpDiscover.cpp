@@ -25,7 +25,8 @@ pthread_mutex_t UpnpDiscover::mutex;
 
 UpnpDiscover UpnpDiscover::m_instance=UpnpDiscover();
 char * UpnpDiscover::LastState=NULL;
-bool UpnpDiscover::IsRead = false;
+bool UpnpDiscover::Stopped = false;
+bool UpnpDiscover::Started = false;
 
 int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
 {
@@ -35,6 +36,7 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
     struct Upnp_Event *e_event = NULL;
     char * name =NULL;
     char * Sta =NULL;
+    char * inf=NULL;
     UpnpRoot uStruct;
     try
     {   
@@ -65,34 +67,58 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
             case UPNP_EVENT_RECEIVED:
                 e_event = (struct Upnp_Event *)event;
                 Sta = NULL;
-                Sta = xmlTool::get_lastChange(xmlTool::get_argument_value( e_event->ChangedVariables,"LastChange"));
+                inf = xmlTool::get_argument_value( e_event->ChangedVariables,"LastChange");
+                Sta = xmlTool::get_VolumeChange(inf);
                 if(Sta != NULL)
                 {
-                    if(strcmp(Sta,"STOPPED")==0 )
+                   qDebug() << "Vol "  << Sta << "****"  ; 
+                   DataManager::GetInstance().UpdateVolume(Sta);
+                   delete Sta;
+                   Sta=NULL;
+                }
+                
+                Sta = xmlTool::get_lastChange(inf);
+                if(Sta != NULL)
+                {
+                    if(LastState != NULL)
+                        if(strcmp(Sta,"STOPPED")==0 && strcmp(LastState,"NO_MEDIA_PRESENT")!=0) 
+                            Stopped = true;
+                    
+                    if(strcmp(Sta,"NO_MEDIA_PRESENT")==0) 
+                        Stopped = false;
+                    
+                    qDebug() << "Last : " << LastState<< "**** Now : " << Sta << "****"  << Stopped << "****" << Started;
+                    if(strcmp(Sta,"PLAYING")==0)
                     {
-                       IsRead = false; 
-                    }
-                    if(strcmp(Sta,"PLAYING")==0 )
-                    {
-                        IsRead = true;
-                        if(IsRead == true)
+                        if(LastState != NULL)
                         {
-                            if(LastState != NULL)
+                            if(strcmp(LastState,"TRANSITIONING")==0)
                             {
-                               if(strcmp(LastState,"TRANSITIONING")==0)
-                               {
-                                   DataManager::GetInstance().SetNextUri(); //Todo set nexturi
-                                   qDebug() << "Add file";
-                               }
+                                if(Stopped==false || Started == true)
+                                {
+                                    Started = false;
+                                    Stopped = false;
+                                    DataManager::GetInstance().SetNextUri(); //Todo set nexturi
+                                    qDebug() << "Add file";
+                                }
+                                else
+                                {
+                                   Stopped = false;
+                                   Started = false;
+                                   DataManager::GetInstance().SetSameUri(); //Todo set nexturi
+                                   qDebug() << "Add same file"; 
+                                }
                             }
+                            DataManager::GetInstance().UpdateTitre();
+                           
                         }
                     }
                     if(LastState != NULL) delete LastState;
                     LastState = new char[strlen(Sta)+1];
                     strcpy(LastState,Sta);
-                    
                 }
-                qDebug() << LastState<< "****" << Sta << "****" << IsRead;
+                qDebug() << LastState<< "****" << Sta << "****" ;
+                qDebug() << "***************" ;
                 break;
                 
             default:

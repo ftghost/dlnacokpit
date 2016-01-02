@@ -76,6 +76,36 @@ ChainedData::~ChainedData(void)
 
 //**********RECHERCHE*************/
 
+QList<Dictionnaire *>  ChainedData::SearchArtistFull(void * val)
+{
+        QList<Dictionnaire *> dList;
+	ChainedData * chainedData = this->GetFirst();
+	ChainedData * chaineDataAlbum;
+
+	while(chainedData->GetNextArtist()!=NULL)
+	{
+            Dictionnaire *dartist = (Dictionnaire *)chainedData->GetNextArtist()->ReturnValue(); 
+            if(strcasestr(dartist->value,(char*)val)!=NULL)
+            {
+		if(chainedData->GetNextArtist()->GetLastAlbum()!=NULL)
+		{
+			chaineDataAlbum = chainedData->GetNextArtist()->GetLastAlbum()->GetAlbumRoot();
+                        Dictionnaire *d = (Dictionnaire *)chaineDataAlbum->ReturnValue(); 
+			dList.push_back((Dictionnaire*)chaineDataAlbum->ReturnValue());
+			while(chaineDataAlbum->GetNextAlbum() != NULL)
+			{
+        		    Dictionnaire * test = (Dictionnaire *)chaineDataAlbum->GetNextAlbum()->ReturnValue();
+                            dList.push_back(test);
+			    chaineDataAlbum = chaineDataAlbum->GetNextAlbum();
+			}
+		}
+            }
+            chainedData = chainedData->GetNextArtist();
+	}
+	return dList;
+}
+
+
 QList<Dictionnaire *>  ChainedData::SearchAlbumFull(void * val)
 {
         QList<Dictionnaire *> dList;
@@ -107,8 +137,6 @@ QList<Dictionnaire *>  ChainedData::SearchAlbumFull(void * val)
 	}
 	return dList;
 }
-
-
 
 
 

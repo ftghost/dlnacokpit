@@ -25,6 +25,11 @@ public Q_SLOTS:
     void  AddReaderReceive(int,char *);
 public Q_SLOTS:    
     void  AddMainContent(char *,char*);
+public Q_SLOTS:        
+    void UpdateVol(char *);
+public Q_SLOTS:            
+    void UpdateTitre(char*);
+    
     
     Q_INVOKABLE 
     QString display(QString val);

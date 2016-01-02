@@ -36,6 +36,10 @@ public:
     bool Pause();
     bool Stop();
     bool Next();
+    bool SetVolume(char *);
+    bool GetVolume();
+    char * GetVolumeExt();
+    bool SetVolumeExt(char *);
     
 
 signals:
@@ -57,16 +61,27 @@ private:
     UpnpListAction  actionStopAvTransportManager;  
     UpnpListAction  actionNextAvTransportManager;  
     UpnpListAction  actionSetNextUriAvTransportManager;
+    UpnpListService serviceRenderingControl;
+    UpnpListAction  actionSetVolumeRenderingControl;
+    UpnpListAction  actionGetVolumeRenderingControl;
     
+    char ServiceTypeRenderer[500];
+    char urlControlRenderer[500]; 
     char urlControl[500]; 
     char ServiceType[500]; 
+    char volume[5];
     char InstanceId[10];
     bool GetSerciceType();
+    bool GetSerciceRendererType();
     bool GetSerciceUrlControl();
+    bool GetSerciceUrlControlRenderer();
+    
     UpnpListService GetServiceConnectionManager();
+    UpnpListService GetServiceRenderingControl();
     UpnpListAction GetActionConnectionManager(char *);
     UpnpListService GetServiceAvTransportManager();
     UpnpListAction GetActionAvTransportManager(char *);
+    UpnpListAction GetActionRenderingControl(char *);
     void run();
 };
 
