@@ -330,6 +330,8 @@ bool DataManager::PlayAlbum(char * val)
 bool DataManager::Play(Dictionnaire* d)
 {
     if(SelectedIndex==-1)return false;
+    UpnpDiscover::GetInstance().Started = false;
+    UpnpDiscover::GetInstance().Stopped = true;
     bool res = getDeviceTransport[SelectedIndex]->PrepareUri(d);
     if(res == true)
     {

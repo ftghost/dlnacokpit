@@ -8,6 +8,7 @@
 #ifndef HTMLTOOL_H
 #define	HTMLTOOL_H
 #include <pthread.h>
+#include <QString>
 
 class htmlTool {
 public:
@@ -15,6 +16,8 @@ public:
     htmlTool(const htmlTool& orig);
     virtual ~htmlTool();
     static bool downloadAndSave(char * Adresse , char * fileName,char * SaveLocation);
+    static QString ReplaceCarTohml(QString);
+    static QString ReplaceHtmlToCar(QString);
 private:
     static pthread_mutex_t mutexHtml;
 

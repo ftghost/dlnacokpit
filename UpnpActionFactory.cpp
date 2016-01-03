@@ -30,9 +30,6 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
         //Get ini file
         QSettings settings("./conf/config.ini", QSettings::IniFormat);
         settings.beginGroup(ActionName);
-        const QStringList childKeys = settings.childKeys();
-
-        int indexAction = -1;
         Action.xmlActionRequest = NULL;
         Action.xmlActionResponse = NULL;
         for(int j =0;j<Action.ListParametreAction.size();j++)

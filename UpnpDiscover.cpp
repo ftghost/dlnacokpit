@@ -99,6 +99,7 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
                                     Started = false;
                                     Stopped = false;
                                     DataManager::GetInstance().SetNextUri(); //Todo set nexturi
+                                    DataManager::GetInstance().UpdateTitre();
                                     qDebug() << "Add file";
                                 }
                                 else
@@ -109,8 +110,6 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
                                    qDebug() << "Add same file"; 
                                 }
                             }
-                            DataManager::GetInstance().UpdateTitre();
-                           
                         }
                     }
                     if(LastState != NULL) delete LastState;

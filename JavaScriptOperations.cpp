@@ -16,6 +16,7 @@
 #include <QWebSettings>
 #include <QVariant>
 #include "DataManager.h"
+#include "htmlTool.h"
 #include "congig.h"
 
 JavaScriptOperations::JavaScriptOperations(QWebView * View) 
@@ -33,9 +34,11 @@ JavaScriptOperations::JavaScriptOperations(QWebView * View)
 void JavaScriptOperations::UpdateTitre(char* vol)
 {
    
-  QString arg1 = QString::fromUtf8(vol); 
-  qDebug() <<"JavaScriptOperations : " << arg1;   
-  QString info = QString("AddTitreInfo('%1')").arg(arg1);
+  //QString arg1 = QString::fromUtf8(vol); 
+  //QString arg = arg1.replace("'"," ");
+  QString arg = htmlTool::ReplaceCarTohml(QString::fromUtf8(vol));
+  //qDebug() <<"JavaScriptOperations : " << arg;   
+  QString info = QString("AddTitreInfo('%1')").arg(arg);
   view->page()->mainFrame()->evaluateJavaScript(info);
 }
 
@@ -62,9 +65,10 @@ void JavaScriptOperations::AddReaderReceive(int i ,char * Icon)
 
 void  JavaScriptOperations::AddMainContent(char * name , char * url)
 {
-
-   QString arg2 = QString::fromUtf8(name); 
-   const QString arg = arg2.replace("'","|");
+   qDebug()<< htmlTool::ReplaceCarTohml(name);
+   //QString arg2 = QString::fromUtf8(name); 
+   QString arg = htmlTool::ReplaceCarTohml(QString::fromUtf8(name));
+   //const QString arg = arg2.replace("'","|");
    const QString arg1 =  QString::fromUtf8(url); 
    QString info = QString("AddMainContent('%1','%2')").arg(arg,arg1);
    //qDebug() << info;
@@ -107,11 +111,20 @@ QVariantList JavaScriptOperations::search(QString val,QString Type)
   type = Type;  
   QList<QString> qlS = DataManager::GetInstance().Search(val, type);
   QVariantList newList;
+  int i=0;
   foreach( QString item, qlS )
   {
-    QString i1 = item.replace(",","#");
-    QString i2 = i1.replace("'","|");
-    newList << i2;
+    if(i==0)
+    {
+      QString arg = htmlTool::ReplaceCarTohml(item); 
+      newList << arg;
+    }
+    else
+    {
+        newList << item;
+    }
+    i++;
+    if(i>1)i=0;
     //qDebug() << item;
   }
   return newList;
@@ -123,8 +136,9 @@ QVariantList JavaScriptOperations::search(QString val,QString Type)
 QString JavaScriptOperations::display(QString val)
 {
     //qDebug() << val;
-    QString val1 = val.replace("#",",");
-    QString val2 = val1.replace("|","'");
+    //QString val1 = val.replace("#",",");
+    //QString val2 = val1.replace("|","'");
+    QString val2 = htmlTool::ReplaceHtmlToCar(val);
     if(type=="Morceau")
     {
         Dictionnaire * d =DataManager::GetInstance().SearchTrack((char*)val2.toStdString().c_str());
