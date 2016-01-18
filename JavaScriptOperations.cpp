@@ -27,8 +27,19 @@ JavaScriptOperations::JavaScriptOperations(QWebView * View)
     QObject::connect(&DataManager::GetInstance(), SIGNAL(AddToScreen(char *,char*)),this, SLOT(AddMainContent(char *,char *)));
     QObject::connect(&DataManager::GetInstance(), SIGNAL(UpdateVol(char *)),this, SLOT(UpdateVol(char *)));
     QObject::connect(&DataManager::GetInstance(), SIGNAL(UpdateTitre(char *)),this, SLOT(UpdateTitre(char *)));
+    QObject::connect(&DataManager::GetInstance(), SIGNAL(UpdateRange(int,int)),this, SLOT(UpdateRange(int,int)));
 }
 
+
+void JavaScriptOperations::UpdateRange(int max ,int value)
+{
+//qDebug() << Icon;
+   const QString arg = QString::number(max); 
+   const QString arg1 = QString::number(value); 
+   QString info = QString("setRange('%1','%2')").arg(arg,arg1);
+   //qDebug() << info;
+   view->page()->mainFrame()->evaluateJavaScript(info);    
+}
 
 
 void JavaScriptOperations::UpdateTitre(char* vol)
@@ -46,7 +57,7 @@ void JavaScriptOperations::UpdateVol(char* vol)
 {
    
   QString arg1 = QString::fromUtf8(vol); 
-  qDebug() <<"JavaScriptOperations : " << arg1;   
+  //qDebug() <<"JavaScriptOperations : " << arg1;   
   QString info = QString("AddVolInfo('%1')").arg(arg1);
   view->page()->mainFrame()->evaluateJavaScript(info);
 }
@@ -65,7 +76,7 @@ void JavaScriptOperations::AddReaderReceive(int i ,char * Icon)
 
 void  JavaScriptOperations::AddMainContent(char * name , char * url)
 {
-   qDebug()<< htmlTool::ReplaceCarTohml(name);
+   //qDebug()<< htmlTool::ReplaceCarTohml(name);
    //QString arg2 = QString::fromUtf8(name); 
    QString arg = htmlTool::ReplaceCarTohml(QString::fromUtf8(name));
    //const QString arg = arg2.replace("'","|");
@@ -83,6 +94,12 @@ void JavaScriptOperations::SetReader(QString val)
   QString arg1 = QString::fromUtf8(vol); 
   QString info = QString("AddVolInfo('%1')").arg(arg1);
   view->page()->mainFrame()->evaluateJavaScript(info);
+}
+
+
+bool JavaScriptOperations::SetVolume(QString val)
+{
+    DataManager::GetInstance().SetVolume((char*)val.toStdString().c_str()); 
 }
 
 
@@ -130,7 +147,20 @@ QVariantList JavaScriptOperations::search(QString val,QString Type)
   return newList;
 }
 
-
+QVariantList JavaScriptOperations::getAllInfo(QString val)
+{
+  QString val2 = htmlTool::ReplaceHtmlToCar(val);  
+  QList<QString> qlS = DataManager::GetInstance().getAllInfo(val2);  
+  QVariantList newList;
+  foreach( QString item, qlS )
+  {
+   
+      QString arg = htmlTool::ReplaceCarTohml(item); 
+      qDebug() << arg;
+      newList << arg;
+  }
+  return  newList; 
+}
 
 
 QString JavaScriptOperations::display(QString val)

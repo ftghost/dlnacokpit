@@ -9,5 +9,6 @@
         <file>html/search.jpeg</file>
         <file>html/guer.jpeg</file>
         <file>html/ajax-loader.gif</file>
+        <file>html/jquery-2.2.0.min.js</file>
     </qresource>
 </RCC>

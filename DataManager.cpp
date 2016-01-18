@@ -22,6 +22,9 @@ DataManager::DataManager()
     ready = false;
     LecteurReady = false;
     SelectedIndex = -1;
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateInfo()));  
+
 }
 
 
@@ -30,6 +33,60 @@ DataManager::~DataManager()
 {
 
 }
+
+
+void DataManager::updateInfo()
+{
+    if(SelectedIndex==-1)return;
+    //qDebug()<<"Volume set to " << v;
+    getDeviceTransport[SelectedIndex]->GetInfo();
+    QList<QString> res = getDeviceTransport[SelectedIndex]->GetInfoExt();
+    int max=0;
+    int current=0;
+    for(int i=0;i<res.length();i++)
+    {
+        if(i==1)
+        {
+            QStringList myStringList = res[i].split(":");
+        
+            for(int index =0;index < myStringList.length();index++)
+            {
+                if(index==1)
+                {
+                    int val = myStringList[index].toInt();
+                    max= val*60;
+                }
+                if(index==2)
+                {
+                    int val = myStringList[index].toInt();
+                    max= max+val;
+                }   
+            }
+        }
+        
+        if(i==2)
+        {
+            QStringList myStringList = res[i].split(":");
+            for(int index =0;index < myStringList.length();index++)
+            {
+                if(index==1)
+                {
+                    int val = myStringList[index].toInt();
+                    current= val*60;
+                }
+                if(index==2)
+                {
+                    int val = myStringList[index].toInt();
+                    current= current+val;
+                }   
+            }
+        }
+        
+    }
+    UpdateRange(max,current);    
+    return;
+}
+
 
 
 void DataManager::parseTermine(int index,bool isOk,bool deviceType)
@@ -92,7 +149,7 @@ void DataManager::CanaddToScreen()
                         {
                             AddToScreen(d->value,"guer.jpeg");
                         }
-			qDebug()<<d->value;
+			//qDebug()<<d->value;
                         
 			while(chaineDataAlbum->GetNextAlbum() != NULL)
 			{
@@ -103,7 +160,7 @@ void DataManager::CanaddToScreen()
                                 {
                                     AddToScreen(d->value,"guer.jpeg");
                                 }
-                                qDebug()<<d->value;
+                                //qDebug()<<d->value;
 				chaineDataAlbum = chaineDataAlbum->GetNextAlbum();
 			}
 		}
@@ -124,17 +181,24 @@ bool DataManager::UpdateVolume(char * vol)
     memset(v,sizeof(v),'\0');
     strcpy(v,vol);
     if(SelectedIndex==-1)return false;
-    qDebug()<<"Volume set to " << v;
+    //qDebug()<<"Volume set to " << v;
     getDeviceTransport[SelectedIndex]->SetVolumeExt(v);
     UpdateVol(getDeviceTransport[SelectedIndex]->GetVolumeExt());
     return true;
 }
 
+bool DataManager::SetVolume(char * vol)
+{
+    if(SelectedIndex==-1)return false;
+    return getDeviceTransport[SelectedIndex]->SetVolume(vol);
+}
 
 char * DataManager::SetReader(int i)
 {
     SelectedIndex= i;
     char * v = getDeviceTransport[SelectedIndex]->GetVolumeExt();
+    timer->stop();
+    timer->start(1000);
     return v;
 }
 
@@ -314,6 +378,7 @@ bool DataManager::PlayAlbum(char * val)
             if(dic!=NULL)
             {
                 bool res = getDeviceTransport[SelectedIndex]->PrepareUri(dic);
+                qDebug() << "yrl :" << dic->Playurl;
                 if(res == true)
                 {
                    getDeviceTransport[SelectedIndex]->Play();
@@ -371,6 +436,34 @@ bool DataManager::Stop()
     if(SelectedIndex==-1)return false;
     getDeviceTransport[SelectedIndex]->Stop();
     return true;
+}
+
+
+QList<QString> DataManager::getAllInfo(QString val)
+{
+    QList<QString> list; 
+    QList<Dictionnaire*> dList=chainedData->SearchTrackOfAlbum((char*)val.toStdString().c_str());
+    for(int i=0;i<dList.size();i++)
+    {
+        if(i==0)
+        {
+            list.push_back(dList[i]->value);
+            if(dList[i]->Imgurl == NULL)
+            {
+                list.push_back("guer.jpeg");
+            }
+            else
+            {
+                list.push_back(dList[i]->Imgurl);
+                 
+            }
+        }
+        else
+        {
+          list.push_back(dList[i]->value);  
+        }
+    }
+   return list;
 }
 
 

@@ -124,7 +124,7 @@ char *  xmlTool::get_VolumeChange(char* docchar)
             
             if (xml.name()!=NULL)
             {
-               qDebug() << "name node " << xml.name();
+               //qDebug() << "name node " << xml.name();
                if(xml.name()!=NULL)
                {  
                   if(xml.name()=="Volume")
@@ -187,7 +187,7 @@ char *  xmlTool::get_lastChange(char* docchar)
             
             if (xml.name()!=NULL)
             {
-               qDebug() << xml.name();
+               //qDebug() << xml.name();
                if(xml.name()!=NULL)
                {  
                   if(xml.name()=="TransportState")
@@ -210,7 +210,7 @@ char *  xmlTool::get_lastChange(char* docchar)
                        {
                            if(attr.name() != NULL && attr.value()!=NULL)
                            {  
-                             qDebug() << attr.value(); 
+                             //qDebug() << attr.value(); 
                            }
                        }  
                   }

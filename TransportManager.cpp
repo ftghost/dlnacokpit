@@ -194,6 +194,33 @@ bool TransportManager::GetVolume()
     return resultat;
  }
 
+bool TransportManager::GetInfo()
+ {
+    std::vector<Dictionnaire> data;
+    vectorTool::InsertOrModifyVector(data,"InstanceID",InstanceId);    
+    bool resultat = UpnpActionFactory::GetInstance().CreateAction(actionGetPositionInfoAvTransportManager,"GetPositionInfo",(char*)urlControl,(char*)ServiceType,data,u.UrlBase); 
+    if(resultat==true)
+    {
+        Track = vectorTool::get_value_of_arg(actionGetPositionInfoAvTransportManager.DicReponse,"Track");
+        TrackDuration = vectorTool::get_value_of_arg(actionGetPositionInfoAvTransportManager.DicReponse,"TrackDuration");
+        RelTime = vectorTool::get_value_of_arg(actionGetPositionInfoAvTransportManager.DicReponse,"RelTime");
+        AbsTime = vectorTool::get_value_of_arg(actionGetPositionInfoAvTransportManager.DicReponse,"AbsTime");                
+                
+    }
+    return resultat;
+ }
+
+
+
+ QList<QString> TransportManager::GetInfoExt()
+ {
+    QList<QString> resList;
+    resList.push_back(QString::fromUtf8(Track));
+    resList.push_back(QString::fromUtf8(TrackDuration));
+    resList.push_back(QString::fromUtf8(RelTime));
+    resList.push_back(QString::fromUtf8(AbsTime));
+    return resList;
+ }
 
 
  bool TransportManager::PrepareNextUri(Dictionnaire * d)
@@ -217,7 +244,7 @@ bool TransportManager::GetVolume()
  {
     std::vector<Dictionnaire> data;
     bool resultat = UpnpActionFactory::GetInstance().CreateAction(actionPlayAvTransportManager,"Play",(char*)urlControl,(char*)ServiceType,data,u.UrlBase);     
-    return true;
+    return resultat;
  }
 
  bool TransportManager::Pause()
@@ -225,7 +252,7 @@ bool TransportManager::GetVolume()
     std::vector<Dictionnaire> data;
     vectorTool::InsertOrModifyVector(data,"InstanceID",InstanceId);  
     bool resultat = UpnpActionFactory::GetInstance().CreateAction(actionPauseAvTransportManager,"Pause",(char*)urlControl,(char*)ServiceType,data,u.UrlBase);     
-    return true;
+    return resultat;
  }
  
  bool TransportManager::Stop()
@@ -245,6 +272,9 @@ bool TransportManager::GetVolume()
     return resultat;
  }
 
+  
+  
+  
 UpnpListAction TransportManager::GetActionConnectionManager(char * ActionName)
 {
 UpnpListAction NulllistAction;
@@ -441,7 +471,27 @@ void TransportManager::run()
     //Get SetUri ACtion
     actionSetNextUriAvTransportManager = GetActionAvTransportManager("SetNextAVTransportURI");
   
-    
+    actionGetPositionInfoAvTransportManager = GetActionAvTransportManager("GetPositionInfo");
+    if(actionGetPositionInfoAvTransportManager.IdAction != -1)
+    {
+        if(actionGetPositionInfoAvTransportManager.ListParametreAction.size()==0)
+        {
+          Dictionnaire d;
+          d.name = new char[strlen("direction")+1];
+          d.value = new char[strlen("in")+1];
+          strcpy(d.name,"direction");
+          strcpy(d.value,"in");
+          Dictionnaire d1;
+          d1.name = new char[strlen("name")+1];
+          d1.value = new char[strlen("InstanceID")+1];
+          strcpy(d1.name,"name");
+          strcpy(d1.value,"InstanceID");
+          UpnpListParametreAction ListParametreAction;
+          ListParametreAction.Dic.push_back(d);
+          ListParametreAction.Dic.push_back(d1);
+          actionGetPositionInfoAvTransportManager.ListParametreAction.push_back(ListParametreAction);
+        }
+    }
     
     
     actionPlayAvTransportManager = GetActionAvTransportManager("Play");
@@ -525,7 +575,7 @@ void TransportManager::run()
     actionSetVolumeRenderingControl= GetActionRenderingControl("SetVolume");
     if(actionSetVolumeRenderingControl.IdAction != -1)
     {
-        qDebug() << "Volume ok";
+        //qDebug() << "Volume ok";
     }
     
     
@@ -546,7 +596,7 @@ void TransportManager::run()
                 if(vol!=NULL)
                 {
                     strcpy(volume,vol);
-                    qDebug() << "Volume ok : " << vol;
+                    //qDebug() << "Volume ok : " << vol;
                 }
             }  
         }
@@ -573,6 +623,6 @@ void TransportManager::run()
     //
     
     
-  
+    
     termine(rootIndex,true,deviceType);
 }

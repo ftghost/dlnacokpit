@@ -11,6 +11,7 @@
 #include "GetDeviceData.h"
 #include "TransportManager.h"
 #include "ChainedData.h"
+#include <QTimer>
 
 class DataManager : public QObject
 {
@@ -18,6 +19,10 @@ Q_OBJECT
 
 public slots:
   void  parseTermine(int,bool,bool);
+  
+public slots:  
+  void updateInfo();
+
 
 
     
@@ -29,6 +34,8 @@ public slots:
   void  UpdateVol(char*);
  signals:
     void UpdateTitre(char *);
+ signals:
+    void UpdateRange(int,int);
 
 public:
      static DataManager & GetInstance();
@@ -56,8 +63,11 @@ public:
      bool SetSameUri();
      bool UpdateVolume(char*);
      bool UpdateTitre();
+     bool SetVolume(char *);
+     QList<QString> getAllInfo(QString val);
 
 private :
+    QTimer *timer;
     int NbServeur=0;
     int SelectedIndex;
     bool NewData;

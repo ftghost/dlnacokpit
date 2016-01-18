@@ -77,6 +77,8 @@ std::vector<Dictionnaire>  GetDeviceData::GetNexttData(Dictionnaire resPre)
                     }
                     else
                     {
+                        qDebug() << "Erreur : " <<  resPre.id;
+                        qDebug() << "Erreur : " <<  resPre.value;
                         cont=false;
                     }
                 }    

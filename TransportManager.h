@@ -40,7 +40,10 @@ public:
     bool GetVolume();
     char * GetVolumeExt();
     bool SetVolumeExt(char *);
-    
+    bool GetInfo();
+    QList<QString> GetInfoExt();
+
+
 
 signals:
     void termine(int index,bool IsOk,bool IsServer);
@@ -49,6 +52,9 @@ private:
     bool isStop;
     bool isNext;
     bool isPause;
+    
+    
+    
     
     int rootIndex;
     UpnpRoot u;
@@ -64,6 +70,7 @@ private:
     UpnpListService serviceRenderingControl;
     UpnpListAction  actionSetVolumeRenderingControl;
     UpnpListAction  actionGetVolumeRenderingControl;
+    UpnpListAction  actionGetPositionInfoAvTransportManager;
     
     char ServiceTypeRenderer[500];
     char urlControlRenderer[500]; 
@@ -71,6 +78,10 @@ private:
     char ServiceType[500]; 
     char volume[5];
     char InstanceId[10];
+    char *Track;
+    char *AbsTime;
+    char *TrackDuration;
+    char *RelTime;
     bool GetSerciceType();
     bool GetSerciceRendererType();
     bool GetSerciceUrlControl();

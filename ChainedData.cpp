@@ -333,6 +333,30 @@ ChainedData * ChainedData::SearchArtistPrivate(void * val)
 	return NULL;
 }
 
+QList<Dictionnaire *> ChainedData::SearchTrackOfAlbum(void * val)
+{
+    QList<Dictionnaire *>  listDic;
+    ChainedData * chainedData = SearchAlbumPrivate(val);
+    if(chainedData!=NULL)
+    {
+       listDic.push_back((Dictionnaire *)chainedData->ReturnValue()); 
+       if(chainedData->GetLastTrack()!=NULL)
+       {
+            chainedData = chainedData->GetLastTrack()->GetTrackRoot();
+            Dictionnaire * d = (Dictionnaire *)chainedData->ReturnValue();
+            listDic.push_back(d);
+	    while(chainedData->GetNextTrack() != NULL)
+	    {
+		Dictionnaire * d = (Dictionnaire *)chainedData->GetNextTrack()->ReturnValue();
+                listDic.push_back(d);
+                chainedData = chainedData->GetNextTrack();
+            }
+	}
+    }
+    return listDic;
+}
+
+
 
 
 /***************COMMUN*****************/
@@ -549,78 +573,7 @@ bool ChainedData::SetLastTrack(ChainedData * Value)
 
 bool ChainedData::AddTrack(void * val ,char * Album)
 {
-    
-	//Search Album
-    /*
-        Dictionnaire * d1 = (Dictionnaire *)val;
-        Dictionnaire *d  =(Dictionnaire *)SearchTrack(d1->value);
-        char * pch = strstr(d1->value,".mp3");
-        if(pch!=NULL)
-        {
-            pch[0] ='\0';
-        }
-        else
-        {
-            pch = strstr(d1->value,".flac");
-            if(pch!=NULL)
-            {
-                pch[0] ='\0';
-            }
-        }
-        //qDebug() << d1->value;
-        if(d!=NULL)
-        {
-            if(d->Imgurl == NULL)
-            {
-                Dictionnaire * d1 = (Dictionnaire *)val;
-                if(d1->Imgurl != NULL)
-                {
-                    if(d->Imgurl != NULL) delete d->Imgurl;
-                    d->Imgurl = new char[strlen(d1->Imgurl)+1];
-                    strcpy(d->Imgurl,d1->Imgurl);
-                }
-                
-            }
-            
-            if(d1->Playurl != NULL && d->Playurl)
-            {
-                if(d1->BitRate != NULL && d->BitRate != NULL)
-                {
-                    int id1 =0;
-                    int id =0;
-                    try
-                    {
-                        id1 = atoi(d1->BitRate);
-                    }
-                    catch(...)
-                    {
-                        id1=0;
-                    }
-
-                    try
-                    {
-                        id = atoi(d->BitRate);
-                    }
-                    catch(...)
-                    {
-                        id=0;
-                    }
-                    if(id1 > id)
-                    {
-                        if(d->Playurl != NULL) delete d->Playurl;
-                        d->Playurl = new char[strlen(d1->Playurl)+1];
-                        strcpy(d->Playurl,d1->Playurl);
-                    }
-                }
-            }
-            return true;
-        }
-        */
-       
-        
-        
-        
-	ChainedData * chainedData = SearchAlbumPrivate(Album);
+    	ChainedData * chainedData = SearchAlbumPrivate(Album);
 	if(chainedData == NULL)
 	{
 		return false;
@@ -707,29 +660,6 @@ bool ChainedData::AddTrack(void * Value,ChainedData *chainedAlbum)
 
 bool ChainedData::AddAlbum(void * val ,char * Artist)
 {
-    
-	//Search Artist
-    /*
-        Dictionnaire * d = (Dictionnaire *)val;
-        Dictionnaire * d1 = (Dictionnaire *)SearchAlbumPrivate(d->value);
-        
-        if(d1!=NULL)
-        {
-            if(d1->Imgurl == NULL)
-            {
-                if(d->Imgurl != NULL)
-                {
-                    if(d1->Imgurl != NULL) delete d1->Imgurl;
-                    d1->Imgurl = new char[strlen(d->Imgurl)+1];
-                    strcpy(d1->Imgurl,d->Imgurl);
-                }
-                
-            }   
-            return true;
-        }
-*/
-        
-//        //qDebug() << "Add album " << d->value << "Arstist :"<<Artist;
 	ChainedData * chainedData = SearchArtistPrivate(Artist);
  	if(chainedData == NULL)
 	{

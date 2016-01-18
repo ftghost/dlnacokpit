@@ -71,7 +71,7 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
                 Sta = xmlTool::get_VolumeChange(inf);
                 if(Sta != NULL)
                 {
-                   qDebug() << "Vol "  << Sta << "****"  ; 
+                   //qDebug() << "Vol "  << Sta << "****"  ; 
                    DataManager::GetInstance().UpdateVolume(Sta);
                    delete Sta;
                    Sta=NULL;
@@ -87,7 +87,7 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
                     if(strcmp(Sta,"NO_MEDIA_PRESENT")==0) 
                         Stopped = false;
                     
-                    qDebug() << "Last : " << LastState<< "**** Now : " << Sta << "****"  << Stopped << "****" << Started;
+                    //qDebug() << "Last : " << LastState<< "**** Now : " << Sta << "****"  << Stopped << "****" << Started;
                     if(strcmp(Sta,"PLAYING")==0)
                     {
                         if(LastState != NULL)
@@ -100,14 +100,14 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
                                     Stopped = false;
                                     DataManager::GetInstance().SetNextUri(); //Todo set nexturi
                                     DataManager::GetInstance().UpdateTitre();
-                                    qDebug() << "Add file";
+                                    //qDebug() << "Add file";
                                 }
                                 else
                                 {
                                    Stopped = false;
                                    Started = false;
                                    DataManager::GetInstance().SetSameUri(); //Todo set nexturi
-                                   qDebug() << "Add same file"; 
+                                   //qDebug() << "Add same file"; 
                                 }
                             }
                         }
@@ -116,8 +116,8 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
                     LastState = new char[strlen(Sta)+1];
                     strcpy(LastState,Sta);
                 }
-                qDebug() << LastState<< "****" << Sta << "****" ;
-                qDebug() << "***************" ;
+                //qDebug() << LastState<< "****" << Sta << "****" ;
+                //qDebug() << "***************" ;
                 break;
                 
             default:

@@ -29,10 +29,17 @@ public Q_SLOTS:
     void UpdateVol(char *);
 public Q_SLOTS:            
     void UpdateTitre(char*);
+public Q_SLOTS:            
+    void UpdateRange(int,int);    
     
+    Q_INVOKABLE 
+    bool SetVolume(QString val);
     
     Q_INVOKABLE 
     QString display(QString val);
+    
+    Q_INVOKABLE 
+    QVariantList getAllInfo(QString val);
 
     Q_INVOKABLE 
     void SetReader(QString val);

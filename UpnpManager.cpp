@@ -179,6 +179,7 @@ std::vector< std::vector<Dictionnaire> >  UpnpManager::ParseAndAddActionParamete
                             {
                                 if(dic[k][count].name != NULL && dic[k][count].value!=NULL)
                                 {
+                                    //qDebug() << "..." << dic[k][count].name;
                                     Dictionnaire d;
                                     d.name = new char[strlen(dic[k][count].name)+1];
                                     d.value = new char[strlen(dic[k][count].value)+1];
@@ -243,6 +244,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                    for(int j=0;j<listDict[i].size();j++)
                    {
                         upnpListParametreAction.Dic.push_back(listDict[i][j]);
+                       
                    }
                    ListService->ListAction[upnpListParametreAction.IdAction].ListParametreAction.push_back(upnpListParametreAction);
                    IdParametre++;
@@ -282,6 +284,7 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                                     strcpy(d.name,listDictState[k][count].name);
                                     strcpy(d.value,listDictState[k][count].value);
                                     ListService->ListAction[i].ListParametreAction[j].DicEtat.push_back(d);
+                                    //qDebug() << "..." << d.name;
                                 }
                             }
                             break;

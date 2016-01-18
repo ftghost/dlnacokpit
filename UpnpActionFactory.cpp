@@ -45,12 +45,30 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
                 {
                     //Get the name
                     char * ParameterName = vectorTool::get_value_of_arg(Action.ListParametreAction[j].Dic,"name");
+                    
                     if(ParameterName==NULL)
                     {
                         continue;
                     }
                     else
                     {
+                       //Y a t'ilun minimun et un maximun 
+                       char min[50];
+                       strcpy(min,ParameterName);
+                       strcat(min,"_HasMinimum");
+                       if(settings.contains(min)==true)
+                       {
+                           char *Min = vectorTool::get_value_of_arg(Action.ListParametreAction[j].DicEtat,"minimum");
+                           if(Min!=NULL)qDebug()<<Min;
+                       }
+                       strcpy(min,ParameterName);
+                       strcat(min,"_HasMaximum");
+                       if(settings.contains(min)==true)
+                       {
+                           char *Max = vectorTool::get_value_of_arg(Action.ListParametreAction[j].DicEtat,"maximum");
+                           if(Max!=NULL)qDebug()<<Max;
+                       }
+                       
                        //Search the value in data
                        char * ParameterValue = NULL;
                        if(data.size()>0)
@@ -107,11 +125,17 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
         if ( i_res != UPNP_E_SUCCESS )
         {
             qDebug() << i_res;
+            if(Action.xmlActionRequest != NULL)
+                qDebug()<< ixmlDocumenttoString(Action.xmlActionRequest);
+            if(Action.xmlActionResponse != NULL)
+                qDebug()<< ixmlDocumenttoString(Action.xmlActionResponse);
             pthread_mutex_unlock(&mutexAction);
             return false;
         }
         else
         {
+          //qDebug()<< ixmlDocumenttoString(Action.xmlActionRequest);
+          //qDebug()<< ixmlDocumenttoString(Action.xmlActionResponse);
            Action.DicReponse.clear();
            Action.DicReponse.swap(Action.DicReponse);
            for(int j =0;j<Action.ListParametreAction.size();j++)
@@ -135,9 +159,16 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
                              char * result = xmlTool::get_argument_value(Action.xmlActionResponse ,ParameterName);
                              Dictionnaire d;
                              d.name = new char[strlen(ParameterName)+1];
-                             d.value = new char[strlen(result)+1];
+                             if(result==NULL)
+                                 d.value = new char[strlen("")+1];
+                             else    
+                                d.value = new char[strlen(result)+1];
+                             
                              strcpy(d.name,ParameterName);
-                             strcpy(d.value,result);
+                             if(result==NULL)
+                               strcpy(d.value,"");  
+                             else
+                                strcpy(d.value,result);
                              Action.DicReponse.push_back(d);
                          }
                     }
