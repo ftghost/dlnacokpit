@@ -120,6 +120,7 @@
 	padding-right : 5px;
 	padding-left : 5px;   
         background-color: lightblue;
+        overflow_x : auto;
     }
     
     .maincontainer 
@@ -283,12 +284,13 @@ function test(){
 
 function AddToQueue(evt)
 {
+   alert(evt.target.myParam); 
    myoperations.display(evt.target.myParam);  
 };
 
 function closeDiv()
 {
-   var alreadyExist1 = document.getElementById("attrinfoalbumdiv");
+   var alreadyExist1 = document.getElementById("infoalbumdiv");
    if(alreadyExist1 !=null)
    {  
        alreadyExist1.parentNode.removeChild(alreadyExist1);
@@ -315,9 +317,17 @@ function AffInfoAlbum(evt)
      elem.src=resArray[1];
      elem.addEventListener('click', closeDiv, false); 
      elm.appendChild(elem);
-     var elem1 = document.createElement("span");
-     elem1.className = "caption";
-     elem1.innerHTML=resArray[0];
+     var elem1 = document.createElement("ul");
+     var lielm1= document.createElement("li");
+     elem1.appendChild(lielm1);
+     var buelm1= document.createElement("button");
+     buelm1.value=resArray[0];
+     buelm1.addEventListener('click', AddToQueue, false); 
+     buelm1.myParam = resArray[0];
+     buelm1.innerHTML=resArray[0];
+     elem1.appendChild(buelm1);
+     //elem1.className = "caption";
+     //elem1.innerHTML=resArray[0];
      elm.appendChild(elem1);
      var ulElm = document.createElement("ul");
      elm.appendChild(ulElm);
