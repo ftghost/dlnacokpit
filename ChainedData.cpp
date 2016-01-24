@@ -339,6 +339,7 @@ QList<Dictionnaire *> ChainedData::SearchTrackOfAlbum(void * val)
     ChainedData * chainedData = SearchAlbumPrivate(val);
     if(chainedData!=NULL)
     {
+       listDic.push_back((Dictionnaire *)chainedData->ArstistRoot->ReturnValue());   
        listDic.push_back((Dictionnaire *)chainedData->ReturnValue()); 
        if(chainedData->GetLastTrack()!=NULL)
        {

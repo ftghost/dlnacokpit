@@ -29,7 +29,6 @@
         <itemPath>JavaScriptOperations.cpp</itemPath>
       </logicalFolder>
       <itemPath>html/index.html</itemPath>
-      <itemPath>html/timer.js</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -162,8 +161,6 @@
       </item>
       <item path="html/index.html" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="html/timer.js" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="htmlTool.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="htmlTool.h" ex="false" tool="3" flavor2="0">
@@ -250,8 +247,6 @@
       <item path="congig.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="html/index.html" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="html/timer.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="htmlTool.cpp" ex="false" tool="1" flavor2="0">
       </item>

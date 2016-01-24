@@ -445,7 +445,7 @@ QList<QString> DataManager::getAllInfo(QString val)
     QList<Dictionnaire*> dList=chainedData->SearchTrackOfAlbum((char*)val.toStdString().c_str());
     for(int i=0;i<dList.size();i++)
     {
-        if(i==0)
+        if(i==1)
         {
             list.push_back(dList[i]->value);
             if(dList[i]->Imgurl == NULL)
