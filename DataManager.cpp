@@ -320,6 +320,19 @@ void DataManager::AddDataToList(Dictionnaire *d)
 }
 
 
+bool  DataManager::AddToPlayList(char * val , char * genre)
+{
+    UiDictionnaire Ui ;
+    Ui.Name =  new char[strlen(val)+1];
+    Ui.Genre = new char[strlen(genre)+1];
+    strcpy(Ui.Name,val);
+    strcpy(Ui.Genre,genre);
+    PlayList.push_back(&Ui);
+    return true;
+}
+
+
+
 bool DataManager::SetSameUri()
 {
     if(chaineDataTrack != NULL)

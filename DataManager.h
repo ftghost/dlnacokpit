@@ -64,9 +64,11 @@ public:
      bool UpdateVolume(char*);
      bool UpdateTitre();
      bool SetVolume(char *);
+     bool AddToPlayList(char *, char *);
      QList<QString> getAllInfo(QString val);
 
 private :
+    QList<UiDictionnaire *> PlayList;
     QTimer *timer;
     int NbServeur=0;
     int SelectedIndex;

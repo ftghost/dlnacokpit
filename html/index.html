@@ -160,8 +160,8 @@
     
      .infocontainer img
     {
-	max-width : 40%;
-	width: 40%;
+	max-width : 50%;
+	width: 50%;
 	height : auto;
         max-height : 100%
     }
@@ -241,7 +241,7 @@ li:hover
   padding :0;
   margin:0;
   list-style:none;
-  width: 180px; /* seule ligne rajoutée */
+  width: 250px; /* seule ligne rajoutée */
 }
 
 #menu-vertical li 
@@ -263,7 +263,7 @@ li:hover
 
 #menu-vertical li:hover ul {
   top: 0;
-  left: 180px;
+  left: 250px;
 }
 
 
@@ -350,14 +350,14 @@ function test(){
 function AddToQueue(evt)
 {
    alert(evt.target.myParam); 
-   myoperations.display(evt.target.myParam);  
+   myoperations.addToQueue(evt.target.titre,evt.target.genre);  
 };
 
 
 function PlayNow(evt)
 {
    alert(evt.target.myParam); 
-   myoperations.display(evt.target.myParam);  
+   myoperations.display(evt.target.titre,evt.target.genre);  
 };
 
 
@@ -412,36 +412,19 @@ function AffInfoAlbum(evt)
      var elemli = document.createElement("li");
      elemli.addEventListener('click', PlayNow, false); 
      elemli.innerHTML =  "Lire maintenant.";
-     elemli.myParam = resArray[1];
+     elemli.titre = resArray[1];
+     elemli.genre = "Album"
      elemul.appendChild(elemli);
      var elemli1 = document.createElement("li");
      elemli1.addEventListener('click', AddToQueue, false); 
      elemli1.innerHTML =  "Ajouter &agrave; la liste";
-     elemli1.myParam = resArray[1];
+     elemli1.titre = resArray[1];
+     elemli1.genre = "Album"
      elemul.appendChild(elemli1);
      elmDiv3.appendChild(elemul);
      elmAlbum.appendChild(elmDiv3);
      
-     /*
-     var elem1 = document.createElement("ul");
-     elem1.class="nav";
-     var lielm1= document.createElement("li");
-     elem1.appendChild(lielm1);
-     var buelm1= document.createElement("img");
-     buelm1.src=resArray[1];
-     buelm1.value=resArray[0];
-     buelm1.addEventListener('click', AddToQueue, false); 
-     buelm1.myParam = resArray[0];
-     buelm1.innerHTML=resArray[0];
-     lielm1.appendChild(buelm1);
-     //elem1.className = "caption";
-     //elem1.innerHTML=resArray[0];
-     elm.appendChild(elem1);
-     var ulElm = document.createElement("ul");
-     ulElm.class="nav";
-     elm.appendChild(ulElm);
-     */
-     //track album
+    
 
     var elmTrack = document.createElement("div");
     elmTrack.className="infocontainerTrack";
@@ -461,13 +444,15 @@ function AffInfoAlbum(evt)
      var elemli1 = document.createElement("li");
      elemli1.addEventListener('click', PlayNow, false); 
      elemli1.innerHTML =  "Lire maintenant.";
-     elemli1.myParam = resArray[n];
+     elemli1.titre = resArray[n];
+     elemli1.genre = "Morceau";
      elemul2.appendChild(elemli1);
     
      var elemli2 = document.createElement("li");
      elemli2.addEventListener('click', AddToQueue, false); 
      elemli2.innerHTML =  "Ajouter &agrave; la liste";
-     elemli2.myParam = resArray[n];
+     elemli2.titre = resArray[n];
+     elemli2.genre = "Morceau";
      elemul2.appendChild(elemli2);
      
      elemlliA.appendChild(elemul2);

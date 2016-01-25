@@ -36,7 +36,10 @@ public Q_SLOTS:
     bool SetVolume(QString val);
     
     Q_INVOKABLE 
-    QString display(QString val);
+    QString addToQueue(QString val,QString genre);
+    
+    Q_INVOKABLE 
+    QString display(QString val,QString genre);
     
     Q_INVOKABLE 
     QVariantList getAllInfo(QString val);

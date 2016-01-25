@@ -25,7 +25,6 @@ typedef struct
 {
     char *Name;
     char *Genre;
-    int index;
 }UiDictionnaire;
 
 

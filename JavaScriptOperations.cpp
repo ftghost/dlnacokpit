@@ -163,13 +163,21 @@ QVariantList JavaScriptOperations::getAllInfo(QString val)
 }
 
 
-QString JavaScriptOperations::display(QString val)
+QString JavaScriptOperations::addToQueue(QString val,QString genre)
+{
+   DataManager::GetInstance().AddToPlayList((char*)val.toStdString().c_str(),(char*)genre.toStdString().c_str()); 
+   return "";
+}
+
+
+
+QString JavaScriptOperations::display(QString val,QString genre)
 {
     //qDebug() << val;
     //QString val1 = val.replace("#",",");
     //QString val2 = val1.replace("|","'");
     QString val2 = htmlTool::ReplaceHtmlToCar(val);
-    if(type=="Morceau")
+    if(genre=="Morceau")
     {
         Dictionnaire * d =DataManager::GetInstance().SearchTrack((char*)val2.toStdString().c_str());
         if(d!=NULL)
