@@ -65,18 +65,18 @@ static const uint qt_meta_data_DataManager[] = {
        4,    2,   54,    2, 0x06 /* Public */,
        5,    1,   59,    2, 0x06 /* Public */,
        6,    1,   62,    2, 0x06 /* Public */,
-       7,    2,   65,    2, 0x06 /* Public */,
+       7,    3,   65,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       8,    3,   70,    2, 0x0a /* Public */,
-       9,    0,   77,    2, 0x0a /* Public */,
+       8,    3,   72,    2, 0x0a /* Public */,
+       9,    0,   79,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int, 0x80000000 | 3,    2,    2,
     QMetaType::Void, 0x80000000 | 3, 0x80000000 | 3,    2,    2,
     QMetaType::Void, 0x80000000 | 3,    2,
     QMetaType::Void, 0x80000000 | 3,    2,
-    QMetaType::Void, QMetaType::Int, QMetaType::Int,    2,    2,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::QString,    2,    2,    2,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int, QMetaType::Bool, QMetaType::Bool,    2,    2,    2,
@@ -95,7 +95,7 @@ void DataManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         case 1: _t->AddToScreen((*reinterpret_cast< char*(*)>(_a[1])),(*reinterpret_cast< char*(*)>(_a[2]))); break;
         case 2: _t->UpdateVol((*reinterpret_cast< char*(*)>(_a[1]))); break;
         case 3: _t->UpdateTitre((*reinterpret_cast< char*(*)>(_a[1]))); break;
-        case 4: _t->UpdateRange((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 4: _t->UpdateRange((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3]))); break;
         case 5: _t->parseTermine((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2])),(*reinterpret_cast< bool(*)>(_a[3]))); break;
         case 6: _t->updateInfo(); break;
         default: ;
@@ -128,7 +128,7 @@ void DataManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
             }
         }
         {
-            typedef void (DataManager::*_t)(int , int );
+            typedef void (DataManager::*_t)(int , int , QString );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&DataManager::UpdateRange)) {
                 *result = 4;
             }
@@ -201,9 +201,9 @@ void DataManager::UpdateTitre(char * _t1)
 }
 
 // SIGNAL 4
-void DataManager::UpdateRange(int _t1, int _t2)
+void DataManager::UpdateRange(int _t1, int _t2, QString _t3)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)) };
     QMetaObject::activate(this, &staticMetaObject, 4, _a);
 }
 QT_END_MOC_NAMESPACE

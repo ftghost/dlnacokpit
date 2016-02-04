@@ -9,7 +9,7 @@ class ChainedData
 {
 public:
 	ChainedData(void );
-	ChainedData(void * value);
+	ChainedData(void * value , bool a = false);
 	~ChainedData(void);
 	/*********************/
 	ChainedType GetType();
@@ -33,9 +33,11 @@ public:
 	ChainedData * GetTrackRoot();
 	/*********************/
 	bool AddAlbum(void * val ,char * Artist);
-	bool AddArtist(void * val);
+	bool AddArtist(void * val,bool a =false);
 	bool AddTrack(void * val,char * Artist);
 	/*********************/
+        bool Delete();
+        /**********************/
         QList<Dictionnaire *> SearchTrackFull(void * val);
         QList<Dictionnaire *> SearchAlbumFull(void * val);
         QList<Dictionnaire *> SearchArtistFull(void * val);
@@ -74,7 +76,7 @@ private:
 	bool SetAlbumRoot(ChainedData *);
 	bool SetTrackRoot(ChainedData *);
 	/*********************/
-	bool SetValue(void *);
+	bool SetValue(void * , bool a = false);
 	/*********************/
 	bool AddTrack(void * val,ChainedData *chainedArstist);
 	bool AddAlbum(void * val,ChainedData *chainedAlbum);

@@ -8,10 +8,16 @@
         box-sizing: border-box;
     }
 
+    body
+    {
+        overflow: hidden;
+    }
+    
     .header
     {
         height : 5%;
         width : 35%;
+        background-color: lightsteelblue;
     }
 
     .header select
@@ -38,6 +44,7 @@
 	height : 75%;
 	width : 100%;
 	overflow : auto;
+        background-color: lightcyan;
     }
 
     .main img
@@ -48,14 +55,55 @@
     }	
 
 
+    
+    
     .footer
     {
-	height : 5%;
-	width : 10%;
-	overflow_x : auto;
+        padding-left: 1%;
+	height : 20%;
+	width : 20%;
+        max-width : 10%;
+	overflow : auto;
 	white-space: nowrap;	
+        max-height : 20%;
+        background-color: pink;
     }
 
+    .footerInfo
+    {
+        padding-left: 1%;
+	height : 20%;
+        max-height : 20%;
+	width : 15%;
+        max-width : 15%;
+	overflow : auto;
+        max-height : 20%;
+        background-color: aquamarine;
+    }
+    
+    .footerInfoPlus
+    {
+        padding-left:1%;
+	height : 20%;
+        max-height : 20%;
+	width : 70%;
+        max-width : 70%;
+	overflow : hidden;
+	white-space: nowrap;	
+        background-color: lightgrey;
+    }
+    
+    .footerInfoPlusVol
+     {
+        padding-left: 1%;
+	height : 20%;
+        max-height : 20%;
+	width : 5%;
+        max-width : 5%;
+	overflow : hidden;
+	white-space: nowrap;	
+    }
+    
     .header img 
     {
         max-width : 100%;
@@ -84,7 +132,16 @@
 
     .footer img 
     {
-        max-width : 100%;
+        max-width : 40%;
+        width: auto;
+        max-height : 100%;
+        padding-top:  8px;
+        padding-right: 5px;
+    }
+    
+     .footerInfo img 
+    {
+        max-width : 35%;
         width: auto;
         max-height : 100%;
         padding-top:  8px;
@@ -207,7 +264,11 @@
         display: block;
     }
 
-    
+   progress 
+   {
+    width: 80%;
+    height: 10%;
+    }
 
 
 div.infocontainer , div.infocontainerAlbum , div.infocontainerTrack { float: left; }
@@ -216,7 +277,8 @@ div.main , div.maincontainer { float: left; }
 	
 div.header , div.playlist  { float: left; }
 div.header, div.container  { display: inline-block;}
-	
+
+div.footer, div.footerInfo ,div.footerInfoPlus,div.footerInfoPlusVol { float: left; }
 div.footer, div.playlist  { float: left; }
 div.footer, div.container  { display: inline-block;}
 
@@ -267,7 +329,17 @@ li:hover
 }
 
 
-
+input[type=range][orient=vertical]
+{
+    writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+    width: 5%;
+    height: 15%;
+    padding: 0 5px;
+    position: absolute;
+    bottom: 0;
+    right: 2;
+}
 
 </style>
 
@@ -281,7 +353,7 @@ li:hover
 
 <body>
 <div  class="header">    
-        <select id="searchSelected">
+        <select id="searchSelected">       
 		<option value ="Artiste">Artiste</option>
 		<option value ="Album">Album</option>
 		<option value ="Morceau" selected>Morceau</option>
@@ -301,19 +373,29 @@ li:hover
 
 
 <div class="footer" id="reader">
-</div>    
-<div class="footer" id="readercommand">
+</div>   
+    
+<div class="footerInfo" id="readercommand">
+    <div>
 	<img id='iplay' class="notselected" src="play.png"  onClick='return play()' alt="play">
         <img id='istop' class="notselected" src="stop.png"  onClick='return stop()' alt="stop">
+    </div>
+    <div>
 	<img id="ipause" class="notselected" src="pause.png" onClick='return pause()' alt="pause">
 	<img id="inext" class="notselected" src="next.png"  onClick='return next()' alt="next">
-        <div>
-            <span id="itrackname"></span><progress value="0" id="itracknamevolume"></progress>
-        </div>
-        <div>
-        Volume : <input type="range" name ="Volume" value="0" id="ivolume" min="0" max="100" step="1" onchange="SetVolume(this.value)"/>
-        </div>
-</div>    
+    </div>
+</div>   
+ <div class="footerInfoPlus">
+     <progress value="0" id="itracknamevolume"></progress>&nbsp;&nbsp;<span id="totalTime"></span>
+    <div style="text-align: center;">   
+       <span id="itrackname"></span>
+    </div>    
+  </div>   
+    
+    
+ <div class="footerInfoPlusVol">
+    <input type="range" orient="vertical" name ="Volume" value="0" id="ivolume" min="0" max="100" step="1"  onchange="SetVolume(this.value)"/>
+ </div>      
 
 <div class="playlist" id="playQueue">
 
@@ -334,7 +416,7 @@ li:hover
 
 var Position = 0;
 var ArrayReader = new Array();    
-var ArrayReaderCommand =  new Array("iplay","ipause","inext","istop");
+var ArrayReaderCommand =  new Array("iplay","inext","istop","ipause");
 
 function test(){
         var i="toto";
@@ -349,14 +431,12 @@ function test(){
 
 function AddToQueue(evt)
 {
-   alert(evt.target.myParam); 
-   myoperations.addToQueue(evt.target.titre,evt.target.genre);  
+   myoperations.addToQueue(evt.target.titre,evt.target.genre);
 };
 
 
 function PlayNow(evt)
 {
-   alert(evt.target.myParam); 
    myoperations.display(evt.target.titre,evt.target.genre);  
 };
 
@@ -489,7 +569,7 @@ function AddTitreInfo(vol)
     var alreadyExist = document.getElementById("itrackname");
     if(alreadyExist !=null)
     {
-        alreadyExist.innerHTML=vol +" : ";
+        alreadyExist.innerHTML=vol;
         return;
     }
 }
@@ -519,7 +599,7 @@ function AddMainContent(name, url)
     document.getElementById("mainResult").appendChild(elm);
  };
 
-function setRange(max,val)
+function setRange(max,val,valString)
 {
     
     var alreadyExist = document.getElementById("itracknamevolume");
@@ -527,8 +607,13 @@ function setRange(max,val)
     {
         alreadyExist.max = max;
         alreadyExist.value = val;
-        return;
     }
+    var alreadyExist1 = document.getElementById("totalTime");
+    if(alreadyExist1 !=null)
+    {
+        alreadyExist1.innerHTML=valString;
+    }
+    return;
 }
 
 

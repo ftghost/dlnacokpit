@@ -34,10 +34,17 @@ ChainedData::ChainedData()
 }
 
 
-ChainedData::ChainedData(void * Value)
+ChainedData::ChainedData(void * Value,bool a)
 {
+    if(a==false)
+    {
         value = new Dictionnaire();
         memcpy ( value, Value, sizeof(Dictionnaire) );
+    }
+    else
+    {
+        value =(Dictionnaire *)Value;
+    }
 	First =  this;
 	LastArstist =   this;
 	ArstistRoot = this;
@@ -69,10 +76,20 @@ ChainedData::ChainedData(void * Value)
 
 ChainedData::~ChainedData(void)
 {
-	delete value;
+	//delete value;
 }
 
 //FIN Constructeur
+
+bool ChainedData::Delete()
+{
+	if(this->GetNextArtist()!=NULL)
+        {
+            
+        }    
+}
+
+
 
 //**********RECHERCHE*************/
 
@@ -375,11 +392,17 @@ bool ChainedData::SetType(ChainedType type)
 }
 
 
-bool ChainedData::SetValue(void * Value)
+bool ChainedData::SetValue(void * Value , bool copy)
 {
+    if(copy == false)
+    {
         value = new Dictionnaire();
         memcpy ( value, Value, sizeof(Dictionnaire) );
-	return true;
+    }
+    else
+        value = (Dictionnaire *)Value;
+    
+    return true;
 }
 
 void* ChainedData::ReturnValue()
@@ -443,13 +466,13 @@ bool ChainedData::SetLastArtist(ChainedData * Value)
 }
 
 
-bool ChainedData::AddArtist(void * Value)
+bool ChainedData::AddArtist(void * Value, bool a)
 {
     
     	//Create new class
 	ChainedData *chainedData = new ChainedData();
 	//Set the value
-	chainedData->SetValue(Value);
+	chainedData->SetValue(Value,a);
 	//Set the type
 	chainedData->SetType(ARTIST);
 	//Set the last pointer artist

@@ -27,16 +27,16 @@ JavaScriptOperations::JavaScriptOperations(QWebView * View)
     QObject::connect(&DataManager::GetInstance(), SIGNAL(AddToScreen(char *,char*)),this, SLOT(AddMainContent(char *,char *)));
     QObject::connect(&DataManager::GetInstance(), SIGNAL(UpdateVol(char *)),this, SLOT(UpdateVol(char *)));
     QObject::connect(&DataManager::GetInstance(), SIGNAL(UpdateTitre(char *)),this, SLOT(UpdateTitre(char *)));
-    QObject::connect(&DataManager::GetInstance(), SIGNAL(UpdateRange(int,int)),this, SLOT(UpdateRange(int,int)));
+    QObject::connect(&DataManager::GetInstance(), SIGNAL(UpdateRange(int,int,QString)),this, SLOT(UpdateRange(int,int,QString)));
 }
 
 
-void JavaScriptOperations::UpdateRange(int max ,int value)
+void JavaScriptOperations::UpdateRange(int max ,int value,QString maxString)
 {
 //qDebug() << Icon;
    const QString arg = QString::number(max); 
    const QString arg1 = QString::number(value); 
-   QString info = QString("setRange('%1','%2')").arg(arg,arg1);
+   QString info = QString("setRange('%1','%2','%3')").arg(arg,arg1,maxString);
    //qDebug() << info;
    view->page()->mainFrame()->evaluateJavaScript(info);    
 }
@@ -165,7 +165,8 @@ QVariantList JavaScriptOperations::getAllInfo(QString val)
 
 QString JavaScriptOperations::addToQueue(QString val,QString genre)
 {
-   DataManager::GetInstance().AddToPlayList((char*)val.toStdString().c_str(),(char*)genre.toStdString().c_str()); 
+    QString val2 = htmlTool::ReplaceHtmlToCar(val); 
+   DataManager::GetInstance().AddToPlayList((char*)val2.toStdString().c_str(),(char*)genre.toStdString().c_str()); 
    return "";
 }
 

@@ -18,6 +18,8 @@ DataManager & DataManager::GetInstance()
 
 DataManager::DataManager()
 {
+    IsSetNextUri = false;
+    Isplaying = false;
     NewData = true;
     ready = false;
     LecteurReady = false;
@@ -41,12 +43,14 @@ void DataManager::updateInfo()
     //qDebug()<<"Volume set to " << v;
     getDeviceTransport[SelectedIndex]->GetInfo();
     QList<QString> res = getDeviceTransport[SelectedIndex]->GetInfoExt();
+    QString maxString;
     int max=0;
     int current=0;
     for(int i=0;i<res.length();i++)
     {
         if(i==1)
         {
+            maxString = res[i];
             QStringList myStringList = res[i].split(":");
         
             for(int index =0;index < myStringList.length();index++)
@@ -83,7 +87,7 @@ void DataManager::updateInfo()
         }
         
     }
-    UpdateRange(max,current);    
+    UpdateRange(max,current,maxString);    
     return;
 }
 
@@ -320,17 +324,66 @@ void DataManager::AddDataToList(Dictionnaire *d)
 }
 
 
+
 bool  DataManager::AddToPlayList(char * val , char * genre)
 {
-    UiDictionnaire Ui ;
-    Ui.Name =  new char[strlen(val)+1];
-    Ui.Genre = new char[strlen(genre)+1];
-    strcpy(Ui.Name,val);
-    strcpy(Ui.Genre,genre);
-    PlayList.push_back(&Ui);
+    if(SelectedIndex==-1)return false;
+    
+    if(strcmp(genre,"Morceau")==0)
+    {
+        Dictionnaire *d = SearchTrack(val);
+        if(d!=NULL)
+        {
+            if(chaineDataTrackList[SelectedIndex] == NULL)
+            {
+                chaineDataTrackList[SelectedIndex] = new ChainedData((void *)d,true);
+            }
+            else
+            {
+                chaineDataTrackList[SelectedIndex]->AddArtist((void *)d,true);
+            }
+        }
+        
+    }
+    else if(strcmp(genre,"Album")==0)
+    {
+        ChainedData * d = chainedData->SearchAlbumPrivate(val);
+        if(d!=NULL)
+        {
+            if(d->GetLastTrack() != NULL)
+            {
+                d=d->GetLastTrack()->GetTrackRoot();
+                Dictionnaire * dic=(Dictionnaire *)d->ReturnValue();
+                if(dic!=NULL)              
+                {
+                    if(chaineDataTrackList[SelectedIndex] == NULL)
+                    {
+                        chaineDataTrackList[SelectedIndex] = new ChainedData((void *)dic,true);
+                    }
+                    else
+                    {
+                        chaineDataTrackList[SelectedIndex]->AddArtist((void *)dic,true);
+                    }                    
+                }
+                while(d->GetNextTrack()!=NULL)
+                {
+                    chaineDataTrackList[SelectedIndex]->AddArtist((void *)d->GetNextTrack()->ReturnValue());
+                    d= d->GetNextTrack();
+                }
+            }
+        }
+    }
+  
+    
+    if(IsSetNextUri == false)
+    {
+        SetNextUri();
+    }
+    
     return true;
 }
-
+            
+ 
 
 
 bool DataManager::SetSameUri()
@@ -340,6 +393,7 @@ bool DataManager::SetSameUri()
         Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->ReturnValue();
         if(dic!=NULL)
         {
+            IsSetNextUri = true;
             getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);   
             //chaineDataTrack = chaineDataTrack->GetNextTrack();
         }
@@ -347,18 +401,65 @@ bool DataManager::SetSameUri()
 }
 
 
+bool DataManager::PlayAndSetUri()
+{
+     if(SelectedIndex==-1)return false;
+     SetNextUri();
+}
+
+
 
 bool DataManager::SetNextUri()
-{
-    if(chaineDataTrack->GetNextTrack() != NULL)
+{   
+    if(chaineDataTrack != NULL)
     {
-        Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
-        if(dic!=NULL)
+        if(chaineDataTrack->GetNextTrack() != NULL)
         {
-            getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);   
-            chaineDataTrack = chaineDataTrack->GetNextTrack();
+            Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
+            if(dic!=NULL)
+            {
+                IsSetNextUri = true;
+                getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);   
+                chaineDataTrack = chaineDataTrack->GetNextTrack();
+            }
         }
     }
+    if(chaineDataTrackList[SelectedIndex] != NULL)
+    {
+        if(chaineDataTrackList[SelectedIndex]->GetArstistRoot() != NULL)
+        {
+            chaineDataTrackList[SelectedIndex] = chaineDataTrackList[SelectedIndex]->GetArstistRoot();
+            Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->ReturnValue();
+            if(dic!=NULL)
+            {
+                if(Isplaying==false)
+                {
+                   getDeviceTransport[SelectedIndex]->PrepareUri(dic); 
+                   getDeviceTransport[SelectedIndex]->Play();
+                   chaineDataTrackList[SelectedIndex] = chaineDataTrackList[SelectedIndex]->GetNextArtist();
+                   if(chaineDataTrackList[SelectedIndex]->GetNextArtist() != NULL)
+                   {
+                       dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->GetNextArtist()->ReturnValue();
+                       if(dic!=NULL)
+                       {
+                           IsSetNextUri = true;
+                           getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);   
+                           chaineDataTrackList[SelectedIndex] = chaineDataTrackList[SelectedIndex]->GetNextArtist();                           
+                       }
+                   }
+                }
+                else
+                {
+                    IsSetNextUri = true;
+                    getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);   
+                    chaineDataTrackList[SelectedIndex]->Delete();
+                    chaineDataTrackList[SelectedIndex] = chaineDataTrackList[SelectedIndex]->GetNextArtist();
+                    
+                }
+            }
+        }      
+    }
+   
 }
 
 
@@ -394,12 +495,18 @@ bool DataManager::PlayAlbum(char * val)
                 qDebug() << "yrl :" << dic->Playurl;
                 if(res == true)
                 {
+                   Isplaying = true; 
                    getDeviceTransport[SelectedIndex]->Play();
                    UpdateTitre(dic->value);
                 }   
             }
         }
      }
+    if(IsSetNextUri == false)
+    {
+        SetNextUri();
+    }
+    return true;
 }
 
 
@@ -413,11 +520,15 @@ bool DataManager::Play(Dictionnaire* d)
     bool res = getDeviceTransport[SelectedIndex]->PrepareUri(d);
     if(res == true)
     {
+       Isplaying = true; 
        getDeviceTransport[SelectedIndex]->Play();
        UpdateTitre(d->value);
     }
 
-
+    if(IsSetNextUri == false)
+    {
+        SetNextUri();
+    }
     return true;
 }
 
@@ -547,8 +658,8 @@ QList<QString> DataManager::getAllInfo(QString val)
 
 bool DataManager::EventNewDeviceAdded(int index)
 {
-    //TODO GESTION DU TABLEAU
-    //qDebug() << "Index" << index;
+    //TODO GESTION DU TABLEAUChainedData * d = chainedData->SearchAlbumPrivate(val);
+   //qDebug() << "Index" << index;
     if(index > NbDeviceMax || index == -1) return false;
     /*
     getDeviceData[index] = new GetDeviceData(index);

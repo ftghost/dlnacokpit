@@ -30,7 +30,7 @@ public Q_SLOTS:
 public Q_SLOTS:            
     void UpdateTitre(char*);
 public Q_SLOTS:            
-    void UpdateRange(int,int);    
+    void UpdateRange(int,int,QString);    
     
     Q_INVOKABLE 
     bool SetVolume(QString val);

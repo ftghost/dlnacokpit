@@ -112,6 +112,14 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
                             }
                         }
                     }
+                    else
+                    {
+                         if(strcmp(Sta,"STOPPED")==0 ) 
+                         {
+                            DataManager::GetInstance().PlayAndSetUri();
+                            DataManager::GetInstance().UpdateTitre();
+                         }
+                    }
                     if(LastState != NULL) delete LastState;
                     LastState = new char[strlen(Sta)+1];
                     strcpy(LastState,Sta);

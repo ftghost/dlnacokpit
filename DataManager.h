@@ -35,7 +35,7 @@ public slots:
  signals:
     void UpdateTitre(char *);
  signals:
-    void UpdateRange(int,int);
+    void UpdateRange(int,int,QString);
 
 public:
      static DataManager & GetInstance();
@@ -60,6 +60,7 @@ public:
      void  CanaddToScreen();
      bool PlayAlbum(char *d);
      bool SetNextUri();
+     bool PlayAndSetUri();
      bool SetSameUri();
      bool UpdateVolume(char*);
      bool UpdateTitre();
@@ -75,9 +76,12 @@ private :
     bool NewData;
     bool ready;
     bool LecteurReady;
+    bool Isplaying;
+    bool IsSetNextUri;
     std::vector<int> MyLecteur;
     ChainedData * chainedData;
     ChainedData * chaineDataTrack;
+    ChainedData * chaineDataTrackList[50];
     const int NbDeviceMax=50;
     GetDeviceData *getDeviceData[50];   
     TransportManager *getDeviceTransport[50];   

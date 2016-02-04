@@ -79,24 +79,24 @@ static const uint qt_meta_data_JavaScriptOperations[] = {
        4,    2,   94,    2, 0x0a /* Public */,
        5,    1,   99,    2, 0x0a /* Public */,
        6,    1,  102,    2, 0x0a /* Public */,
-       7,    2,  105,    2, 0x0a /* Public */,
-       8,    1,  110,    2, 0x0a /* Public */,
-      10,    2,  113,    2, 0x0a /* Public */,
-      12,    2,  118,    2, 0x0a /* Public */,
-      13,    1,  123,    2, 0x0a /* Public */,
-      14,    1,  126,    2, 0x0a /* Public */,
-      15,    0,  129,    2, 0x0a /* Public */,
-      16,    0,  130,    2, 0x0a /* Public */,
-      17,    0,  131,    2, 0x0a /* Public */,
-      18,    0,  132,    2, 0x0a /* Public */,
-      19,    2,  133,    2, 0x0a /* Public */,
+       7,    3,  105,    2, 0x0a /* Public */,
+       8,    1,  112,    2, 0x0a /* Public */,
+      10,    2,  115,    2, 0x0a /* Public */,
+      12,    2,  120,    2, 0x0a /* Public */,
+      13,    1,  125,    2, 0x0a /* Public */,
+      14,    1,  128,    2, 0x0a /* Public */,
+      15,    0,  131,    2, 0x0a /* Public */,
+      16,    0,  132,    2, 0x0a /* Public */,
+      17,    0,  133,    2, 0x0a /* Public */,
+      18,    0,  134,    2, 0x0a /* Public */,
+      19,    2,  135,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int, 0x80000000 | 3,    2,    2,
     QMetaType::Void, 0x80000000 | 3, 0x80000000 | 3,    2,    2,
     QMetaType::Void, 0x80000000 | 3,    2,
     QMetaType::Void, 0x80000000 | 3,    2,
-    QMetaType::Void, QMetaType::Int, QMetaType::Int,    2,    2,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::QString,    2,    2,    2,
     QMetaType::Bool, QMetaType::QString,    9,
     QMetaType::QString, QMetaType::QString, QMetaType::QString,    9,   11,
     QMetaType::QString, QMetaType::QString, QMetaType::QString,    9,   11,
@@ -121,7 +121,7 @@ void JavaScriptOperations::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
         case 1: _t->AddMainContent((*reinterpret_cast< char*(*)>(_a[1])),(*reinterpret_cast< char*(*)>(_a[2]))); break;
         case 2: _t->UpdateVol((*reinterpret_cast< char*(*)>(_a[1]))); break;
         case 3: _t->UpdateTitre((*reinterpret_cast< char*(*)>(_a[1]))); break;
-        case 4: _t->UpdateRange((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 4: _t->UpdateRange((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3]))); break;
         case 5: { bool _r = _t->SetVolume((*reinterpret_cast< QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
         case 6: { QString _r = _t->addToQueue((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
