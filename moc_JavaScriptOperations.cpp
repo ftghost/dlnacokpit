@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_JavaScriptOperations_t {
-    QByteArrayData data[21];
-    char stringdata0[187];
+    QByteArrayData data[22];
+    char stringdata0[198];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -49,7 +49,8 @@ QT_MOC_LITERAL(16, 159, 5), // "pause"
 QT_MOC_LITERAL(17, 165, 4), // "stop"
 QT_MOC_LITERAL(18, 170, 4), // "next"
 QT_MOC_LITERAL(19, 175, 6), // "search"
-QT_MOC_LITERAL(20, 182, 4) // "type"
+QT_MOC_LITERAL(20, 182, 4), // "type"
+QT_MOC_LITERAL(21, 187, 10) // "ClearQueue"
 
     },
     "JavaScriptOperations\0AddReaderReceive\0"
@@ -57,7 +58,7 @@ QT_MOC_LITERAL(20, 182, 4) // "type"
     "UpdateTitre\0UpdateRange\0SetVolume\0val\0"
     "addToQueue\0genre\0display\0getAllInfo\0"
     "SetReader\0play\0pause\0stop\0next\0search\0"
-    "type"
+    "type\0ClearQueue"
 };
 #undef QT_MOC_LITERAL
 
@@ -67,7 +68,7 @@ static const uint qt_meta_data_JavaScriptOperations[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      15,   14, // methods
+      16,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -75,21 +76,22 @@ static const uint qt_meta_data_JavaScriptOperations[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    2,   89,    2, 0x0a /* Public */,
-       4,    2,   94,    2, 0x0a /* Public */,
-       5,    1,   99,    2, 0x0a /* Public */,
-       6,    1,  102,    2, 0x0a /* Public */,
-       7,    3,  105,    2, 0x0a /* Public */,
-       8,    1,  112,    2, 0x0a /* Public */,
-      10,    2,  115,    2, 0x0a /* Public */,
-      12,    2,  120,    2, 0x0a /* Public */,
-      13,    1,  125,    2, 0x0a /* Public */,
-      14,    1,  128,    2, 0x0a /* Public */,
-      15,    0,  131,    2, 0x0a /* Public */,
-      16,    0,  132,    2, 0x0a /* Public */,
-      17,    0,  133,    2, 0x0a /* Public */,
-      18,    0,  134,    2, 0x0a /* Public */,
-      19,    2,  135,    2, 0x0a /* Public */,
+       1,    2,   94,    2, 0x0a /* Public */,
+       4,    2,   99,    2, 0x0a /* Public */,
+       5,    1,  104,    2, 0x0a /* Public */,
+       6,    1,  107,    2, 0x0a /* Public */,
+       7,    3,  110,    2, 0x0a /* Public */,
+       8,    1,  117,    2, 0x0a /* Public */,
+      10,    2,  120,    2, 0x0a /* Public */,
+      12,    2,  125,    2, 0x0a /* Public */,
+      13,    1,  130,    2, 0x0a /* Public */,
+      14,    1,  133,    2, 0x0a /* Public */,
+      15,    0,  136,    2, 0x0a /* Public */,
+      16,    0,  137,    2, 0x0a /* Public */,
+      17,    0,  138,    2, 0x0a /* Public */,
+      18,    0,  139,    2, 0x0a /* Public */,
+      19,    2,  140,    2, 0x0a /* Public */,
+      21,    0,  145,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int, 0x80000000 | 3,    2,    2,
@@ -98,7 +100,7 @@ static const uint qt_meta_data_JavaScriptOperations[] = {
     QMetaType::Void, 0x80000000 | 3,    2,
     QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::QString,    2,    2,    2,
     QMetaType::Bool, QMetaType::QString,    9,
-    QMetaType::QString, QMetaType::QString, QMetaType::QString,    9,   11,
+    QMetaType::QVariantList, QMetaType::QString, QMetaType::QString,    9,   11,
     QMetaType::QString, QMetaType::QString, QMetaType::QString,    9,   11,
     QMetaType::QVariantList, QMetaType::QString,    9,
     QMetaType::Void, QMetaType::QString,    9,
@@ -107,6 +109,7 @@ static const uint qt_meta_data_JavaScriptOperations[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::QVariantList, QMetaType::QString, QMetaType::QString,    9,   20,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -124,8 +127,8 @@ void JavaScriptOperations::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
         case 4: _t->UpdateRange((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3]))); break;
         case 5: { bool _r = _t->SetVolume((*reinterpret_cast< QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 6: { QString _r = _t->addToQueue((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
-            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        case 6: { QVariantList _r = _t->addToQueue((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast< QVariantList*>(_a[0]) = _r; }  break;
         case 7: { QString _r = _t->display((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
         case 8: { QVariantList _r = _t->getAllInfo((*reinterpret_cast< QString(*)>(_a[1])));
@@ -137,6 +140,7 @@ void JavaScriptOperations::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
         case 13: _t->next(); break;
         case 14: { QVariantList _r = _t->search((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< QVariantList*>(_a[0]) = _r; }  break;
+        case 15: _t->ClearQueue(); break;
         default: ;
         }
     }
@@ -167,13 +171,13 @@ int JavaScriptOperations::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 15)
+        if (_id < 16)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 15;
+        _id -= 16;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 15)
+        if (_id < 16)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 15;
+        _id -= 16;
     }
     return _id;
 }

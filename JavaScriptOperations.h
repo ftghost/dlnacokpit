@@ -36,7 +36,7 @@ public Q_SLOTS:
     bool SetVolume(QString val);
     
     Q_INVOKABLE 
-    QString addToQueue(QString val,QString genre);
+    QVariantList addToQueue(QString val,QString genre);
     
     Q_INVOKABLE 
     QString display(QString val,QString genre);
@@ -61,6 +61,10 @@ public Q_SLOTS:
 
     Q_INVOKABLE 
     QVariantList search(QString val,QString type);
+    
+    Q_INVOKABLE 
+    void ClearQueue();
+    
     
     private:
         QWebView * view;

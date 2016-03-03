@@ -38,7 +38,7 @@ void JavaScriptOperations::UpdateRange(int max ,int value,QString maxString)
    const QString arg1 = QString::number(value); 
    QString info = QString("setRange('%1','%2','%3')").arg(arg,arg1,maxString);
    //qDebug() << info;
-   view->page()->mainFrame()->evaluateJavaScript(info);    
+   view->page()->mainFrame()->evaluateJavaScript(info);   
 }
 
 
@@ -48,7 +48,7 @@ void JavaScriptOperations::UpdateTitre(char* vol)
   //QString arg1 = QString::fromUtf8(vol); 
   //QString arg = arg1.replace("'"," ");
   QString arg = htmlTool::ReplaceCarTohml(QString::fromUtf8(vol));
-  //qDebug() <<"JavaScriptOperations : " << arg;   
+  qDebug() <<"JavaScriptOperations : " << arg;   
   QString info = QString("AddTitreInfo('%1')").arg(arg);
   view->page()->mainFrame()->evaluateJavaScript(info);
 }
@@ -123,6 +123,13 @@ void JavaScriptOperations::play()
   DataManager::GetInstance().Play();  
 }
 
+
+void JavaScriptOperations::ClearQueue()
+{
+  DataManager::GetInstance().ClearQueue();    
+}
+
+
 QVariantList JavaScriptOperations::search(QString val,QString Type)
 {
   type = Type;  
@@ -156,18 +163,26 @@ QVariantList JavaScriptOperations::getAllInfo(QString val)
   {
    
       QString arg = htmlTool::ReplaceCarTohml(item); 
-      qDebug() << arg;
+      //qDebug() << arg;
       newList << arg;
   }
   return  newList; 
 }
 
 
-QString JavaScriptOperations::addToQueue(QString val,QString genre)
+QVariantList JavaScriptOperations::addToQueue(QString val,QString genre)
 {
     QString val2 = htmlTool::ReplaceHtmlToCar(val); 
-   DataManager::GetInstance().AddToPlayList((char*)val2.toStdString().c_str(),(char*)genre.toStdString().c_str()); 
-   return "";
+    QList<QString> qlS = DataManager::GetInstance().AddToPlayList((char*)val2.toStdString().c_str(),(char*)genre.toStdString().c_str()); 
+    QVariantList newList;
+    foreach( QString item, qlS )
+    {
+
+        QString arg = htmlTool::ReplaceCarTohml(item); 
+        qDebug() << arg;
+        newList << arg;
+    }
+    return  newList; 
 }
 
 

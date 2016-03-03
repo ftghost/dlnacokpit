@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
     view = new QWebView();
     view->setContextMenuPolicy(Qt::NoContextMenu);
     view->setAttribute(Qt::WA_AcceptTouchEvents, false);
+    view->page()->settings()->setAttribute(QWebSettings::AutoLoadImages,true);
     JavaScriptOperations * java = new JavaScriptOperations(view);
     view->page()->mainFrame()->addToJavaScriptWindowObject("myoperations",java);
     view->load(QUrl("qrc:///html/index.html"));
@@ -42,6 +43,6 @@ int main(int argc, char *argv[])
     worker.start();
 
     // create and show your widgets here
-
+   // QObject::connect(&app, SIGNAL(aboutToQuit()), view, SLOT(closing()));
     return app.exec();
 }

@@ -84,10 +84,11 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
                         if(strcmp(Sta,"STOPPED")==0 && strcmp(LastState,"NO_MEDIA_PRESENT")!=0) 
                             Stopped = true;
                     
-                    if(strcmp(Sta,"NO_MEDIA_PRESENT")==0) 
-                        Stopped = false;
+                    if(LastState == NULL)
+                        if(strcmp(Sta,"NO_MEDIA_PRESENT")==0) 
+                            Stopped = false;
                     
-                    //qDebug() << "Last : " << LastState<< "**** Now : " << Sta << "****"  << Stopped << "****" << Started;
+                    qDebug() << "Last : " << LastState<< "**** Now : " << Sta << "****"  << Stopped << "****" << Started;
                     if(strcmp(Sta,"PLAYING")==0)
                     {
                         if(LastState != NULL)
@@ -99,33 +100,32 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
                                     Started = false;
                                     Stopped = false;
                                     DataManager::GetInstance().SetNextUri(); //Todo set nexturi
-                                    DataManager::GetInstance().UpdateTitre();
-                                    //qDebug() << "Add file";
+                                    //DataManager::GetInstance().UpdateTitre();
+                                    qDebug() << "Add file";
                                 }
                                 else
                                 {
                                    Stopped = false;
                                    Started = false;
                                    DataManager::GetInstance().SetSameUri(); //Todo set nexturi
-                                   //qDebug() << "Add same file"; 
+                                   qDebug() << "Add same file"; 
                                 }
                             }
                         }
                     }
                     else
                     {
-                         if(strcmp(Sta,"STOPPED")==0 ) 
+                         if(strcmp(Sta,"STOPPED")==0 && Started == false) 
                          {
                             DataManager::GetInstance().PlayAndSetUri();
-                            DataManager::GetInstance().UpdateTitre();
+                            qDebug() << "Play-----";
+                            //DataManager::GetInstance().UpdateTitre();
                          }
                     }
                     if(LastState != NULL) delete LastState;
                     LastState = new char[strlen(Sta)+1];
                     strcpy(LastState,Sta);
                 }
-                //qDebug() << LastState<< "****" << Sta << "****" ;
-                //qDebug() << "***************" ;
                 break;
                 
             default:

@@ -81,11 +81,28 @@
         background-color: aquamarine;
     }
     
+    
+    .playlist 
+    {
+        height : 5%;
+        width : 60%;
+        overflow_x : auto;
+        white-space: nowrap;
+    }	
+ 	
+    .playlist img
+    {
+        max-width : 100%;
+        width: auto;
+        max-height : 100%;
+    }	
+    
     .footerInfoPlus
     {
+        
         padding-left:1%;
-	height : 20%;
-        max-height : 20%;
+	height : 7%;
+        max-height : 7%;
 	width : 70%;
         max-width : 70%;
 	overflow : hidden;
@@ -93,13 +110,90 @@
         background-color: lightgrey;
     }
     
+    
+    
+    .playlistClearQueue
+    {
+        margin:auto;
+	height : 10%;
+        max-height : 10%;
+	width : 5%;
+        max-width : 5%;
+	overflow : auto;
+	white-space: nowrap;	
+        background-color : blueviolet;
+        text-align: center;
+    }
+    
+    .playlistClearQueue img
+    {
+        
+        max-width:  100%;
+        max-height: 100%;
+    }
+    
+    
+    
+    .playlistQueue
+    {
+        padding-left:1%;
+	height : 10%;
+        max-height : 10%;
+	width : 65%;
+        max-width : 65%;
+	overflow : auto;
+	white-space: nowrap;	
+        background-color : blanchedalmond;
+    }
+    
+    .playlistQueueimgSelected
+    {
+        max-width : 80%;
+        width: auto;
+        max-height : 80%;
+        opacity: 1;
+	filter: alpha(opacity=100);        
+    }	
+    
+     .playlistQueueimgNotSelected
+    {
+        max-width : 80%;
+        width: auto;
+        max-height : 80%;
+        opacity: 0.5;
+        filter: alpha(opacity=50);       
+    }
+    
+    .playlistQueueimgNotSelected:hover 
+    {
+	opacity: 1;
+	filter: alpha(opacity=100);
+    } 
+    
+    
+    
+    .footerInfoPlusClear
+     {
+        padding-left: 1%;
+	height : 20%;
+        max-height : 20%;
+	width : 3%;
+        max-width : 3%;
+	overflow : hidden;
+	white-space: nowrap;
+        background-color : yellow;
+    }
+    
+    
+    
+    
     .footerInfoPlusVol
      {
         padding-left: 1%;
 	height : 20%;
         max-height : 20%;
-	width : 5%;
-        max-width : 5%;
+	width : 2%;
+        max-width : 2%;
 	overflow : hidden;
 	white-space: nowrap;	
     }
@@ -148,20 +242,13 @@
         padding-right: 5px;
     }
 
-    .playlist 
-    {
-	height : 5%;
-	width : 60%;
-	overflow_x : auto;
-	white-space: nowrap;
-    }	
-	
-    .playlist img
-    {
-        max-width : 100%;
+   .footerInfoPlus img
+   {
+       vertical-align: center;
+        max-width : 4%;
         width: auto;
         max-height : 100%;
-    }	
+   }
 
     .infocontainer
     {
@@ -278,10 +365,11 @@ div.main , div.maincontainer { float: left; }
 div.header , div.playlist  { float: left; }
 div.header, div.container  { display: inline-block;}
 
-div.footer, div.footerInfo ,div.footerInfoPlus,div.footerInfoPlusVol { float: left; }
+div.footer, div.footerInfo ,div.footerInfoPlus,div.footerInfoPlusClear,div.footerInfoPlusVol { float: left; }
 div.footer, div.playlist  { float: left; }
 div.footer, div.container  { display: inline-block;}
 
+div.footerInfo , div.playlistQueue , div.playlistClearQueue{ float : left; }
 
 .spinner{
     position: absolute;
@@ -390,16 +478,19 @@ input[type=range][orient=vertical]
     <div style="text-align: center;">   
        <span id="itrackname"></span>
     </div>    
-  </div>   
-    
+ </div>   
+<div class="playlistQueue" id="playQueue">
+       
+</div>   
+<div class="playlistClearQueue" id="playlistClearQueue">
+   <img id="iclear" class="notselected" src="poub.jpeg"  onClick='return ClearQueue()' alt="clear">    
+</div>      
     
  <div class="footerInfoPlusVol">
     <input type="range" orient="vertical" name ="Volume" value="0" id="ivolume" min="0" max="100" step="1"  onchange="SetVolume(this.value)"/>
  </div>      
 
-<div class="playlist" id="playQueue">
 
-</div>
     
  
 </body>
@@ -415,8 +506,10 @@ input[type=range][orient=vertical]
  
 
 var Position = 0;
+var PositionQueue = 0 ;
 var ArrayReader = new Array();    
 var ArrayReaderCommand =  new Array("iplay","inext","istop","ipause");
+var ArrayQueue = new Array();  
 
 function test(){
         var i="toto";
@@ -429,9 +522,45 @@ function test(){
         document.body.insertBefore(nouveauDiv, mon_div);
 };
 
+
+
+function ClearQueue()
+{
+    myoperations.ClearQueue();
+    var alreadyExist1 = document.getElementById("playQueue");
+   if(alreadyExist1!=null)
+   {
+      while (alreadyExist1.firstChild) 
+      {
+        alreadyExist1.removeChild(alreadyExist1.firstChild);
+      } 
+   }
+   for(n=0;n<ArrayQueue.length;n++)
+   {
+       delete ArrayQueue[n];
+   }
+}
+
+
 function AddToQueue(evt)
 {
-   myoperations.addToQueue(evt.target.titre,evt.target.genre);
+   res = myoperations.addToQueue(evt.target.titre,evt.target.genre);
+   var resArray = res.toString().split(",");
+   var alreadyExist1 = document.getElementById("playQueue");
+   if(alreadyExist1!=null)
+   {
+    for(n=0;n<resArray.length;n++)
+    {
+       ArrayQueue.push(resArray[n+1]); 
+       var elem = document.createElement("img");
+       elem.src=resArray[n]; 
+       elem.id=resArray[n+1];
+       elem.className = "playlistQueueimgNotSelected";
+       alreadyExist1.appendChild(elem);
+       delete elem;
+       n++;
+    }
+   }
 };
 
 
@@ -447,6 +576,7 @@ function closeDiv()
    if(alreadyExist1 !=null)
    {  
        alreadyExist1.parentNode.removeChild(alreadyExist1);
+       delete alreadyExist1;
    }  
    $("#mainResult").animate({ scrollTop: Position }, "slow");
 }
@@ -476,7 +606,7 @@ function AffInfoAlbum(evt)
      elemSpan.innerHTML=resArray[0];
      elmDiv1.appendChild(elemSpan);
      elmAlbum.appendChild(elmDiv1);
-     
+     delete elmDiv1;
      //Image album
      var elmDiv2 = document.createElement("div");
      var elem = document.createElement("img");
@@ -484,6 +614,7 @@ function AffInfoAlbum(evt)
      elem.addEventListener('click', closeDiv, false); 
      elmDiv2.appendChild(elem);
      elmAlbum.appendChild(elmDiv2);
+     delete elmDiv2;
      
      //Album name
      var elmDiv3 = document.createElement("div");
@@ -495,15 +626,19 @@ function AffInfoAlbum(evt)
      elemli.titre = resArray[1];
      elemli.genre = "Album"
      elemul.appendChild(elemli);
+     delete elemli;
+     
      var elemli1 = document.createElement("li");
      elemli1.addEventListener('click', AddToQueue, false); 
      elemli1.innerHTML =  "Ajouter &agrave; la liste";
      elemli1.titre = resArray[1];
      elemli1.genre = "Album"
      elemul.appendChild(elemli1);
+     delete elemli1;
      elmDiv3.appendChild(elemul);
+     delete elemul;
      elmAlbum.appendChild(elmDiv3);
-     
+     delete elmDiv3;
     
 
     var elmTrack = document.createElement("div");
@@ -527,6 +662,7 @@ function AffInfoAlbum(evt)
      elemli1.titre = resArray[n];
      elemli1.genre = "Morceau";
      elemul2.appendChild(elemli1);
+     delete elemli1;
     
      var elemli2 = document.createElement("li");
      elemli2.addEventListener('click', AddToQueue, false); 
@@ -534,17 +670,23 @@ function AffInfoAlbum(evt)
      elemli2.titre = resArray[n];
      elemli2.genre = "Morceau";
      elemul2.appendChild(elemli2);
+     delete elemli2;    
      
      elemlliA.appendChild(elemul2);
-     
+     delete elemul2;        
      elemulHide.appendChild(elemlliA);
+     delete elemlliA;        
      
     }
     
     elmTrack.appendChild(elemulHide);
+    delete elemulHide;   
     elm.appendChild(elmAlbum); 
+    delete elmAlbum;       
     elm.appendChild(elmTrack); 
+    delete elmTrack;  
     alreadyExist.appendChild(elm); 
+    delete elm; 
   }
   Position = $("#mainResult").scrollTop();
   $("#mainResult").animate({ scrollTop: 0 }, "slow");
@@ -570,8 +712,8 @@ function AddTitreInfo(vol)
     if(alreadyExist !=null)
     {
         alreadyExist.innerHTML=vol;
-        return;
     }
+    selectDeselectQueue(vol);
 }
 
 function AddMainContent(name, url)
@@ -580,6 +722,7 @@ function AddMainContent(name, url)
     if(alreadyExist !=null)
     {
         alreadyExist.parentNode.removeChild(alreadyExist);
+        delete alreadyExist;
         return;
     }
     var elm = document.createElement("div");
@@ -590,6 +733,7 @@ function AddMainContent(name, url)
     elem.addEventListener('click', AffInfoAlbum, false); 
     elem.myParam = name;
     elm.appendChild(elem);
+    delete elem;
     /*
     var elem1 = document.createElement("span");
     elem1.className = "caption";
@@ -597,6 +741,7 @@ function AddMainContent(name, url)
     elm.appendChild(elem1);
     */    
     document.getElementById("mainResult").appendChild(elm);
+    delete elm;
  };
 
 function setRange(max,val,valString)
@@ -649,6 +794,26 @@ function isearch()
     n++;
    }
 };
+
+
+function selectDeselectQueue(me)
+{
+    for(var j=0;j<ArrayQueue.length;j++)
+   {
+     
+        var elm = document.getElementById(ArrayQueue[j]);
+        if(me !== ArrayQueue[j])   
+        {
+           elm.className = "playlistQueueimgNotSelected"; 
+        }
+        else
+        {
+            elm.className="playlistQueueimgSelected";
+        }       
+   }
+}
+
+
 
 function selectDeselect(me)
 {
@@ -730,6 +895,7 @@ function AddReader(i,j)
     elem.addEventListener('click', SetReader, false);
     elem.myParam = j;
     document.getElementById("reader").appendChild(elem);
+    delete elem;
 };
 
 </script>

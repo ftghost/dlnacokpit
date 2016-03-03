@@ -45,6 +45,7 @@ ChainedData::ChainedData(void * Value,bool a)
     {
         value =(Dictionnaire *)Value;
     }
+    
 	First =  this;
 	LastArstist =   this;
 	ArstistRoot = this;
@@ -181,14 +182,14 @@ QList<Dictionnaire *>  ChainedData::SearchTrackFull(void * val)
                                                 Dictionnaire * d = (Dictionnaire *)chaineDataTrack->ReturnValue();
 						if(strcasestr(d->value,(char*)val)!=NULL)
 						{
-							dList.push_back(d);
+							dList.push_back((Dictionnaire *)chaineDataAlbum->ReturnValue());
 						}
 						while(chaineDataTrack->GetNextTrack() != NULL)
 						{
 							Dictionnaire * d = (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
 							if(strcasestr(d->value,(char*)val)!=NULL)
 							{
-								dList.push_back(d);
+								dList.push_back((Dictionnaire *)chaineDataAlbum->ReturnValue());
 							}
                                                         chaineDataTrack = chaineDataTrack->GetNextTrack();
 						}
@@ -479,9 +480,11 @@ bool ChainedData::AddArtist(void * Value, bool a)
 	LastArstist->SetNextArtist(chainedData);
 	//Set the previous pointeur
 	chainedData->SetPreviousArtist(LastArstist);
+        // qDebug() << "Previous" << LastArstist; 
 	chainedData->SetFirst(First);
 	chainedData->SetLastArtist(chainedData);
 	LastArstist = chainedData;
+        //qDebug() << "Last" << LastArstist; 
 	return true;	
 }
 

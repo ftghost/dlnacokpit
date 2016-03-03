@@ -62,10 +62,12 @@ public:
      bool SetNextUri();
      bool PlayAndSetUri();
      bool SetSameUri();
+     bool SetStopUri();
+     void ClearQueue();
      bool UpdateVolume(char*);
      bool UpdateTitre();
      bool SetVolume(char *);
-     bool AddToPlayList(char *, char *);
+     QList<QString> AddToPlayList(char *, char *);
      QList<QString> getAllInfo(QString val);
 
 private :
@@ -76,8 +78,8 @@ private :
     bool NewData;
     bool ready;
     bool LecteurReady;
-    bool Isplaying;
-    bool IsSetNextUri;
+    bool Init;
+    bool IsStop;
     std::vector<int> MyLecteur;
     ChainedData * chainedData;
     ChainedData * chaineDataTrack;
@@ -89,7 +91,7 @@ private :
     DataManager (const DataManager&){}
     DataManager();
     static DataManager m_instance;
-    
+    static pthread_mutex_t mutexUri;
 };
 
 

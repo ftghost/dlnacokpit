@@ -3,6 +3,7 @@
     <qresource>
         <file>html/index.html</file>
         <file>html/next.png</file>
+        <file>html/poub.jpeg</file>
         <file>html/play.png</file>
         <file>html/pause.png</file>
         <file>html/stop.png</file>

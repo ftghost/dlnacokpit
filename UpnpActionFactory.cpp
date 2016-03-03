@@ -59,14 +59,14 @@ bool UpnpActionFactory::CreateAction(UpnpListAction &Action,char * ActionName,ch
                        if(settings.contains(min)==true)
                        {
                            char *Min = vectorTool::get_value_of_arg(Action.ListParametreAction[j].DicEtat,"minimum");
-                           if(Min!=NULL)qDebug()<<Min;
+                           //if(Min!=NULL)qDebug()<<Min;
                        }
                        strcpy(min,ParameterName);
                        strcat(min,"_HasMaximum");
                        if(settings.contains(min)==true)
                        {
                            char *Max = vectorTool::get_value_of_arg(Action.ListParametreAction[j].DicEtat,"maximum");
-                           if(Max!=NULL)qDebug()<<Max;
+                           //if(Max!=NULL)qDebug()<<Max;
                        }
                        
                        //Search the value in data
