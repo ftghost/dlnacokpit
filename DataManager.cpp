@@ -203,6 +203,17 @@ char * DataManager::SetReader(int i)
     timer->stop();
     timer->start(1000);
     SetStopUri();
+    //Test
+    /*
+    Dictionnaire * dic= new Dictionnaire();
+    dic->Playurl = new char[strlen("http://192.168.0.20:8081//home/ghost/Musique/mp3/Arno_Modern_Incognito/1.flac")+1];
+    strcpy(dic->Playurl,"http://192.168.0.20:8081//home/ghost/Musique/mp3/Arno_Modern_Incognito/1.flac");
+    getDeviceTransport[SelectedIndex]->PrepareUri(dic);   
+    getDeviceTransport[SelectedIndex]->Play();
+    delete dic->Playurl;
+    delete dic;
+     */ 
+    //Fin test
     return v;
 }
 

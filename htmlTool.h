@@ -16,6 +16,7 @@ public:
     htmlTool(const htmlTool& orig);
     virtual ~htmlTool();
     static bool downloadAndSave(char * Adresse , char * fileName,char * SaveLocation);
+    static bool SearchAndSave(char * Adresse , char * fileName,char * SaveLocation,bool Again =true);
     static QString ReplaceCarTohml(QString);
     static QString ReplaceHtmlToCar(QString);
 private:
