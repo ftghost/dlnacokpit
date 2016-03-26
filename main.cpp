@@ -20,7 +20,6 @@
 #include <qt4/QtCore/qnamespace.h>
 #include "JavaScriptOperations.h"
 #include "ServeFiles.h"
-#include "htmlTool.h"
 
 
 
@@ -33,7 +32,6 @@ int main(int argc, char *argv[])
     // Q_INIT_RESOURCE(resfile);
     QApplication app(argc, argv);
     ServeFiles * sF = new ServeFiles();
-    htmlTool::SearchAndSave("http://www.my-ajax-site.com \'https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=Paris%20Hilton'","","test.txt");
     QWebView *view;
     view = new QWebView();
     view->setContextMenuPolicy(Qt::NoContextMenu);

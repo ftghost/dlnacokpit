@@ -6,13 +6,17 @@
  */
 
 #include "htmlTool.h"
-
+#include "FileTool.h"
 #include <sys/types.h>
 #include <curl/curl.h>
 #include <stdio.h>
 #include <string.h>
 #include <QSettings>
+#include <QString>
 #include <QDebug>
+#include <QWebPage>
+#include <QWebFrame>
+#include <QWebElement>
 
   pthread_mutex_t htmlTool::mutexHtml;  
 
@@ -65,15 +69,177 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     }
     return res;    
  }
+ 
+ 
+ QString htmlTool::ReplaceUrlToCar(QString val)
+ {
+     
+/*
+\>  =   %3E
+\#  =   %23
+\%  =   %25
+\{  =   %7B
+\}  =   %7D
+\|  =   %7C
+\\  =   %5C
+\^  =   %5E
+\~  =   %7E
+\[  =   %5B
+\]  =   %5D
+\`  =   %60
+\/  =   %2F
+\:  =   %3A
+\@  =   %40
+\&  =   %26
+\$  =   %24
+\+  =   %2B
+\"  =   %2
+\;  =   %3B
+*/     
+   QStringList childKeys;
+  
+   childKeys.append("%");
+   childKeys.append("%25");  
+   
+   childKeys.append(" ");
+   childKeys.append("%20");   
+   
+   childKeys.append("!");
+   childKeys.append("%21");
+   
+   childKeys.append("\"");
+   childKeys.append("%22");   
+   
+   childKeys.append("#");
+   childKeys.append("%23");   
+   
+   childKeys.append("$");
+   childKeys.append("%24");   
+   
+    
+   
+   childKeys.append("&");
+   childKeys.append("%26");   
+   
+   childKeys.append("'");
+   childKeys.append("%27");   
+   
+   childKeys.append("(");
+   childKeys.append("%28");   
+   
+   childKeys.append(")");
+   childKeys.append("%29");   
+   
+   childKeys.append("*");
+   childKeys.append("%2A");   
+   
+   childKeys.append("+");
+   childKeys.append("%2B");   
+   
+   childKeys.append(",");
+   childKeys.append("%2C");   
+   
+   childKeys.append("-");
+   childKeys.append("%2D");   
+   
+   childKeys.append(".");
+   childKeys.append("%2E");   
+   
+   childKeys.append("/");
+   childKeys.append("%2F");   
+   
+   
+   childKeys.append("0");
+   childKeys.append("%30");   
+   childKeys.append("1");
+   childKeys.append("%31");   
+   childKeys.append("2");
+   childKeys.append("%32");   
+   childKeys.append("3");
+   childKeys.append("%33");   
+   childKeys.append("4");
+   childKeys.append("%34");   
+   childKeys.append("5");
+   childKeys.append("%35");   
+   childKeys.append("6");
+   childKeys.append("%36");   
+   childKeys.append("7");
+   childKeys.append("%37");   
+   childKeys.append("8");
+   childKeys.append("%38");   
+   childKeys.append("9");
+   childKeys.append("%39");      
+
+  
+   childKeys.append(":");
+   childKeys.append("%3A");   
+   
+   childKeys.append(";");
+   childKeys.append("%3B");   
+   
+   childKeys.append("<");
+   childKeys.append("%3C");   
+   
+   childKeys.append("=");
+   childKeys.append("%3D");   
+   
+   childKeys.append(">");
+   childKeys.append("%3E");   
+  
+   childKeys.append("?");
+   childKeys.append("%3F");
+   
+   childKeys.append("@");
+   childKeys.append("%40");   
+   
+   childKeys.append("@");
+   childKeys.append("%40");   
+   childKeys.append("A");
+   childKeys.append("%41");   
+   childKeys.append("B");
+   childKeys.append("%42");   
+   childKeys.append("C");
+   childKeys.append("%43");   
+   childKeys.append("D");
+   childKeys.append("%44");   
+   childKeys.append("E");
+   childKeys.append("%45");   
+   childKeys.append("F");
+   childKeys.append("%46");   
+   childKeys.append("G");
+   childKeys.append("%47");   
+   childKeys.append("H");
+   childKeys.append("%48");   
+   
+   
+   
+  //  qDebug() << val;
+   // qDebug() << childKeys.count();
+    QString res;
+    for(int i=0;i<childKeys.count();i++)
+    {
+        while(val.contains(childKeys[i+1])==true)
+        {
+            res = val.replace(childKeys[i+1],childKeys[i]);
+            val= res;
+        }
+        i++;
+    }
+    return res;    
+ }
+
+ 
 
  
  
- bool htmlTool::SearchAndSave(char * Adresse , char * fileName,char * SaveLocation,bool Again)
+bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
  {
-     pthread_mutex_lock(&mutexHtml);  
      
+
+     pthread_mutex_lock(&mutexHtml);  
+     bool retour = true;     
      CURL *curl;
-      FILE *fp;
+     FILE *fp;
      curl = curl_easy_init();
      if (curl) 
      {
@@ -83,74 +249,115 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
              curl_easy_cleanup(curl);
              pthread_mutex_unlock(&mutexHtml);  
             return false;
-        }         
+        }  
+        
         CURLcode res;
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, "false");
         curl_easy_setopt(curl, CURLOPT_VERBOSE, "true");
-        //curl_easy_setopt(curl, CURLOPT_RETURNTRANSFER, "true");
         curl_easy_setopt(curl, CURLOPT_USERAGENT, "Opera/9.80 (J2ME/MIDP; Opera Mini/4.2.14912/870; U; id) Presto/2.4.15");
-        curl_easy_setopt(curl, CURLOPT_URL, "http://www.google.com/search?q=GUIDONI,DJEMILA,YOUTUBE");
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION,true);
+        curl_easy_setopt(curl, CURLOPT_URL, Adresse);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+        res = curl_easy_perform(curl);
+        if(res!=CURLE_OK) 
+            retour= false;
+        curl_easy_cleanup(curl);
+        fclose(fp);
+        pthread_mutex_unlock(&mutexHtml);  
+     }
+     return retour;
+}
+ 
+ 
+ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation,bool Again)
+ {
+     
+
+     pthread_mutex_lock(&mutexHtml);  
+     
+     CURL *curl;
+     FILE *fp;
+     curl = curl_easy_init();
+     if (curl) 
+     {
+        fp = fopen(SaveLocation,"wb");
+        if(fp == NULL) 
+        {
+             curl_easy_cleanup(curl);
+             pthread_mutex_unlock(&mutexHtml);  
+            return false;
+        }  
+        
+        CURLcode res;
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, "false");
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, "true");
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, "Opera/9.80 (J2ME/MIDP; Opera Mini/4.2.14912/870; U; id) Presto/2.4.15");
+        curl_easy_setopt(curl, CURLOPT_URL, Adresse);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         bool retour = true;
         res = curl_easy_perform(curl);
         if(res!=CURLE_OK) 
             retour= false;
-        /* always cleanup */
         curl_easy_cleanup(curl);
         fclose(fp);
         pthread_mutex_unlock(&mutexHtml);  
-        if(Again==true)
+     }
+     if(Again==true)     
+     {
+        QString res = FileTool::ReadFile(SaveLocation);
+        QWebPage page;
+        page.mainFrame()->setHtml(res);
+        QWebElement htmlElement = page.mainFrame()->findFirstElement("A");
+        QString href = htmlElement.attribute("href");
+        if (!href.isEmpty())
         {
-            fp = fopen(SaveLocation,"r");
-            if(fp == NULL) 
-            {
-                return false;
-            }         
-            else
-            {
-               char bufRead[500];
-               bool continu = true;
-               while(fgets (bufRead , 500 , fp) && continu==true)
-               {
-                       char * first = strcasestr(bufRead,"<A HREF=\"");
-                       if(first!=NULL)
-                       {
-                           char * second = strcasestr(bufRead,"\">here");
-                           if(second!=NULL)
-                           {
-                               //Get url
-                               char url[500]="";
-                               strncpy(url,&bufRead[strlen("<A HREF=\"")],second-bufRead-strlen("\">here")-3);
-                               continu = false;
-                               qDebug()<<url;
-                           }
-                       }
-
-               }
-               fclose(fp);
-            }
+            return SearchAndSave((char*)href.toStdString().c_str(),"test1.txt",false);
         }
-        
-        
-        
-        return retour;
      }
      else
-    {
-        pthread_mutex_unlock(&mutexHtml);  
-        return false;
-    }  
-     /*
-     $ch = curl_init();
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($ch, CURLOPT_VERBOSE, true);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_USERAGENT, $agent);
-curl_setopt($ch, CURLOPT_URL,$url);
-$result=curl_exec($ch);
-var_dump($result);
-      */ 
+     {
+        QString res = FileTool::ReadFile(SaveLocation);
+        QWebPage page;
+        page.mainFrame()->setHtml(res);
+        QWebElementCollection collection = page.mainFrame()->findAllElements("A");
+        int i=0;
+        foreach (QWebElement element, collection)
+        {
+            
+            QString href = element.attribute("href");
+            if(href.contains("youtube"))
+            {
+                int pos=href.indexOf("%3Fv%3D");
+                QString id = href.mid(pos+strlen("%3Fv%3D"),11); 
+                QString url = "http://www.youtube.com/get_video_info?video_id="+id;
+                QString loc = "info"+QString::number(i);
+                qDebug()<<"THY => " << url << "loc : " << loc;
+                SearchAndSave((char*)url.toStdString().c_str(),(char*)loc.toStdString().c_str());
+                QString resu = FileTool::ReadFile(loc);
+                QStringList myStringList = resu.split("&");
+                foreach (QString el, myStringList)
+                {
+                    if(el.startsWith("url_encoded_fmt_stream_map"))
+                    {
+                        QStringList myStringList1 = el.split("%26");
+                        foreach (QString el1, myStringList1)
+                        {
+                            if(el1.startsWith("url%3D"))
+                            {
+                                QString e =ReplaceUrlToCar(el1.mid(strlen("url%3D")));
+                                qDebug()<<"Liste url info : " << loc << "***" << e;
+                                SearchAndSave((char*)e.toStdString().c_str(),(char*)loc.toStdString().c_str());
+                                break;
+                            }
+                        }
+                    }
+                }
+                i++;
+            }
+        }
+     }
     return true; 
  }
  

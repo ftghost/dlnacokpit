@@ -3,6 +3,7 @@
 #include  "UpnpDiscover.h"
 #include <QDebug>
 #include <QList>
+#include "htmlTool.h"
 
 
 
@@ -748,7 +749,6 @@ QList<QString> DataManager::getAllInfo(QString val)
             else
             {
                 list.push_back(dList[i]->Imgurl);
-                 
             }
         }
         else
@@ -817,6 +817,12 @@ QList<QString> DataManager::getAllInfo(QString val)
       if(type=="Video")
       {
           
+      }
+      
+      if(type=="Web")
+      {
+         QString val1 ="http://www.google.com/search?q="+val; 
+         htmlTool::SearchAndSave((char*)val1.toStdString().c_str(),"test.txt",true);
       }
           
       

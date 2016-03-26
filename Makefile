@@ -65,6 +65,8 @@ build: .build-post
 	cp -R ./html  ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/
 	mkdir -p ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/image
 	cp -R ./image  ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/
+	mkdir -p ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/tmp
+	
 # clean
 clean: .clean-post
 
