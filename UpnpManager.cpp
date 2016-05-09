@@ -487,17 +487,17 @@ bool UpnpManager::ParseAndAddServiceAction(UpnpListService *ListService)
                                 char * mimeType= vectorTool::get_value_of_arg(uStruct->upnpListIcon[nbIcon].Dic,"mimetype");
                                 if(strcmp(mimeType,"image/jpeg")==0)
                                 {
-                                    sprintf(save,"./html/%s.jpeg",realIconName);
+                                    sprintf(save,"/html/%s.jpeg",realIconName);
                                     sprintf(uStruct->Icon,"%s.jpeg",realIconName);
                                 }
                                 else  if(strcmp(mimeType,"image/png")==0)
                                 {
-                                   sprintf(save,"./html/%s.png",realIconName);
+                                   sprintf(save,"/html/%s.png",realIconName);
                                    sprintf(uStruct->Icon,"%s.png",realIconName);
                                 }
                                 else
                                 {
-                                    sprintf(save,"./html/%s.png",realIconName);
+                                    sprintf(save,"/html/%s.png",realIconName);
                                     sprintf(uStruct->Icon,"f%s.png",realIconName);
                                 }
                                 

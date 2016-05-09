@@ -3,6 +3,7 @@
 #include  "UpnpDiscover.h"
 #include <QDebug>
 #include <QList>
+#include <QDir>
 #include "htmlTool.h"
 
 
@@ -821,8 +822,11 @@ QList<QString> DataManager::getAllInfo(QString val)
       
       if(type=="Web")
       {
-         QString val1 ="http://www.google.com/search?q="+val; 
-         htmlTool::SearchAndSave((char*)val1.toStdString().c_str(),"test.txt",true);
+         QString val2 = "YOUTUBE,"+val.replace(" ",","); 
+         QString val1 ="http://www.google.com/search?q="+val2; 
+         QString Apath = "/tmp/test.txt";
+         qDebug() << Apath;
+         list = htmlTool::SearchAndSave((char*)val1.toStdString().c_str(),(char*)Apath.toStdString().c_str(),true);
       }
           
       

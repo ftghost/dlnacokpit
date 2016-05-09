@@ -9,6 +9,7 @@
 #define	HTMLTOOL_H
 #include <pthread.h>
 #include <QString>
+#include <QList>
 
 class htmlTool {
 public:
@@ -16,7 +17,7 @@ public:
     htmlTool(const htmlTool& orig);
     virtual ~htmlTool();
     static bool downloadAndSave(char * Adresse , char * fileName,char * SaveLocation);
-    static bool SearchAndSave(char * Adresse ,char * SaveLocation,bool Again );
+    static QList<QString>  SearchAndSave(char * Adresse ,char * SaveLocation,bool Again );
     static bool SearchAndSave(char * Adresse ,char * SaveLocation);
     static QString ReplaceCarTohml(QString);
     static QString ReplaceHtmlToCar(QString);
