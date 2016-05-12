@@ -9,7 +9,9 @@
 #include "DataManager.h"
 #include "xmlTool.h"
 #include <pthread.h>
-
+#include "DataManager.h"
+#include <QDebug>
+#include "UpnpEventManager.h"
 
 
 UpnpDiscover::UpnpDiscover() 
@@ -19,8 +21,6 @@ UpnpDiscover::UpnpDiscover()
 }
 
 
-#include "DataManager.h"
-#include <QDebug>
 pthread_mutex_t UpnpDiscover::mutex;
 
 UpnpDiscover UpnpDiscover::m_instance=UpnpDiscover();
@@ -35,8 +35,6 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
     struct Upnp_Discovery *d_event = NULL;
     struct Upnp_Event *e_event = NULL;
     char * name =NULL;
-    char * Sta =NULL;
-    char * inf=NULL;
     UpnpRoot uStruct;
     try
     {   
@@ -65,6 +63,9 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
           
                 
             case UPNP_EVENT_RECEIVED:
+                UpnpEventManager::GetInstance().SetEvent((struct Upnp_Event *)event);
+                UpnpEventManager::GetInstance().Run();
+                /*
                 e_event = (struct Upnp_Event *)event;
                 Sta = NULL;
                 inf = xmlTool::get_argument_value( e_event->ChangedVariables,"LastChange");
@@ -125,7 +126,7 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
                     if(LastState != NULL) delete LastState;
                     LastState = new char[strlen(Sta)+1];
                     strcpy(LastState,Sta);
-                }
+                }*/
                 break;
                 
             default:

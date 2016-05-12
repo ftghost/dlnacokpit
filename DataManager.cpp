@@ -5,6 +5,7 @@
 #include <QList>
 #include <QDir>
 #include "htmlTool.h"
+#include "UpnpEventManager.h"
 
 
 
@@ -201,6 +202,7 @@ bool DataManager::SetVolume(char * vol)
 char * DataManager::SetReader(int i)
 {
     SelectedIndex= i;
+    UpnpEventManager::GetInstance().SetSelected(SelectedIndex);
     char * v = getDeviceTransport[SelectedIndex]->GetVolumeExt();
     timer->stop();
     timer->start(1000);

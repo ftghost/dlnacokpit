@@ -14,12 +14,25 @@
 #ifndef UPNPEVENTMANAGER_H
 #define UPNPEVENTMANAGER_H
 
+#include <upnp/upnp.h>
+
 class UpnpEventManager {
 public:
-    UpnpEventManager();
-    UpnpEventManager(const UpnpEventManager& orig);
+    public:
+    static UpnpEventManager & GetInstance();
     virtual ~UpnpEventManager();
+    bool SetEvent(Upnp_Event *);
+    bool SetSelected(int);
+    bool Run();
+   
 private:
+    UpnpEventManager& operator= (const UpnpEventManager&){}
+    UpnpEventManager (const UpnpEventManager&){}
+    UpnpEventManager();
+    static UpnpEventManager m_instance;
+    struct Upnp_Event *e_event = NULL;
+    int SelectedIndex=-1;
+    
 
 };
 
