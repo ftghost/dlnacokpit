@@ -24,9 +24,6 @@ UpnpDiscover::UpnpDiscover()
 pthread_mutex_t UpnpDiscover::mutex;
 
 UpnpDiscover UpnpDiscover::m_instance=UpnpDiscover();
-char * UpnpDiscover::LastState=NULL;
-bool UpnpDiscover::Stopped = false;
-bool UpnpDiscover::Started = false;
 
 int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
 {

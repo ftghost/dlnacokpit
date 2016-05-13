@@ -21,7 +21,6 @@ DataManager & DataManager::GetInstance()
 
 DataManager::DataManager()
 {
-    IsStop = true;
     Init = false;
     NewData = true;
     ready = false;
@@ -243,8 +242,6 @@ Dictionnaire * DataManager::GetNextArstist(int i)
             chainedData = chainedData->GetNextArtist();
         }
     }
-            
-    ////qDebug() << dic->value;
     return dic;
 }
 
@@ -307,7 +304,6 @@ Dictionnaire * DataManager::SearchArstist(char *d)
         return  NULL; 
     }
     dic=(Dictionnaire *)chainedData->SearchArtist(d);
-    //qDebug() << dic->value;
     return dic;
 }
 
@@ -442,9 +438,29 @@ void DataManager::ClearQueue()
     }
     chaineDataTrackList[SelectedIndex] = NULL;
   }
+  
+  if(chaineDataTrack != NULL)
+  {       
+    if(chaineDataTrack->GetLastArtist()!=NULL)  
+    {
+        chaineDataTrack = chaineDataTrack->GetLastArtist();
+        while(chaineDataTrack->GetPreviousArtist() != NULL)
+        {
+           chaineDataTrack = chaineDataTrack->GetPreviousArtist();
+           delete chaineDataTrack->GetNextArtist();
+        }
+        delete chaineDataTrack->GetFirst();
+    }
+    chaineDataTrack = NULL;
+  }
+  
+  
   SetStopUri();
   Init = false;
 }
+
+
+
 
 bool DataManager::SetStopUri()
 {
@@ -454,11 +470,12 @@ bool DataManager::SetStopUri()
     strcpy(d.Playurl,"");
     getDeviceTransport[SelectedIndex]->Stop();
     bool ret = getDeviceTransport[SelectedIndex]->PrepareNextUri(&d); 
-    qDebug() << "PrepareNextUri : " << ret;
     ret = getDeviceTransport[SelectedIndex]->PrepareUri(&d); 
-     qDebug() << "PrepareUri : " << ret;
+    UpnpEventManager::GetInstance().SetNextUriSet(false);
     return true;
 }
+
+
 
 bool DataManager::SetSameUri()
 {
@@ -467,7 +484,8 @@ bool DataManager::SetSameUri()
         Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->ReturnValue();
         if(dic!=NULL)
         {
-            getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);   
+            getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);
+            UpnpEventManager::GetInstance().SetNextUriSet(true);
         }
     }
     else
@@ -477,7 +495,8 @@ bool DataManager::SetSameUri()
             Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->ReturnValue();
             if(dic!=NULL)
             {
-                getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);   
+                getDeviceTransport[SelectedIndex]->PrepareNextUri(dic); 
+                UpnpEventManager::GetInstance().SetNextUriSet(true);                
             }
         }
     }
@@ -543,7 +562,6 @@ bool DataManager::PlayAndSetUri()
             }
         }
         pthread_mutex_unlock(&mutexUri);
-        SetNextUri();
 }
 
 
@@ -554,14 +572,20 @@ bool DataManager::SetNextUri()
     bool continu = false;
     if(chaineDataTrack != NULL)
     {
+         Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->ReturnValue();
+         if(dic != NULL)
+         {
+            UpdateTitre(dic->value); 
+         }
+         
         if(chaineDataTrack->GetNextTrack() != NULL)
         {
-            Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->ReturnValue();
-            UpdateTitre(dic->value);
+            
             dic= (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
             if(dic!=NULL)
             {
                 getDeviceTransport[SelectedIndex]->PrepareNextUri(dic); 
+                UpnpEventManager::GetInstance().SetNextUriSet(true);
                 if(chaineDataTrack->GetNextTrack()!=NULL)
                 {
                     chaineDataTrack = chaineDataTrack->GetNextTrack();
@@ -582,18 +606,10 @@ bool DataManager::SetNextUri()
     {
         if(chaineDataTrackList[SelectedIndex] != NULL)
         {
-            if(chaineDataTrackList[SelectedIndex]->GetPreviousArtist()!=NULL)
+            Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->ReturnValue();
+            if(dic!=NULL) 
             {
-                if(chaineDataTrackList[SelectedIndex]->GetNextArtist() != NULL)
-                {
-                    Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->GetPreviousArtist()->ReturnValue();
-                    UpdateTitre(dic->value);
-                }
-                else
-                {
-                    Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->ReturnValue();
-                    UpdateTitre(dic->value);                    
-                }
+                UpdateTitre(dic->value); 
             }
             
             if(chaineDataTrackList[SelectedIndex]->GetNextArtist() != NULL)
@@ -601,7 +617,8 @@ bool DataManager::SetNextUri()
                 Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->GetNextArtist()->ReturnValue();
                 if(dic!=NULL)
                 {
-                    getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);  
+                    getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);
+                    UpnpEventManager::GetInstance().SetNextUriSet(true);
                     if(chaineDataTrackList[SelectedIndex]->GetNextArtist()!=NULL)
                     {
                         chaineDataTrackList[SelectedIndex] = chaineDataTrackList[SelectedIndex]->GetNextArtist();
@@ -617,6 +634,7 @@ bool DataManager::SetNextUri()
 bool DataManager::UpdateTitre()
 {
     return false;
+    /*
     if(chaineDataTrack!=NULL)
     {
         if(chaineDataTrack->GetPreviousTrack()!=NULL)
@@ -647,13 +665,13 @@ bool DataManager::UpdateTitre()
              }
          }
     }
-    return true;
+    return true;*/
 }
 
 bool DataManager::PlayAlbum(char * val)
 {
     if(SelectedIndex==-1)return false;
-    UpnpDiscover::GetInstance().Started = true;
+
     ChainedData * d = chainedData->SearchAlbumPrivate(val);
     Dictionnaire * dic =NULL;
     if(d!=NULL)
@@ -665,7 +683,6 @@ bool DataManager::PlayAlbum(char * val)
             if(dic!=NULL)
             {
                 bool res = getDeviceTransport[SelectedIndex]->PrepareUri(dic);
-                //qDebug() << "yrl :" << dic->Playurl;
                 if(res == true)
                 {
                    getDeviceTransport[SelectedIndex]->Play();
@@ -683,8 +700,6 @@ bool DataManager::PlayAlbum(char * val)
 bool DataManager::Play(Dictionnaire* d)
 {
     if(SelectedIndex==-1)return false;
-    UpnpDiscover::GetInstance().Started = false;
-    UpnpDiscover::GetInstance().Stopped = true;
     bool res = getDeviceTransport[SelectedIndex]->PrepareUri(d);
     if(res == true)
     {
