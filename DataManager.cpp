@@ -714,6 +714,7 @@ bool DataManager::Play()
 {
     if(SelectedIndex==-1)return false;
     IsStop = false;
+    UpnpEventManager::GetInstance().SetDataMangerStopped(false);
     bool ret = getDeviceTransport[SelectedIndex]->Play();
     if(ret==false)
     {
@@ -734,6 +735,8 @@ bool DataManager::Next()
 {
     if(SelectedIndex==-1)return false;
     bool ret = getDeviceTransport[SelectedIndex]->Next();
+    IsStop = false;
+    UpnpEventManager::GetInstance().SetDataMangerStopped(false);
     if(ret==false)
     {
         
@@ -746,6 +749,7 @@ bool DataManager::Stop()
 {
     if(SelectedIndex==-1)return false;
     IsStop = true;
+    UpnpEventManager::GetInstance().SetDataMangerStopped(true);
     getDeviceTransport[SelectedIndex]->Stop();
     return true;
 }

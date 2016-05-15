@@ -26,6 +26,7 @@ public:
     bool SetSelected(int);
     bool Run();
     bool SetNextUriSet(bool);
+    bool SetDataMangerStopped(bool);
    
 private:
     UpnpEventManager& operator= (const UpnpEventManager&){}
@@ -36,6 +37,8 @@ private:
     int SelectedIndex=-1;
     bool NextUriSet = false;
     bool IsStopped = false;
+    bool IsDataMangerStopped = false;
+    
     QString LastState = "";
     const QString NO_MEDIA_PRESENT = "NO_MEDIA_PRESENT";
     const QString STOPPED = "STOPPED";
