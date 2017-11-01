@@ -79,25 +79,25 @@ static const uint qt_meta_data_JavaScriptOperations[] = {
 
  // slots: name, argc, parameters, tag, flags
        1,    2,   94,    2, 0x0a /* Public */,
-       4,    2,   99,    2, 0x0a /* Public */,
-       5,    1,  104,    2, 0x0a /* Public */,
-       6,    1,  107,    2, 0x0a /* Public */,
-       7,    3,  110,    2, 0x0a /* Public */,
-       8,    1,  117,    2, 0x0a /* Public */,
-      10,    2,  120,    2, 0x0a /* Public */,
-      12,    2,  125,    2, 0x0a /* Public */,
-      13,    1,  130,    2, 0x0a /* Public */,
-      14,    1,  133,    2, 0x0a /* Public */,
-      15,    0,  136,    2, 0x0a /* Public */,
-      16,    0,  137,    2, 0x0a /* Public */,
-      17,    0,  138,    2, 0x0a /* Public */,
-      18,    0,  139,    2, 0x0a /* Public */,
-      19,    2,  140,    2, 0x0a /* Public */,
-      21,    0,  145,    2, 0x0a /* Public */,
+       4,    3,   99,    2, 0x0a /* Public */,
+       5,    1,  106,    2, 0x0a /* Public */,
+       6,    1,  109,    2, 0x0a /* Public */,
+       7,    3,  112,    2, 0x0a /* Public */,
+       8,    1,  119,    2, 0x0a /* Public */,
+      10,    2,  122,    2, 0x0a /* Public */,
+      12,    2,  127,    2, 0x0a /* Public */,
+      13,    1,  132,    2, 0x0a /* Public */,
+      14,    1,  135,    2, 0x0a /* Public */,
+      15,    0,  138,    2, 0x0a /* Public */,
+      16,    0,  139,    2, 0x0a /* Public */,
+      17,    0,  140,    2, 0x0a /* Public */,
+      18,    0,  141,    2, 0x0a /* Public */,
+      19,    2,  142,    2, 0x0a /* Public */,
+      21,    0,  147,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int, 0x80000000 | 3,    2,    2,
-    QMetaType::Void, 0x80000000 | 3, 0x80000000 | 3,    2,    2,
+    QMetaType::Void, 0x80000000 | 3, 0x80000000 | 3, 0x80000000 | 3,    2,    2,    2,
     QMetaType::Void, 0x80000000 | 3,    2,
     QMetaType::Void, 0x80000000 | 3,    2,
     QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::QString,    2,    2,    2,
@@ -123,7 +123,7 @@ void JavaScriptOperations::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->AddReaderReceive((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< char*(*)>(_a[2]))); break;
-        case 1: _t->AddMainContent((*reinterpret_cast< char*(*)>(_a[1])),(*reinterpret_cast< char*(*)>(_a[2]))); break;
+        case 1: _t->AddMainContent((*reinterpret_cast< char*(*)>(_a[1])),(*reinterpret_cast< char*(*)>(_a[2])),(*reinterpret_cast< char*(*)>(_a[3]))); break;
         case 2: _t->UpdateVol((*reinterpret_cast< char*(*)>(_a[1]))); break;
         case 3: _t->UpdateTitre((*reinterpret_cast< char*(*)>(_a[1]))); break;
         case 4: _t->UpdateRange((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3]))); break;

@@ -24,7 +24,7 @@ JavaScriptOperations::JavaScriptOperations(QWebView * View)
     view = View;
     i=0;
     QObject::connect(&DataManager::GetInstance(), SIGNAL(AddReader(int,char *)),this, SLOT(AddReaderReceive(int,char *)));
-    QObject::connect(&DataManager::GetInstance(), SIGNAL(AddToScreen(char *,char*)),this, SLOT(AddMainContent(char *,char *)));
+    QObject::connect(&DataManager::GetInstance(), SIGNAL(AddToScreen(char *,char*,char*)),this, SLOT(AddMainContent(char *,char *,char * )));
     QObject::connect(&DataManager::GetInstance(), SIGNAL(UpdateVol(char *)),this, SLOT(UpdateVol(char *)));
     QObject::connect(&DataManager::GetInstance(), SIGNAL(UpdateTitre(char *)),this, SLOT(UpdateTitre(char *)));
     QObject::connect(&DataManager::GetInstance(), SIGNAL(UpdateRange(int,int,QString)),this, SLOT(UpdateRange(int,int,QString)));
@@ -74,14 +74,15 @@ void JavaScriptOperations::AddReaderReceive(int i ,char * Icon)
    view->page()->mainFrame()->evaluateJavaScript(info);
 }
 
-void  JavaScriptOperations::AddMainContent(char * name , char * url)
+void  JavaScriptOperations::AddMainContent(char * name , char * url,char * info1)
 {
    //qDebug()<< htmlTool::ReplaceCarTohml(name);
    //QString arg2 = QString::fromUtf8(name); 
    QString arg = htmlTool::ReplaceCarTohml(QString::fromUtf8(name));
    //const QString arg = arg2.replace("'","|");
    const QString arg1 =  QString::fromUtf8(url); 
-   QString info = QString("AddMainContent('%1','%2')").arg(arg,arg1);
+   QString arg2 = htmlTool::ReplaceCarTohml(QString::fromUtf8(info1));
+   QString info = QString("AddMainContent('%1','%2','%3')").arg(arg,arg1,arg2);
    //qDebug() << info;
    view->page()->mainFrame()->evaluateJavaScript(info);
 }

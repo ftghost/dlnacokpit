@@ -24,7 +24,7 @@ public:
 public Q_SLOTS:
     void  AddReaderReceive(int,char *);
 public Q_SLOTS:    
-    void  AddMainContent(char *,char*);
+    void  AddMainContent(char *,char*,char *);
 public Q_SLOTS:        
     void UpdateVol(char *);
 public Q_SLOTS:            

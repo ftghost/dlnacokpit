@@ -162,31 +162,31 @@ void DataManager::CanaddToScreen()
                         strcat(valeurAffiche,d->value);
                         if(d->Imgurl !=NULL)
                         {
-                            //AddToScreen(d->value,d->Imgurl);
-                            AddToScreen(valeurAffiche,d->Imgurl);
+                            AddToScreen(d->value,d->Imgurl,valeurAffiche);
+                            //AddToScreen(valeurAffiche,d->Imgurl);
                         }
                         else
                         {
-                            //AddToScreen(d->value,"guer.jpeg");
-                            AddToScreen(valeurAffiche,"guer.jpeg");
+                            AddToScreen(d->value,"guer.jpeg",valeurAffiche);
+                            //AddToScreen(valeurAffiche,"guer.jpeg");
                         }
 			//qDebug()<<d->value;
                         
 			while(chaineDataAlbum->GetNextAlbum() != NULL)
 			{
+				d = (Dictionnaire *)chaineDataAlbum->GetNextAlbum()->ReturnValue();
                                 strcpy(valeurAffiche,valeurArtiste);
                                 strcat(valeurAffiche," : ");
                                 strcat(valeurAffiche,d->value);
-				d = (Dictionnaire *)chaineDataAlbum->GetNextAlbum()->ReturnValue();
                                 if(d->Imgurl !=NULL)
                                 {
-                                    //AddToScreen(d->value,d->Imgurl);
-                                    AddToScreen(valeurAffiche,d->Imgurl);
+                                    AddToScreen(d->value,d->Imgurl,valeurAffiche);
+                                    //AddToScreen(valeurAffiche,d->Imgurl);
                                 }
                                 else
                                 {
-                                    //AddToScreen(d->value,"guer.jpeg");
-                                    AddToScreen(valeurAffiche,"guer.jpeg");
+                                    AddToScreen(d->value,"guer.jpeg",valeurAffiche);
+                                    //AddToScreen(valeurAffiche,"guer.jpeg");
                                 }
                                 //qDebug()<<d->value;
 				chaineDataAlbum = chaineDataAlbum->GetNextAlbum();

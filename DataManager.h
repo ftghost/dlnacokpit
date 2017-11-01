@@ -29,7 +29,7 @@ public slots:
  signals:
   void  AddReader(int,char *);
  signals:
-  void  AddToScreen(char*,char*);
+  void  AddToScreen(char*,char*,char*);
  signals:
   void  UpdateVol(char*);
  signals:

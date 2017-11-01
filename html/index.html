@@ -718,7 +718,7 @@ function AddTitreInfo(vol)
     selectDeselectQueue(vol);
 }
 
-function AddMainContent(name, url)
+function AddMainContent(name, url,info)
 {
     var alreadyExist = document.getElementById("wait");
     if(alreadyExist !=null)
@@ -732,7 +732,7 @@ function AddMainContent(name, url)
     var elem = document.createElement("img");
     elem.src=url;
     elem.id=name;
-    elem.title=name;
+    elem.title=info;
     elem.addEventListener('click', AffInfoAlbum, false); 
     elem.myParam = name;
     elm.appendChild(elem);
