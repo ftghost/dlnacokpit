@@ -368,6 +368,7 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
                                 l.append(e);
                                 l.append(urlJpeg);
                                 //SearchAndSave((char*)e.toStdString().c_str(),(char*)loc.toStdString().c_str());
+                                
                                 break;
                             }
                         }

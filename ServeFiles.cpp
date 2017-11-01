@@ -27,9 +27,9 @@ ServeFiles::ServeFiles()
     int Port = 8081;
     if(settings.contains("Port")==true)
     {
-        bool * ok;
-        Port = settings.value("Port").toInt(ok);
-        if(*ok==false)
+        bool ok;
+        Port = settings.value("Port").toInt(&ok);
+        if(ok==false)
         {
           Port = 8081;  
         }

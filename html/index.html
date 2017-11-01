@@ -85,9 +85,9 @@
     
     .playlist 
     {
-        height : 5%;
+        height : 10%;
         width : 60%;
-        overflow_x : auto;
+        overflow : auto;
         white-space: nowrap;
     }	
  	
@@ -732,6 +732,7 @@ function AddMainContent(name, url)
     var elem = document.createElement("img");
     elem.src=url;
     elem.id=name;
+    elem.title=name;
     elem.addEventListener('click', AffInfoAlbum, false); 
     elem.myParam = name;
     elm.appendChild(elem);

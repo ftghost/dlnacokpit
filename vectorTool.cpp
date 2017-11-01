@@ -139,8 +139,11 @@ Dictionnaire  vectorTool::get_value_of_value(std::vector<Dictionnaire> dict,char
      {
         if(it->name!=NULL)
         {
+            qDebug()<<"Search For "<< arg;
+            qDebug()<<"FInded "<< it->value;
             if(strcasestr(it->value,arg)!=NULL) 
             {
+                qDebug()<<"Returned "<< it->value;
                 it->res = 0;
                 return *it;
             }  
@@ -152,6 +155,35 @@ Dictionnaire  vectorTool::get_value_of_value(std::vector<Dictionnaire> dict,char
    return d;
 }
 
+
+
+Dictionnaire  vectorTool::get_strict_value_of_value(std::vector<Dictionnaire> dict,char * arg)
+{
+   Dictionnaire d; 
+   
+   if(arg!=NULL)
+   {
+    if(dict.size()>0)  
+    {
+     for (std::vector<Dictionnaire>::iterator it = dict.begin() ; it != dict.end(); ++it)
+     {
+        if(it->name!=NULL)
+        {
+            qDebug()<<"Search For "<< arg;
+            qDebug()<<"FInded "<< it->value;
+            if(strcmp(it->value,arg)==0) 
+            {
+                qDebug()<<"Returned "<< it->value;
+                it->res = 0;
+                return *it;
+            }  
+        }
+     }
+    }
+   }
+   d.res = -1;
+   return d;
+}
 
 
 

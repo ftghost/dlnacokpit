@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'JavaScriptOperations.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.5.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.9.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,12 +12,14 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'JavaScriptOperations.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.5.1. It"
+#error "This file was generated using the moc from 5.9.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
 
 QT_BEGIN_MOC_NAMESPACE
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_JavaScriptOperations_t {
     QByteArrayData data[22];
     char stringdata0[198];
@@ -126,20 +128,20 @@ void JavaScriptOperations::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
         case 3: _t->UpdateTitre((*reinterpret_cast< char*(*)>(_a[1]))); break;
         case 4: _t->UpdateRange((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3]))); break;
         case 5: { bool _r = _t->SetVolume((*reinterpret_cast< QString(*)>(_a[1])));
-            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
         case 6: { QVariantList _r = _t->addToQueue((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
-            if (_a[0]) *reinterpret_cast< QVariantList*>(_a[0]) = _r; }  break;
+            if (_a[0]) *reinterpret_cast< QVariantList*>(_a[0]) = std::move(_r); }  break;
         case 7: { QString _r = _t->display((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
-            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = std::move(_r); }  break;
         case 8: { QVariantList _r = _t->getAllInfo((*reinterpret_cast< QString(*)>(_a[1])));
-            if (_a[0]) *reinterpret_cast< QVariantList*>(_a[0]) = _r; }  break;
+            if (_a[0]) *reinterpret_cast< QVariantList*>(_a[0]) = std::move(_r); }  break;
         case 9: _t->SetReader((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 10: _t->play(); break;
         case 11: _t->pause(); break;
         case 12: _t->stop(); break;
         case 13: _t->next(); break;
         case 14: { QVariantList _r = _t->search((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
-            if (_a[0]) *reinterpret_cast< QVariantList*>(_a[0]) = _r; }  break;
+            if (_a[0]) *reinterpret_cast< QVariantList*>(_a[0]) = std::move(_r); }  break;
         case 15: _t->ClearQueue(); break;
         default: ;
         }
@@ -148,7 +150,7 @@ void JavaScriptOperations::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
 
 const QMetaObject JavaScriptOperations::staticMetaObject = {
     { &QObject::staticMetaObject, qt_meta_stringdata_JavaScriptOperations.data,
-      qt_meta_data_JavaScriptOperations,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
+      qt_meta_data_JavaScriptOperations,  qt_static_metacall, nullptr, nullptr}
 };
 
 
@@ -159,9 +161,9 @@ const QMetaObject *JavaScriptOperations::metaObject() const
 
 void *JavaScriptOperations::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
+    if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_JavaScriptOperations.stringdata0))
-        return static_cast<void*>(const_cast< JavaScriptOperations*>(this));
+        return static_cast<void*>(this);
     return QObject::qt_metacast(_clname);
 }
 
@@ -181,4 +183,5 @@ int JavaScriptOperations::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     }
     return _id;
 }
+QT_WARNING_POP
 QT_END_MOC_NAMESPACE

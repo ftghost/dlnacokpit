@@ -142,28 +142,51 @@ void DataManager::CanaddToScreen()
 
 	while(ChainedDataAdd!=NULL)
 	{
+                char valeurArtiste[500]="";
+               
+                
 		if(ChainedDataAdd->GetLastAlbum()!=NULL)
 		{
+                     if(ChainedDataAdd->GetLastAlbum()->GetArstistRoot()!=NULL)
+                     {
+                        Dictionnaire *artiste = (Dictionnaire *)ChainedDataAdd->GetLastAlbum()->GetArstistRoot()->ReturnValue();
+                        qDebug() << "Artiste : " <<  artiste->value;
+                        strcpy(valeurArtiste,artiste->value);
+                     }
+                     
+                        char valeurAffiche[500]="";
 			chaineDataAlbum = ChainedDataAdd->GetLastAlbum()->GetAlbumRoot();
                         Dictionnaire *d = (Dictionnaire *)chaineDataAlbum->ReturnValue(); 
+                        strcpy(valeurAffiche,valeurArtiste);
+                        strcat(valeurAffiche," : ");
+                        strcat(valeurAffiche,d->value);
                         if(d->Imgurl !=NULL)
                         {
-                            AddToScreen(d->value,d->Imgurl);
+                            //AddToScreen(d->value,d->Imgurl);
+                            AddToScreen(valeurAffiche,d->Imgurl);
                         }
                         else
                         {
-                            AddToScreen(d->value,"guer.jpeg");
+                            //AddToScreen(d->value,"guer.jpeg");
+                            AddToScreen(valeurAffiche,"guer.jpeg");
                         }
 			//qDebug()<<d->value;
                         
 			while(chaineDataAlbum->GetNextAlbum() != NULL)
 			{
+                                strcpy(valeurAffiche,valeurArtiste);
+                                strcat(valeurAffiche," : ");
+                                strcat(valeurAffiche,d->value);
 				d = (Dictionnaire *)chaineDataAlbum->GetNextAlbum()->ReturnValue();
                                 if(d->Imgurl !=NULL)
-                                    AddToScreen(d->value,d->Imgurl);
+                                {
+                                    //AddToScreen(d->value,d->Imgurl);
+                                    AddToScreen(valeurAffiche,d->Imgurl);
+                                }
                                 else
                                 {
-                                    AddToScreen(d->value,"guer.jpeg");
+                                    //AddToScreen(d->value,"guer.jpeg");
+                                    AddToScreen(valeurAffiche,"guer.jpeg");
                                 }
                                 //qDebug()<<d->value;
 				chaineDataAlbum = chaineDataAlbum->GetNextAlbum();
