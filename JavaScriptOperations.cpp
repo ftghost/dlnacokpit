@@ -76,12 +76,13 @@ void JavaScriptOperations::AddReaderReceive(int i ,char * Icon)
 
 void  JavaScriptOperations::AddMainContent(char * name , char * url,char * info1)
 {
-   //qDebug()<< htmlTool::ReplaceCarTohml(name);
+   qDebug()<<"Info 1 : "<< htmlTool::ReplaceCarTohml(info1);
    //QString arg2 = QString::fromUtf8(name); 
    QString arg = htmlTool::ReplaceCarTohml(QString::fromUtf8(name));
    //const QString arg = arg2.replace("'","|");
    const QString arg1 =  QString::fromUtf8(url); 
-   QString arg2 = htmlTool::ReplaceCarTohml(QString::fromUtf8(info1));
+   QString arg2 = htmlTool::ReplaceHtmlToCar(QString::fromUtf8(info1));
+   qDebug()<<"Info 1 After: "<< arg2;
    QString info = QString("AddMainContent('%1','%2','%3')").arg(arg,arg1,arg2);
    //qDebug() << info;
    view->page()->mainFrame()->evaluateJavaScript(info);

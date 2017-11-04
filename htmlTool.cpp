@@ -41,7 +41,7 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     for(int i=0;i<val.length();i++)
     {
        QString m= val.mid(i,1 );
-       //qDebug() << m;
+       //qDebug() << "Replace car " << m;
        if(settings.contains(m)==true)
        {
           QString tmp  = settings.value(m).toString()+";"; 
@@ -276,6 +276,7 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
  
  QList<QString> htmlTool::SearchAndSave(char * Adresse , char * SaveLocation,bool Again)
  {
+     qDebug()<< "SearchAndSave  : " << Adresse;
      QList<QString> l;
      pthread_mutex_lock(&mutexHtml);  
      char SaveAbsoluteLocation[500];
@@ -290,6 +291,7 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
         fp = fopen(SaveAbsoluteLocation,"wb");
         if(fp == NULL) 
         {
+            qDebug()<< "fp NULL  : " << Adresse;
              curl_easy_cleanup(curl);
              pthread_mutex_unlock(&mutexHtml);  
             return l;
@@ -297,21 +299,25 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
         
         CURLcode res;
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, "false");
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, "true");
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, "Opera/9.80 (J2ME/MIDP; Opera Mini/4.2.14912/870; U; id) Presto/2.4.15");
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, "false");
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 GTB5");
         curl_easy_setopt(curl, CURLOPT_URL, Adresse);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         bool retour = true;
         res = curl_easy_perform(curl);
         if(res!=CURLE_OK) 
+        {
+            qDebug()<< "CURLE_OK FALSE  : ";
             retour= false;
+        }
         curl_easy_cleanup(curl);
         fclose(fp);
         pthread_mutex_unlock(&mutexHtml);  
      }
      if(Again==true)     
      {
+        qDebug()<< "Again  : ";
         QString res = FileTool::ReadFile(SaveAbsoluteLocation);
         QWebPage page;
         page.mainFrame()->setHtml(res);
@@ -319,7 +325,12 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
         QString href = htmlElement.attribute("href");
         if (!href.isEmpty())
         {
+            qDebug()<<"Href  : " << (char*)href.toStdString().c_str() ;
             return SearchAndSave((char*)href.toStdString().c_str(),"/tmp/test1.txt",false);
+        }
+        else
+        {
+            qDebug()<<"Href  : empty";
         }
      }
      else
@@ -333,13 +344,14 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
         {
             
             QString href = element.attribute("href");
-            if(href.contains("youtube"))
+            if(href.contains("https://www.youtube.com/watch%"))
             {
                 int pos=href.indexOf("%3Fv%3D");
-                QString id = href.mid(pos+strlen("%3Fv%3D"),11); 
+                QString id = href.mid(pos+strlen("%3Fv%3D"),11);  
                 QString url = "http://www.youtube.com/get_video_info?video_id="+id;
                 QString loc = "/tmp/info"+QString::number(i);
 
+                
                 SearchAndSave((char*)url.toStdString().c_str(),(char*)loc.toStdString().c_str());
                 QString absoluteLoc = QDir::currentPath()+loc;
                 QString resu = FileTool::ReadFile(absoluteLoc);
@@ -348,28 +360,26 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
                 bool isJpeg = false;
                 foreach (QString el, myStringList)
                 {
-                    //qDebug()<<"Liste  info video : " << loc << "***" << el;
                     if(el.startsWith("iurl") && isJpeg==false)
                     {
                         isJpeg = true;
                         urlJpeg = ReplaceUrlToCar(el.mid(el.indexOf("http")));
-                        qDebug()<<"Liste  info video : " << loc << "***" << urlJpeg;
                     }
                     
                     if(el.startsWith("url_encoded_fmt_stream_map"))
                     {
+                        qDebug()<<"Liste video info : " << el << "***" ;
                         QStringList myStringList1 = el.split("%26");
                         foreach (QString el1, myStringList1)
                         {
                             if(el1.startsWith("url%3D"))
                             {
                                 QString e =ReplaceUrlToCar(el1.mid(strlen("url%3D")));
-                                qDebug()<<"Liste url info : " << loc << "***" << e;
                                 l.append(e);
                                 l.append(urlJpeg);
-                                //SearchAndSave((char*)e.toStdString().c_str(),(char*)loc.toStdString().c_str());
-                                
-                                break;
+                                htmlTool::downloadAndSave((char*)e.toStdString().c_str() , "","/tmp/video.avi");
+                                qDebug()<<"Liste jpeg info : " << e << "***" <<urlJpeg ;
+                                return l;
                             }
                         }
                     }
@@ -381,6 +391,7 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
     return l; 
  }
  
+  
  
 bool htmlTool::downloadAndSave(char * Adresse , char * fileName,char * SaveLocation)
 {
@@ -395,7 +406,7 @@ bool htmlTool::downloadAndSave(char * Adresse , char * fileName,char * SaveLocat
    memset(SaveAbsoluteLocation,'\0',500);
    strcpy(SaveAbsoluteLocation,QDir::currentPath().toStdString().c_str());
    strcat(SaveAbsoluteLocation,SaveLocation);
-   
+   qDebug()<<"Liste jpeg info : " << Adresse << "***" <<SaveLocation ;
    
    curl = curl_easy_init();
    if (curl) 

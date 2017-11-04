@@ -41,7 +41,6 @@ DataManager::~DataManager()
 void DataManager::updateInfo()
 {
     if(SelectedIndex==-1)return;
-    //qDebug()<<"Volume set to " << v;
     getDeviceTransport[SelectedIndex]->GetInfo();
     QList<QString> res = getDeviceTransport[SelectedIndex]->GetInfoExt();
     QString maxString;
@@ -100,12 +99,13 @@ void DataManager::parseTermine(int index,bool isOk,bool deviceType)
   if(isOk==false)
   {
     if(deviceType == false)  
+    {
         delete getDeviceTransport[index];  
+    }
     if(deviceType == true)  
     {
         delete getDeviceData[index];  
         NbServeur--;
-     
     }
   }
   else
@@ -127,15 +127,11 @@ void DataManager::parseTermine(int index,bool isOk,bool deviceType)
         AddReader(index,getDeviceTransport[index]->GetIconPath());
       }
   }
-  
-      
-  //qDebug() << "Deleted Index" << index;
 }
 
 
 void DataManager::CanaddToScreen()
 {
-    
         ChainedData * ChainedDataAdd = chainedData;
         ChainedDataAdd = chainedData->GetFirst();
 	ChainedData * chaineDataAlbum;
@@ -163,15 +159,11 @@ void DataManager::CanaddToScreen()
                         if(d->Imgurl !=NULL)
                         {
                             AddToScreen(d->value,d->Imgurl,valeurAffiche);
-                            //AddToScreen(valeurAffiche,d->Imgurl);
                         }
                         else
                         {
                             AddToScreen(d->value,"guer.jpeg",valeurAffiche);
-                            //AddToScreen(valeurAffiche,"guer.jpeg");
                         }
-			//qDebug()<<d->value;
-                        
 			while(chaineDataAlbum->GetNextAlbum() != NULL)
 			{
 				d = (Dictionnaire *)chaineDataAlbum->GetNextAlbum()->ReturnValue();
@@ -181,25 +173,16 @@ void DataManager::CanaddToScreen()
                                 if(d->Imgurl !=NULL)
                                 {
                                     AddToScreen(d->value,d->Imgurl,valeurAffiche);
-                                    //AddToScreen(valeurAffiche,d->Imgurl);
                                 }
                                 else
                                 {
                                     AddToScreen(d->value,"guer.jpeg",valeurAffiche);
-                                    //AddToScreen(valeurAffiche,"guer.jpeg");
                                 }
-                                //qDebug()<<d->value;
 				chaineDataAlbum = chaineDataAlbum->GetNextAlbum();
 			}
 		}
 		ChainedDataAdd = ChainedDataAdd->GetNextArtist();
 	} 
-    
-    
-   
-            
-    
-    //AddToScreen(name,url);
 }
 
 
@@ -209,7 +192,6 @@ bool DataManager::UpdateVolume(char * vol)
     memset(v,sizeof(v),'\0');
     strcpy(v,vol);
     if(SelectedIndex==-1)return false;
-    //qDebug()<<"Volume set to " << v;
     getDeviceTransport[SelectedIndex]->SetVolumeExt(v);
     UpdateVol(getDeviceTransport[SelectedIndex]->GetVolumeExt());
     return true;
@@ -255,7 +237,9 @@ Dictionnaire * DataManager::GetNextArstist(int i)
     if(i==0)
     {
         if(chainedData->GetArstistRoot()!=NULL)
+        {
             dic=(Dictionnaire *)chainedData->GetArstistRoot()->ReturnValue();
+        }
     }
     else
     {
@@ -354,7 +338,6 @@ void DataManager::AddDataToList(Dictionnaire *d)
     {
         chainedData->AddArtist((void *)d);
     }
-    
 }
 
 
@@ -657,38 +640,6 @@ bool DataManager::SetNextUri()
 bool DataManager::UpdateTitre()
 {
     return false;
-    /*
-    if(chaineDataTrack!=NULL)
-    {
-        if(chaineDataTrack->GetPreviousTrack()!=NULL)
-        {
-            Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->GetPreviousTrack()->ReturnValue();
-            if(dic!=NULL)
-                UpdateTitre(dic->value);
-        }
-    }
-    else
-    {
-         if(chaineDataTrackList[SelectedIndex] != NULL)
-         {
-             if(chaineDataTrackList[SelectedIndex]->GetNextArtist()!=NULL)
-             {
-                if(chaineDataTrackList[SelectedIndex]->GetPreviousArtist() != NULL)
-                {
-                  Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->GetPreviousArtist()->ReturnValue();
-                  if(dic!=NULL)
-                      UpdateTitre(dic->value);   
-                }
-             }
-             else
-             {
-                Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->ReturnValue();
-                if(dic!=NULL)
-                    UpdateTitre(dic->value);      
-             }
-         }
-    }
-    return true;*/
 }
 
 bool DataManager::PlayAlbum(char * val)
@@ -866,11 +817,13 @@ QList<QString> DataManager::getAllInfo(QString val)
       
       if(type=="Web")
       {
+          /*
          QString val2 = "YOUTUBE,"+val.replace(" ",","); 
          QString val1 ="http://www.google.com/search?q="+val2; 
          QString Apath = "/tmp/test.txt";
          qDebug() << Apath;
          list = htmlTool::SearchAndSave((char*)val1.toStdString().c_str(),(char*)Apath.toStdString().c_str(),true);
+         */
       }
           
       
