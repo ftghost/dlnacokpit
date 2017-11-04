@@ -123,6 +123,6 @@ bool UpnpEventManager::Run()
         }
         delete Sta;
     }
-    if(inf!=NULL)delete inf;
+    //if(inf!=NULL)delete inf;
     return true;
 }
