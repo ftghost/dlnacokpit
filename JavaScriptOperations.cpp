@@ -70,7 +70,7 @@ void JavaScriptOperations::AddReaderReceive(int i ,char * Icon)
    const QString arg = QString::fromUtf8(Icon); 
    const QString arg1 = QString::number(i);
    QString info = QString("AddReader('%1','%2')").arg(arg,arg1);
-   //qDebug() << info;
+   qDebug() << info;
    view->page()->mainFrame()->evaluateJavaScript(info);
 }
 
