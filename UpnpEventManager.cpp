@@ -43,20 +43,21 @@ UpnpEventManager::~UpnpEventManager()
 bool UpnpEventManager::SetEvent(Upnp_Event * myEvent)
 {
     e_event = myEvent;
-    qDebug() << "Event set";
+    //qDebug() << "Event set";
     return true;
 }
 
 bool UpnpEventManager::SetSelected(int index)
 {
    SelectedIndex = index;
-   qDebug() << "Index set";
+   //qDebug() << "Index set";
    return true;
 }
 
 bool UpnpEventManager::SetNextUriSet(bool nextUri)
 {
     NextUriSet = nextUri;
+    //qDebug() << "NextUriSet set" << nextUri;
 }
 
 bool UpnpEventManager::SetDataMangerStopped(bool dataMangerStopped )
@@ -72,12 +73,12 @@ bool UpnpEventManager::Run()
     //Get ssid
     bool traite = false;
     UpnpRoot u = UpnpManager::GetInstance().GetStructureDeviceByIndex(SelectedIndex);
-    qDebug() << "u.idRoot : " << u.idRoot;
+    //qDebug() << "u.idRoot : " << u.idRoot;
     if(u.idRoot ==-1) 
         return false;
     for(int i=0;i<u.upnpListService.size();i++)
     {
-        qDebug() << "u.upnpListService[i].SubsId : " << u.upnpListService[i].SubsId << " &&& " << e_event->Sid;
+       // qDebug() << "u.upnpListService[i].SubsId : " << u.upnpListService[i].SubsId << " &&& " << e_event->Sid;
         if(strcmp(u.upnpListService[i].SubsId,e_event->Sid)==0)
         {
            traite = true; 
@@ -92,7 +93,7 @@ bool UpnpEventManager::Run()
     Sta = xmlTool::get_VolumeChange(inf);
     if(Sta != NULL)
     {
-        qDebug() << "traite true" << " sequence number : " << e_event->EventKey << " Volume : " << Sta;
+        //qDebug() << "traite true" << " sequence number : " << e_event->EventKey << " Volume : " << Sta;
         DataManager::GetInstance().UpdateVolume(Sta);
         delete Sta;
         Sta=NULL;
@@ -102,24 +103,26 @@ bool UpnpEventManager::Run()
     if(Sta != NULL)
     {
         QString str = QString::fromUtf8(Sta);
-        qDebug() << "traite true" << " sequence number : " << e_event->EventKey << " LastChange : " << str;
+        //qDebug() << "traite true" << " sequence number : " << e_event->EventKey << " LastChange : " << str;
         if(str==STOPPED && IsDataMangerStopped==true) IsStopped = true;
         
         if(str==PLAYING && IsStopped == true)
         {
             IsStopped = false;
             DataManager::GetInstance().SetSameUri();
+            //qDebug() << "SetSameUri";
         }
         else if(str==PLAYING )
         {
            IsStopped = false; 
            DataManager::GetInstance().updateInfo(); 
            DataManager::GetInstance().SetNextUri() ; 
+           //qDebug() << "SetNextUri";
         }
         else if((str==NO_MEDIA_PRESENT ||str==STOPPED)  &&  IsStopped == false)
         {
            DataManager::GetInstance().PlayAndSetUri() ;  
-           qDebug() << "PlayAndSetUri";
+           //qDebug() << "PlayAndSetUri";
         }
         delete Sta;
     }

@@ -276,7 +276,7 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
  
  QList<QString> htmlTool::SearchAndSave(char * Adresse , char * SaveLocation,bool Again)
  {
-     qDebug()<< "SearchAndSave  : " << Adresse;
+     //qDebug()<< "SearchAndSave  : " << Adresse;
      QList<QString> l;
      pthread_mutex_lock(&mutexHtml);  
      char SaveAbsoluteLocation[500];
@@ -291,7 +291,7 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
         fp = fopen(SaveAbsoluteLocation,"wb");
         if(fp == NULL) 
         {
-            qDebug()<< "fp NULL  : " << Adresse;
+            //qDebug()<< "fp NULL  : " << Adresse;
              curl_easy_cleanup(curl);
              pthread_mutex_unlock(&mutexHtml);  
             return l;
@@ -308,7 +308,7 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
         res = curl_easy_perform(curl);
         if(res!=CURLE_OK) 
         {
-            qDebug()<< "CURLE_OK FALSE  : ";
+            //qDebug()<< "CURLE_OK FALSE  : ";
             retour= false;
         }
         curl_easy_cleanup(curl);
@@ -317,7 +317,7 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
      }
      if(Again==true)     
      {
-        qDebug()<< "Again  : ";
+        //qDebug()<< "Again  : ";
         QString res = FileTool::ReadFile(SaveAbsoluteLocation);
         QWebPage page;
         page.mainFrame()->setHtml(res);
@@ -325,12 +325,12 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
         QString href = htmlElement.attribute("href");
         if (!href.isEmpty())
         {
-            qDebug()<<"Href  : " << (char*)href.toStdString().c_str() ;
+            //qDebug()<<"Href  : " << (char*)href.toStdString().c_str() ;
             return SearchAndSave((char*)href.toStdString().c_str(),"/tmp/test1.txt",false);
         }
         else
         {
-            qDebug()<<"Href  : empty";
+            //qDebug()<<"Href  : empty";
         }
      }
      else
@@ -368,7 +368,7 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
                     
                     if(el.startsWith("url_encoded_fmt_stream_map"))
                     {
-                        qDebug()<<"Liste video info : " << el << "***" ;
+                        //qDebug()<<"Liste video info : " << el << "***" ;
                         QStringList myStringList1 = el.split("%26");
                         foreach (QString el1, myStringList1)
                         {
@@ -378,7 +378,7 @@ bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
                                 l.append(e);
                                 l.append(urlJpeg);
                                 htmlTool::downloadAndSave((char*)e.toStdString().c_str() , "","/tmp/video.avi");
-                                qDebug()<<"Liste jpeg info : " << e << "***" <<urlJpeg ;
+                                //qDebug()<<"Liste jpeg info : " << e << "***" <<urlJpeg ;
                                 return l;
                             }
                         }
@@ -406,7 +406,7 @@ bool htmlTool::downloadAndSave(char * Adresse , char * fileName,char * SaveLocat
    memset(SaveAbsoluteLocation,'\0',500);
    strcpy(SaveAbsoluteLocation,QDir::currentPath().toStdString().c_str());
    strcat(SaveAbsoluteLocation,SaveLocation);
-   qDebug()<<"Liste jpeg info : " << Adresse << "***" <<SaveLocation ;
+   //qDebug()<<"Liste jpeg info : " << Adresse << "***" <<SaveLocation ;
    
    curl = curl_easy_init();
    if (curl) 

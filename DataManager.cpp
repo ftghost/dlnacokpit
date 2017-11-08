@@ -146,7 +146,7 @@ void DataManager::CanaddToScreen()
                      if(ChainedDataAdd->GetLastAlbum()->GetArstistRoot()!=NULL)
                      {
                         Dictionnaire *artiste = (Dictionnaire *)ChainedDataAdd->GetLastAlbum()->GetArstistRoot()->ReturnValue();
-                        qDebug() << "Artiste : " <<  artiste->value;
+                        //qDebug() << "Artiste : " <<  artiste->value;
                         strcpy(valeurArtiste,artiste->value);
                      }
                      
@@ -358,7 +358,9 @@ QList<QString>  DataManager::AddToPlayList(char * val , char * genre)
                 if(d->Imgurl!=NULL)
                     qls.push_back(d->Imgurl);
                 else
+                {
                     qls.push_back("guer.jpeg");
+                }
                 qls.push_back(d->value);
             }
             else
@@ -370,6 +372,7 @@ QList<QString>  DataManager::AddToPlayList(char * val , char * genre)
                     qls.push_back("guer.jpeg");
                 qls.push_back(d->value);
             }
+            qls.push_back(d->value);
         }
         
     }
@@ -404,7 +407,8 @@ QList<QString>  DataManager::AddToPlayList(char * val , char * genre)
                             qls.push_back("guer.jpeg");
 
                         qls.push_back(dic->value);
-                    }                    
+                    } 
+                    qls.push_back(dic->value);
                 }
                 while(d->GetNextTrack()!=NULL)
                 {
@@ -414,6 +418,7 @@ QList<QString>  DataManager::AddToPlayList(char * val , char * genre)
                         qls.push_back(dic->Imgurl);
                     else
                         qls.push_back("guer.jpeg");
+                    qls.push_back(dic->value);
                     qls.push_back(dic->value);
                     d= d->GetNextTrack();
                 }
@@ -485,6 +490,8 @@ bool DataManager::SetStopUri()
 
 bool DataManager::SetSameUri()
 {
+    if(SelectedIndex==-1)return false;
+    pthread_mutex_lock(&mutexUri);
     if(chaineDataTrack != NULL)
     {
         Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->ReturnValue();
@@ -506,6 +513,7 @@ bool DataManager::SetSameUri()
             }
         }
     }
+    pthread_mutex_unlock(&mutexUri);
 }
 
 
@@ -574,6 +582,7 @@ bool DataManager::PlayAndSetUri()
 
 bool DataManager::SetNextUri()
 { 
+    if(SelectedIndex==-1)return false;
     pthread_mutex_lock(&mutexUri);
     bool continu = false;
     if(chaineDataTrack != NULL)
@@ -645,7 +654,7 @@ bool DataManager::UpdateTitre()
 bool DataManager::PlayAlbum(char * val)
 {
     if(SelectedIndex==-1)return false;
-
+    pthread_mutex_lock(&mutexUri);
     ChainedData * d = chainedData->SearchAlbumPrivate(val);
     Dictionnaire * dic =NULL;
     if(d!=NULL)
@@ -665,6 +674,7 @@ bool DataManager::PlayAlbum(char * val)
             }
         }
      }
+    pthread_mutex_unlock(&mutexUri);
     return true;
 }
 
@@ -713,7 +723,6 @@ bool DataManager::Next()
     UpnpEventManager::GetInstance().SetDataMangerStopped(false);
     if(ret==false)
     {
-        
        PlayAndSetUri(); 
     }
     return true;
@@ -817,13 +826,7 @@ QList<QString> DataManager::getAllInfo(QString val)
       
       if(type=="Web")
       {
-          /*
-         QString val2 = "YOUTUBE,"+val.replace(" ",","); 
-         QString val1 ="http://www.google.com/search?q="+val2; 
-         QString Apath = "/tmp/test.txt";
-         qDebug() << Apath;
-         list = htmlTool::SearchAndSave((char*)val1.toStdString().c_str(),(char*)Apath.toStdString().c_str(),true);
-         */
+        
       }
           
       

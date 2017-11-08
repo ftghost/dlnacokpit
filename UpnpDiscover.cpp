@@ -62,68 +62,6 @@ int UpnpDiscover::callback(Upnp_EventType event_type, void* event, void* cookie)
             case UPNP_EVENT_RECEIVED:
                 UpnpEventManager::GetInstance().SetEvent((struct Upnp_Event *)event);
                 UpnpEventManager::GetInstance().Run();
-                /*
-                e_event = (struct Upnp_Event *)event;
-                Sta = NULL;
-                inf = xmlTool::get_argument_value( e_event->ChangedVariables,"LastChange");
-                Sta = xmlTool::get_VolumeChange(inf);
-                if(Sta != NULL)
-                {
-                   //qDebug() << "Vol "  << Sta << "****"  ; 
-                   DataManager::GetInstance().UpdateVolume(Sta);
-                   delete Sta;
-                   Sta=NULL;
-                }
-                
-                Sta = xmlTool::get_lastChange(inf);
-                if(Sta != NULL)
-                {
-                    if(LastState != NULL)
-                        if(strcmp(Sta,"STOPPED")==0 && strcmp(LastState,"NO_MEDIA_PRESENT")!=0) 
-                            Stopped = true;
-                    
-                    if(LastState == NULL)
-                        if(strcmp(Sta,"NO_MEDIA_PRESENT")==0) 
-                            Stopped = false;
-                    
-                    qDebug() << "Last : " << LastState<< "**** Now : " << Sta << "****"  << Stopped << "****" << Started;
-                    if(strcmp(Sta,"PLAYING")==0)
-                    {
-                        if(LastState != NULL)
-                        {
-                            if(strcmp(LastState,"TRANSITIONING")==0)
-                            {
-                                if(Stopped==false || Started == true)
-                                {
-                                    Started = false;
-                                    Stopped = false;
-                                    DataManager::GetInstance().SetNextUri(); //Todo set nexturi
-                                    //DataManager::GetInstance().UpdateTitre();
-                                    qDebug() << "Add file";
-                                }
-                                else
-                                {
-                                   Stopped = false;
-                                   Started = false;
-                                   DataManager::GetInstance().SetSameUri(); //Todo set nexturi
-                                   qDebug() << "Add same file"; 
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                         if(strcmp(Sta,"STOPPED")==0 && Started == false) 
-                         {
-                            DataManager::GetInstance().PlayAndSetUri();
-                            qDebug() << "Play-----";
-                            //DataManager::GetInstance().UpdateTitre();
-                         }
-                    }
-                    if(LastState != NULL) delete LastState;
-                    LastState = new char[strlen(Sta)+1];
-                    strcpy(LastState,Sta);
-                }*/
                 break;
                 
             default:

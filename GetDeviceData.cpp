@@ -390,7 +390,7 @@ void GetDeviceData::run()
             {
                 if(strcmp(search[i],"All Artists")==0)
                 {
-                    qDebug() <<"Find : " <<   search[i];
+                    //qDebug() <<"Find : " <<   search[i];
                     break;
                 }
                 else
@@ -400,67 +400,47 @@ void GetDeviceData::run()
                 }
             }
         }
-
-    
-    /*   
-    for(int i =0 ; i< search.size();i++)
-    {
-        qDebug() <<  "Search for " << search[i];
-        d= vectorTool::get_value_of_value(resRoot,search[i]);
-        if(d.res!=-1)
-        {
-            //qDebug() <<   search[i];
-            if(strcmp(search[i],"artist")==0)
-            {
-                qDebug() <<   search[i];=GetNexttData(d);
-                break;
-            }
-            else
-            {
-                i=0;
-                resRoot.clear();
-                resRoot.swap(resRoot);
-                resRoot=GetNexttData(d);
-            }
-        }
    
-    }
-    */  
-                  char preAlbum[500];
-                  strcpy(preAlbum,"");
                   std::vector<Dictionnaire> resArstist=GetNexttData(d);
-                  qDebug() << "Taille Artiste" << resArstist.size();
+                  //qDebug() << "Taille Artiste" << resArstist.size();
                   for(int j=0;j<resArstist.size();j++)
                   {
-                      qDebug() << "Arstist Name " << resArstist[j].name <<" Value " <<resArstist[j].value; 
+                      //qDebug() << "Arstist Name " << resArstist[j].name <<" Value " <<resArstist[j].value; 
                       DataManager::GetInstance().AddDataToList(&resArstist[j]);
                       std::vector<Dictionnaire> res2=GetNexttData(resArstist[j]);
                       for(int k=0;k<res2.size();k++)
                       {
-                        
-                        if(strcmp(preAlbum,res2[k].value)!=0)
+                        if(1==1)
                         {
-                        //qDebug() << "Album Name " << res2[k].value ;
                             if(strcmp("All - full name",res2[k].value)!=0 && strcmp("All Songs",res2[k].value)!=0 )
                             {
-                                strcpy(preAlbum,res2[k].value);
                                 DataManager::GetInstance().AddAlbumToList(&res2[k],resArstist[j].value);
                                 std::vector<Dictionnaire> res3=GetNexttData(res2[k]);
                                 for(int l=0;l<res3.size();l++)
                                 {
+                                    if(res3[l].Imgurl == NULL)
+                                    {
+                                        if(res2[k].Imgurl!=NULL)
+                                        {
+                                            res3[l].Imgurl = new char[strlen(res2[k].Imgurl)+1];
+                                            strcpy(res3[l].Imgurl,res2[k].Imgurl);
+                                        }
+                                        else
+                                        {
+                                            if(resArstist[j].Imgurl!=NULL)
+                                            {
+                                                res3[l].Imgurl = new char[strlen(resArstist[j].Imgurl)+1];
+                                                strcpy(res3[l].Imgurl,resArstist[j].Imgurl);
+                                            }
+                                        }
+                                    }
                                     DataManager::GetInstance().AddTrackToList(&res3[l],res2[k].value);
-                                    qDebug() << "Add track : " <<  res3[l].value << " to Album Name :" << res2[k].value ;
                                     Init = true;
                                 }
                                 res3.clear();
                                 res3.swap(res3);
                             }
                         }
-                        else
-                        {
-                            qDebug() << "Doublon Album Name " << res2[k].value ;
-                        }
-                        
                       }
                       res2.clear();
                       res2.swap(res2);

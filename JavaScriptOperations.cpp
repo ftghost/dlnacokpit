@@ -70,19 +70,19 @@ void JavaScriptOperations::AddReaderReceive(int i ,char * Icon)
    const QString arg = QString::fromUtf8(Icon); 
    const QString arg1 = QString::number(i);
    QString info = QString("AddReader('%1','%2')").arg(arg,arg1);
-   qDebug() << info;
+   //qDebug() << info;
    view->page()->mainFrame()->evaluateJavaScript(info);
 }
 
 void  JavaScriptOperations::AddMainContent(char * name , char * url,char * info1)
 {
-   qDebug()<<"Info 1 : "<< htmlTool::ReplaceCarTohml(info1);
+   //qDebug()<<"Info 1 : "<< htmlTool::ReplaceCarTohml(info1);
    //QString arg2 = QString::fromUtf8(name); 
    QString arg = htmlTool::ReplaceCarTohml(QString::fromUtf8(name));
    //const QString arg = arg2.replace("'","|");
    const QString arg1 =  QString::fromUtf8(url); 
    QString arg2 = htmlTool::ReplaceHtmlToCar(QString::fromUtf8(info1));
-   qDebug()<<"Info 1 After: "<< arg2;
+   //qDebug()<<"Info 1 After: "<< arg2;
    QString info = QString("AddMainContent('%1','%2','%3')").arg(arg,arg1,arg2);
    //qDebug() << info;
    view->page()->mainFrame()->evaluateJavaScript(info);
@@ -175,6 +175,7 @@ QVariantList JavaScriptOperations::getAllInfo(QString val)
 QVariantList JavaScriptOperations::addToQueue(QString val,QString genre)
 {
     QString val2 = htmlTool::ReplaceHtmlToCar(val); 
+    qDebug() << val2;
     QList<QString> qlS = DataManager::GetInstance().AddToPlayList((char*)val2.toStdString().c_str(),(char*)genre.toStdString().c_str()); 
     QVariantList newList;
     foreach( QString item, qlS )

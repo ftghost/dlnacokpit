@@ -557,10 +557,11 @@ function AddToQueue(evt)
        var elem = document.createElement("img");
        elem.src=resArray[n]; 
        elem.id=resArray[n+1];
+       elem.title = resArray[n+2];
        elem.className = "playlistQueueimgNotSelected";
        alreadyExist1.appendChild(elem);
        delete elem;
-       n++;
+       n++;n++;
     }
    }
 };

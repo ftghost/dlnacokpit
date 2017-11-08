@@ -34,7 +34,7 @@ ServeFiles::ServeFiles()
           Port = 8081;  
         }
     }
-    qDebug()<< "Port = " << Port;
+    //qDebug()<< "Port = " << Port;
    
     d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG,
                         Port,
