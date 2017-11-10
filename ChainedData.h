@@ -41,15 +41,16 @@ public:
         QList<Dictionnaire *> SearchTrackFull(void * val);
         QList<Dictionnaire *> SearchAlbumFull(void * val);
         QList<Dictionnaire *> SearchArtistFull(void * val);
-        QList<Dictionnaire *> SearchTrackOfAlbum(void * val);
+        QList<Dictionnaire *> SearchTrackOfAlbum(void * val,void * val1);
+        Dictionnaire * SearchByUrl(void *val);
         
 	void * SearchArtist(void * val);
 	void * SearchAlbum(void * val);
-	void * SearchTrack(void * val);
+	void * SearchTrack(void * val,void * val1);
 	void * SearchAll(void *val);
 	void * ReturnValue();
-      	ChainedData * SearchArtistPrivate(void * val);
-	ChainedData * SearchAlbumPrivate(void * val);
+      	ChainedData * SearchArtistPrivate(void * val,void * val1);
+	ChainedData * SearchAlbumPrivate(void * val,void * val1);
 
 
 private:

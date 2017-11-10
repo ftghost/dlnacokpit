@@ -29,7 +29,7 @@ public slots:
  signals:
   void  AddReader(int,char *);
  signals:
-  void  AddToScreen(char*,char*,char*);
+  void  AddToScreen(char*,char*,char*,char*);
  signals:
   void  UpdateVol(char*);
  signals:
@@ -49,7 +49,7 @@ public:
      QList<Dictionnaire *>   SearchTrackFull(char *d);
      QList<Dictionnaire *>   SearchAlbumFull(char *d);
      QList<Dictionnaire *>   SearchArtistFull(char *d);
-     Dictionnaire *  SearchTrack(char *d);
+     Dictionnaire *  SearchTrack(char *d,char *pid);
      QList<QString> Search(QString,QString);
      bool Play(Dictionnaire *d);
      bool Play();
@@ -58,17 +58,17 @@ public:
      bool Next();
      char *  SetReader(int index);
      void  CanaddToScreen();
-     bool PlayAlbum(char *d);
+     bool PlayAlbum(char *d,char * pid);
      bool SetNextUri();
      bool PlayAndSetUri();
      bool SetSameUri();
      bool SetStopUri();
      void ClearQueue();
      bool UpdateVolume(char*);
-     bool UpdateTitre();
+     bool UpdateTitreFull(char *);
      bool SetVolume(char *);
-     QList<QString> AddToPlayList(char *, char *);
-     QList<QString> getAllInfo(QString val);
+     QList<QString> AddToPlayList(char *, char *,char *);
+     QList<QString> getAllInfo(QString val,QString val1);
 
 private :
     QList<UiDictionnaire *> PlayList;
@@ -79,6 +79,7 @@ private :
     bool ready;
     bool LecteurReady;
     bool Init;
+    bool InitNext;
     bool IsStop;
     std::vector<int> MyLecteur;
     ChainedData * chainedData;

@@ -161,6 +161,77 @@ char *  xmlTool::get_VolumeChange(char* docchar)
 
 
 
+char *  xmlTool::get_CurrentTrackUrl(char* docchar)
+{
+    char * res = NULL;
+    try
+    {
+        if(docchar ==NULL )
+        {
+            return res;
+        }
+        QXmlStreamReader xml(docchar);
+        while(!xml.atEnd() && !xml.hasError()) 
+        {
+            if(xml.isEndDocument()==true)
+            {
+                break;
+            }
+            
+            if(xml.isStartDocument()==true)
+            {
+                xml.readNext();
+                continue;
+            }  
+            
+            if (xml.name()!=NULL)
+            {
+               //qDebug() << xml.name();
+               if(xml.name()!=NULL)
+               {  
+                  if(xml.name()=="CurrentTrackURI")
+                  {
+                       foreach(const QXmlStreamAttribute &attr, xml.attributes()) 
+                       {
+                           if(attr.name() != NULL && attr.value()!=NULL)
+                           {  
+                               if (attr.name().toString() == QLatin1String("val")) 
+                               {
+                                   res = new char[strlen(attr.value().toString().toStdString().c_str())+1];
+                                   strcpy(res,attr.value().toString().toStdString().c_str());
+                               }    
+                           }
+                       }
+                  }
+                  else
+                  {
+                       foreach(const QXmlStreamAttribute &attr, xml.attributes()) 
+                       {
+                           if(attr.name() != NULL && attr.value()!=NULL)
+                           {  
+                             //qDebug() << attr.value(); 
+                           }
+                       }  
+                  }
+               }          
+            }
+            xml.readNext();
+            if(xml.hasError()) 
+            {
+                break;
+            }
+        }
+        xml.clear();        
+    }
+    catch(...)
+    {
+        return res;
+    }
+    return res;
+}
+
+
+
 
 char *  xmlTool::get_lastChange(char* docchar)
 {

@@ -21,6 +21,7 @@
 
 UpnpEventManager UpnpEventManager::m_instance=UpnpEventManager();
 
+
 UpnpEventManager & UpnpEventManager::GetInstance()
 {
   return m_instance;
@@ -66,7 +67,17 @@ bool UpnpEventManager::SetDataMangerStopped(bool dataMangerStopped )
 }
 
 
+bool UpnpEventManager::GetDataMangerStopped( )
+{
+    return IsStopped ;
+}
 
+
+
+bool UpnpEventManager::GetNextUriSet()
+{
+    return NextUriSet;
+}
 
 bool UpnpEventManager::Run()
 {
@@ -75,7 +86,9 @@ bool UpnpEventManager::Run()
     UpnpRoot u = UpnpManager::GetInstance().GetStructureDeviceByIndex(SelectedIndex);
     //qDebug() << "u.idRoot : " << u.idRoot;
     if(u.idRoot ==-1) 
+    {
         return false;
+    }
     for(int i=0;i<u.upnpListService.size();i++)
     {
        // qDebug() << "u.upnpListService[i].SubsId : " << u.upnpListService[i].SubsId << " &&& " << e_event->Sid;
@@ -86,11 +99,20 @@ bool UpnpEventManager::Run()
         }
     }
     
-    if(traite==false) return false;
+    if(traite==false) 
+    { 
+        return false;
+    }
     char * Sta =NULL;
     char * inf=NULL;
     inf = xmlTool::get_argument_value( e_event->ChangedVariables,"LastChange");
-    Sta = xmlTool::get_VolumeChange(inf);
+    if(inf==NULL)
+    {
+        return false;
+    }
+    char * infSav =  new char[strlen(inf)+1];
+    strcpy(infSav,inf);
+    Sta = xmlTool::get_VolumeChange(infSav);
     if(Sta != NULL)
     {
         //qDebug() << "traite true" << " sequence number : " << e_event->EventKey << " Volume : " << Sta;
@@ -99,7 +121,11 @@ bool UpnpEventManager::Run()
         Sta=NULL;
     }
     
-    Sta = xmlTool::get_lastChange(inf);
+    
+  
+    
+    strcpy(infSav,inf);
+    Sta = xmlTool::get_lastChange(infSav);
     if(Sta != NULL)
     {
         QString str = QString::fromUtf8(Sta);
@@ -115,17 +141,27 @@ bool UpnpEventManager::Run()
         else if(str==PLAYING )
         {
            IsStopped = false; 
+           DataManager::GetInstance().SetNextUri() ;
            DataManager::GetInstance().updateInfo(); 
-           DataManager::GetInstance().SetNextUri() ; 
-           //qDebug() << "SetNextUri";
         }
         else if((str==NO_MEDIA_PRESENT ||str==STOPPED)  &&  IsStopped == false)
         {
            DataManager::GetInstance().PlayAndSetUri() ;  
-           //qDebug() << "PlayAndSetUri";
         }
         delete Sta;
+        Sta=NULL;
     }
-    //if(inf!=NULL)delete inf;
+    
+    strcpy(infSav,inf);
+    Sta = xmlTool::get_CurrentTrackUrl(infSav);
+    if(Sta != NULL)
+    {
+        qDebug() << Sta ;//<<" QString::fromUtf8(Sta); " << QString::fromUtf8(Sta);
+        DataManager::GetInstance().UpdateTitreFull(Sta); 
+        delete Sta;
+        Sta=NULL;
+    }
+    
+    delete infSav;
     return true;
 }

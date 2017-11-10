@@ -40,6 +40,7 @@ typedef struct
     char *Playurl=NULL;
     char *Imgurl=NULL;
     char *BitRate=NULL;
+    char *Filler=NULL;
     bool IsContainer;
     bool IsItem;
 }Dictionnaire;

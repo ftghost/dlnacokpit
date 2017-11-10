@@ -19,6 +19,7 @@ public:
     static std::vector<Dictionnaire> get_list_arg_value_by_char(char* doc, const char* item , const char* item1);
     static char * get_lastChange(char* doc);
     static char * get_VolumeChange(char* doc);
+    static char * get_CurrentTrackUrl(char* doc);
     
 private:
     static void private_get_list_arg_value(IXML_NodeList * nodelist);

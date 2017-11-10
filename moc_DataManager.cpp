@@ -64,18 +64,18 @@ static const uint qt_meta_data_DataManager[] = {
 
  // signals: name, argc, parameters, tag, flags
        1,    2,   49,    2, 0x06 /* Public */,
-       4,    3,   54,    2, 0x06 /* Public */,
-       5,    1,   61,    2, 0x06 /* Public */,
-       6,    1,   64,    2, 0x06 /* Public */,
-       7,    3,   67,    2, 0x06 /* Public */,
+       4,    4,   54,    2, 0x06 /* Public */,
+       5,    1,   63,    2, 0x06 /* Public */,
+       6,    1,   66,    2, 0x06 /* Public */,
+       7,    3,   69,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       8,    3,   74,    2, 0x0a /* Public */,
-       9,    0,   81,    2, 0x0a /* Public */,
+       8,    3,   76,    2, 0x0a /* Public */,
+       9,    0,   83,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int, 0x80000000 | 3,    2,    2,
-    QMetaType::Void, 0x80000000 | 3, 0x80000000 | 3, 0x80000000 | 3,    2,    2,    2,
+    QMetaType::Void, 0x80000000 | 3, 0x80000000 | 3, 0x80000000 | 3, 0x80000000 | 3,    2,    2,    2,    2,
     QMetaType::Void, 0x80000000 | 3,    2,
     QMetaType::Void, 0x80000000 | 3,    2,
     QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::QString,    2,    2,    2,
@@ -94,7 +94,7 @@ void DataManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->AddReader((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< char*(*)>(_a[2]))); break;
-        case 1: _t->AddToScreen((*reinterpret_cast< char*(*)>(_a[1])),(*reinterpret_cast< char*(*)>(_a[2])),(*reinterpret_cast< char*(*)>(_a[3]))); break;
+        case 1: _t->AddToScreen((*reinterpret_cast< char*(*)>(_a[1])),(*reinterpret_cast< char*(*)>(_a[2])),(*reinterpret_cast< char*(*)>(_a[3])),(*reinterpret_cast< char*(*)>(_a[4]))); break;
         case 2: _t->UpdateVol((*reinterpret_cast< char*(*)>(_a[1]))); break;
         case 3: _t->UpdateTitre((*reinterpret_cast< char*(*)>(_a[1]))); break;
         case 4: _t->UpdateRange((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3]))); break;
@@ -113,7 +113,7 @@ void DataManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
             }
         }
         {
-            typedef void (DataManager::*_t)(char * , char * , char * );
+            typedef void (DataManager::*_t)(char * , char * , char * , char * );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&DataManager::AddToScreen)) {
                 *result = 1;
                 return;
@@ -187,9 +187,9 @@ void DataManager::AddReader(int _t1, char * _t2)
 }
 
 // SIGNAL 1
-void DataManager::AddToScreen(char * _t1, char * _t2, char * _t3)
+void DataManager::AddToScreen(char * _t1, char * _t2, char * _t3, char * _t4)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 

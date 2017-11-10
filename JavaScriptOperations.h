@@ -24,7 +24,7 @@ public:
 public Q_SLOTS:
     void  AddReaderReceive(int,char *);
 public Q_SLOTS:    
-    void  AddMainContent(char *,char*,char *);
+    void  AddMainContent(char *,char*,char *,char *);
 public Q_SLOTS:        
     void UpdateVol(char *);
 public Q_SLOTS:            
@@ -36,13 +36,13 @@ public Q_SLOTS:
     bool SetVolume(QString val);
     
     Q_INVOKABLE 
-    QVariantList addToQueue(QString val,QString genre);
+    QVariantList addToQueue(QString val,QString genre,QString pid);
     
     Q_INVOKABLE 
-    QString display(QString val,QString genre);
+    QString display(QString val,QString genre,QString pid);
     
     Q_INVOKABLE 
-    QVariantList getAllInfo(QString val);
+    QVariantList getAllInfo(QString val,QString val1);
 
     Q_INVOKABLE 
     void SetReader(QString val);

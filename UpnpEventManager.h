@@ -26,7 +26,9 @@ public:
     bool SetSelected(int);
     bool Run();
     bool SetNextUriSet(bool);
+    bool GetNextUriSet();
     bool SetDataMangerStopped(bool);
+    bool GetDataMangerStopped();
    
 private:
     UpnpEventManager& operator= (const UpnpEventManager&){}

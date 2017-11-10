@@ -546,7 +546,7 @@ function ClearQueue()
 
 function AddToQueue(evt)
 {
-   res = myoperations.addToQueue(evt.target.titre,evt.target.genre);
+   res = myoperations.addToQueue(evt.target.titre,evt.target.genre,evt.target.pid);
    var resArray = res.toString().split(",");
    var alreadyExist1 = document.getElementById("playQueue");
    if(alreadyExist1!=null)
@@ -558,6 +558,7 @@ function AddToQueue(evt)
        elem.src=resArray[n]; 
        elem.id=resArray[n+1];
        elem.title = resArray[n+2];
+       elem.pid = resArray[n+3];
        elem.className = "playlistQueueimgNotSelected";
        alreadyExist1.appendChild(elem);
        delete elem;
@@ -569,7 +570,7 @@ function AddToQueue(evt)
 
 function PlayNow(evt)
 {
-   myoperations.display(evt.target.titre,evt.target.genre);  
+   myoperations.display(evt.target.titre,evt.target.genre,evt.target.pid);  
 };
 
 
@@ -594,7 +595,7 @@ function AffInfoAlbum(evt)
    var alreadyExist = document.getElementById("mainResult");
    if(alreadyExist !=null)
    {    
-     res=myoperations.getAllInfo(evt.target.myParam);  
+     res=myoperations.getAllInfo(evt.target.myParam,evt.target.pid);  
      var resArray = res.toString().split(",");
      var elm = document.createElement("div");
      elm.id = "infoalbumdiv";
@@ -627,7 +628,8 @@ function AffInfoAlbum(evt)
      elemli.addEventListener('click', PlayNow, false); 
      elemli.innerHTML =  "Lire maintenant.";
      elemli.titre = resArray[1];
-     elemli.genre = "Album"
+     elemli.genre = "Album";
+     elemli.pid = evt.target.pid;
      elemul.appendChild(elemli);
      delete elemli;
      
@@ -636,6 +638,7 @@ function AffInfoAlbum(evt)
      elemli1.innerHTML =  "Ajouter &agrave; la liste";
      elemli1.titre = resArray[1];
      elemli1.genre = "Album"
+     elemli1.pid = evt.target.pid;
      elemul.appendChild(elemli1);
      delete elemli1;
      elmDiv3.appendChild(elemul);
@@ -664,6 +667,7 @@ function AffInfoAlbum(evt)
      elemli1.innerHTML =  "Lire maintenant.";
      elemli1.titre = resArray[n];
      elemli1.genre = "Morceau";
+     elemli1.pid = evt.target.pid;
      elemul2.appendChild(elemli1);
      delete elemli1;
     
@@ -672,6 +676,7 @@ function AffInfoAlbum(evt)
      elemli2.innerHTML =  "Ajouter &agrave; la liste";
      elemli2.titre = resArray[n];
      elemli2.genre = "Morceau";
+     elemli2.pid = evt.target.pid;
      elemul2.appendChild(elemli2);
      delete elemli2;    
      
@@ -719,7 +724,7 @@ function AddTitreInfo(vol)
     selectDeselectQueue(vol);
 }
 
-function AddMainContent(name, url,info)
+function AddMainContent(name, url,info,pid)
 {
     var alreadyExist = document.getElementById("wait");
     if(alreadyExist !=null)
@@ -736,6 +741,7 @@ function AddMainContent(name, url,info)
     elem.title=info;
     elem.addEventListener('click', AffInfoAlbum, false); 
     elem.myParam = name;
+    elem.pid = pid;
     elm.appendChild(elem);
     delete elem;
     document.getElementById("mainResult").appendChild(elm);
@@ -779,17 +785,13 @@ function isearch()
     elm.className = "container";
     var elem = document.createElement("img");
     elem.src=resArray[n+1];
+    elem.title=resArray[n+2];
+    elem.pid=resArray[n+3];
     elem.addEventListener('click', AffInfoAlbum, false); 
     elem.myParam = resArray[n];
     elm.appendChild(elem);
-    /*
-    var elem1 = document.createElement("span");
-    elem1.className = "caption";
-    elem1.innerHTML="<marquee scrollamount='3'>"+resArray[n]+"</marquee>";
-    elm.appendChild(elem1);
-    */
     document.getElementById("searchResult").appendChild(elm);
-    n++;
+    n++;n++;n++;
    }
 };
 

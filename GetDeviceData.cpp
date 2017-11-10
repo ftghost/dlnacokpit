@@ -415,6 +415,7 @@ void GetDeviceData::run()
                             if(strcmp("All - full name",res2[k].value)!=0 && strcmp("All Songs",res2[k].value)!=0 )
                             {
                                 DataManager::GetInstance().AddAlbumToList(&res2[k],resArstist[j].value);
+                                //qDebug() <<"Arstit id : " <<resArstist[j].id << "album parent id : " <<res2[k].parentId <<"album id : " <<res2[k].id << "Arstist Name " << resArstist[j].name <<" Value " <<resArstist[j].value << "Album : name " << res2[k].name << "Album : value " << res2[k].value; 
                                 std::vector<Dictionnaire> res3=GetNexttData(res2[k]);
                                 for(int l=0;l<res3.size();l++)
                                 {
@@ -424,6 +425,11 @@ void GetDeviceData::run()
                                         {
                                             res3[l].Imgurl = new char[strlen(res2[k].Imgurl)+1];
                                             strcpy(res3[l].Imgurl,res2[k].Imgurl);
+                                            if(resArstist[j].Imgurl==NULL)
+                                            {
+                                                resArstist[j].Imgurl = new char[strlen(res2[k].Imgurl)+1];
+                                                strcpy(resArstist[j].Imgurl,res2[k].Imgurl);
+                                            }
                                         }
                                         else
                                         {
@@ -432,6 +438,14 @@ void GetDeviceData::run()
                                                 res3[l].Imgurl = new char[strlen(resArstist[j].Imgurl)+1];
                                                 strcpy(res3[l].Imgurl,resArstist[j].Imgurl);
                                             }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if(resArstist[j].Imgurl==NULL)
+                                        {
+                                            resArstist[j].Imgurl = new char[strlen(res3[l].Imgurl)+1];
+                                            strcpy(resArstist[j].Imgurl,res3[l].Imgurl);
                                         }
                                     }
                                     DataManager::GetInstance().AddTrackToList(&res3[l],res2[k].value);

@@ -160,7 +160,64 @@ QList<Dictionnaire *>  ChainedData::SearchAlbumFull(void * val)
 
 
 
-
+Dictionnaire * ChainedData::SearchByUrl(void *val)
+{
+   ChainedData * chainedData = this->GetFirst();
+   ChainedData * chaineDataAlbum;
+   ChainedData * chaineDataTrack;
+   while(chainedData!=NULL)
+   {
+        if(chainedData->GetLastAlbum()!=NULL)
+	{	
+                chaineDataAlbum = chainedData->GetLastAlbum()->GetAlbumRoot();
+                while(chaineDataAlbum!=NULL)
+		{
+                    if(chaineDataAlbum->GetLastTrack()!=NULL)
+                    {
+			chaineDataTrack = chaineDataAlbum->GetLastTrack()->GetTrackRoot();
+                        Dictionnaire * ret = (Dictionnaire *)chaineDataTrack->ReturnValue();
+			if(strcmp(ret->Playurl,(char*)val)==0)
+                        {
+                            /*
+                            Dictionnaire * art = (Dictionnaire *)chainedData->ReturnValue();
+                            Dictionnaire * alb = (Dictionnaire *)chaineDataAlbum->ReturnValue();
+                            ret->Filler = new char[strlen(art->value)+strlen(alb->value)+3];
+                            strcpy(ret->Filler,art->value);
+                            strcat(ret->Filler,":");
+                            strcat(ret->Filler,alb->value);
+                            strcat(ret->Filler,"-");
+                            strcat(ret->Filler,ret->value);
+                            */ 
+                            return ret;
+			}
+                        
+			while(chaineDataTrack->GetNextTrack() != NULL)
+			{
+                            Dictionnaire * ret = (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
+                            if(strcmp(ret->Playurl,(char*)val)==0)
+                            {
+                                /*
+                                Dictionnaire * art = (Dictionnaire *)chainedData->ReturnValue();
+                                Dictionnaire * alb = (Dictionnaire *)chaineDataAlbum->ReturnValue();
+                                ret->Filler = new char[strlen(art->value)+strlen(alb->value)+3];
+                                strcpy(ret->Filler,art->value);
+                                strcat(ret->Filler,":");
+                                strcat(ret->Filler,alb->value);
+                                strcat(ret->Filler,"-");
+                                strcat(ret->Filler,ret->value);
+                                */ 
+                                return ret;
+                            }
+                            chaineDataTrack = chaineDataTrack->GetNextTrack();
+			}
+         	    }
+		chaineDataAlbum = chaineDataAlbum->GetNextAlbum();
+		}
+	}
+    chainedData = chainedData->GetNextArtist();
+    }
+    return NULL;     
+}
 
 
 QList<Dictionnaire *>  ChainedData::SearchTrackFull(void * val)
@@ -227,7 +284,7 @@ void * ChainedData::SearchArtist(void * val)
 }
 
 
-void * ChainedData::SearchTrack(void * val)
+void * ChainedData::SearchTrack(void * val,void * pid)
 {
 	ChainedData * chainedData = this->GetFirst();
 	ChainedData * chaineDataAlbum;
@@ -239,26 +296,55 @@ void * ChainedData::SearchTrack(void * val)
 			chaineDataAlbum = chainedData->GetLastAlbum()->GetAlbumRoot();
 			while(chaineDataAlbum!=NULL)
 			{
+                            if(strcmp((char *)pid,"")==0)
+                            {
 				if(chaineDataAlbum->GetLastTrack()!=NULL)
 				{
-						chaineDataTrack = chaineDataAlbum->GetLastTrack()->GetTrackRoot();
-                                                Dictionnaire * d = (Dictionnaire *)chaineDataTrack->ReturnValue();
-						if(strcmp(d->value,(char*)val)==0)
-						{
-							return chaineDataTrack->ReturnValue();
-						}
-						while(chaineDataTrack->GetNextTrack() != NULL)
-						{
-							Dictionnaire * d = (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
-							if(strcmp(d->value,(char*)val)==0)
-							{
-								return d;
-							}
-                                                        chaineDataTrack = chaineDataTrack->GetNextTrack();
-						}
+                                    chaineDataTrack = chaineDataAlbum->GetLastTrack()->GetTrackRoot();
+                                    Dictionnaire * d = (Dictionnaire *)chaineDataTrack->ReturnValue();
+                                    if(strcmp(d->value,(char*)val)==0)
+                                    {
+					return chaineDataTrack->ReturnValue();
+                                    }
+                                    while(chaineDataTrack->GetNextTrack() != NULL)
+                                    {
+					Dictionnaire * d = (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
+					if(strcmp(d->value,(char*)val)==0)
+					{
+                                            return d;
+					}
+                                        chaineDataTrack = chaineDataTrack->GetNextTrack();
+                                    }
 
 				}
-				chaineDataAlbum = chaineDataAlbum->GetNextAlbum();
+                            }
+                            else
+                            {
+                                Dictionnaire * dpid = (Dictionnaire *)chaineDataAlbum->ReturnValue();
+                                if(strcmp((char*)pid,dpid->id)==0)
+                                {
+                                    if(chaineDataAlbum->GetLastTrack()!=NULL)
+                                    {
+                                        chaineDataTrack = chaineDataAlbum->GetLastTrack()->GetTrackRoot();
+                                        Dictionnaire * d = (Dictionnaire *)chaineDataTrack->ReturnValue();
+                                        if(strcmp(d->value,(char*)val)==0)
+                                        {
+                                            return chaineDataTrack->ReturnValue();
+                                        }
+                                        while(chaineDataTrack->GetNextTrack() != NULL)
+                                        {
+                                            Dictionnaire * d = (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
+                                            if(strcmp(d->value,(char*)val)==0)
+                                            {
+                                                return d;
+                                            }
+                                            chaineDataTrack = chaineDataTrack->GetNextTrack();
+                                        }
+
+                                    }
+                                }
+                            }
+                            chaineDataAlbum = chaineDataAlbum->GetNextAlbum();
 			}
 			
 		}
@@ -299,11 +385,11 @@ void * ChainedData::SearchAlbum(void * val)
 	return NULL;
 }
 
-ChainedData * ChainedData::SearchAlbumPrivate(void * val)
+ChainedData * ChainedData::SearchAlbumPrivate(void * val,void * pid)
 {
 	ChainedData * chainedData = this->GetFirst();
 	ChainedData * chaineDataAlbum;
-
+        Dictionnaire *parentid = (Dictionnaire *)pid; 
 	while(chainedData!=NULL)
 	{
 		if(chainedData->GetLastAlbum()!=NULL)
@@ -312,13 +398,29 @@ ChainedData * ChainedData::SearchAlbumPrivate(void * val)
                         Dictionnaire *d = (Dictionnaire *)chaineDataAlbum->ReturnValue(); 
 			if(strcmp(d->value,(char*)val)==0)
 			{
-				return chaineDataAlbum;
+                            if(d->id!=NULL && parentid->parentId!=NULL)
+                            {
+                                if(strcmp(d->id,parentid->parentId)==0)
+                                {
+                                    return chaineDataAlbum;
+                                }
+                            }
+                            else
+                                return chaineDataAlbum;
 			}
 			while(chaineDataAlbum->GetNextAlbum() != NULL)
 			{
 				Dictionnaire *d = (Dictionnaire *)chaineDataAlbum->GetNextAlbum()->ReturnValue();
 				if(strcmp(d->value,(char*)val)==0)
 				{
+                                    if(d->id!=NULL && parentid->parentId!=NULL)
+                                    {
+                                        if(strcmp(d->id,parentid->parentId)==0)
+                                        {
+                                            return chaineDataAlbum->GetNextAlbum();
+                                        }
+                                    }
+                                    else
 					return chaineDataAlbum->GetNextAlbum();
 				}
 				chaineDataAlbum = chaineDataAlbum->GetNextAlbum();
@@ -329,14 +431,23 @@ ChainedData * ChainedData::SearchAlbumPrivate(void * val)
 	return NULL;
 }
 
-ChainedData * ChainedData::SearchArtistPrivate(void * val)
+ChainedData * ChainedData::SearchArtistPrivate(void * val,void * d)
 {
 	ChainedData * chainedData = this->GetFirst();
 	Dictionnaire * test = (Dictionnaire*)chainedData->ReturnValue();
+        Dictionnaire * testParent = (Dictionnaire*)d;
         
 	if(strcmp(test->value,(char*)val)==0)
 	{
-		return chainedData;
+            if(test->id!=NULL && testParent->parentId!=NULL)
+            {
+                if(strcmp(test->id,testParent->parentId)==0)
+                {
+                    return chainedData;
+                }
+            }
+            else
+                return chainedData;
 	}
 
 	while(chainedData->GetNextArtist() != NULL)
@@ -344,17 +455,30 @@ ChainedData * ChainedData::SearchArtistPrivate(void * val)
 		test = (Dictionnaire*)chainedData->GetNextArtist()->ReturnValue();
 		if(strcmp(test->value,(char*)val)==0)
 		{
-			return chainedData->GetNextArtist();
+                    if(test->id!=NULL && testParent->parentId!=NULL)
+                    {
+                        if(strcmp(test->id,testParent->parentId)==0)
+                        {
+                            return chainedData->GetNextArtist();
+                        }
+                    }
+                    else
+                    {
+                        return chainedData->GetNextArtist();
+                    }
 		}
 		chainedData = chainedData->GetNextArtist();
 	}
 	return NULL;
 }
 
-QList<Dictionnaire *> ChainedData::SearchTrackOfAlbum(void * val)
+QList<Dictionnaire *> ChainedData::SearchTrackOfAlbum(void * val,void *val1)
 {
     QList<Dictionnaire *>  listDic;
-    ChainedData * chainedData = SearchAlbumPrivate(val);
+    Dictionnaire * dparent = new Dictionnaire;
+    dparent->parentId = new char[strlen((char*)val1)+1];
+    strcpy(dparent->parentId,(char*)val1);
+    ChainedData * chainedData = SearchAlbumPrivate(val,dparent);
     if(chainedData!=NULL)
     {
        listDic.push_back((Dictionnaire *)chainedData->ArstistRoot->ReturnValue());   
@@ -372,6 +496,8 @@ QList<Dictionnaire *> ChainedData::SearchTrackOfAlbum(void * val)
             }
 	}
     }
+    delete dparent->parentId;
+    delete dparent;
     return listDic;
 }
 
@@ -600,7 +726,7 @@ bool ChainedData::SetLastTrack(ChainedData * Value)
 
 bool ChainedData::AddTrack(void * val ,char * Album)
 {
-    	ChainedData * chainedData = SearchAlbumPrivate(Album);
+    	ChainedData * chainedData = SearchAlbumPrivate(Album,val);
 	if(chainedData == NULL)
 	{
 		return false;
@@ -687,7 +813,7 @@ bool ChainedData::AddTrack(void * Value,ChainedData *chainedAlbum)
 
 bool ChainedData::AddAlbum(void * val ,char * Artist)
 {
-	ChainedData * chainedData = SearchArtistPrivate(Artist);
+	ChainedData * chainedData = SearchArtistPrivate(Artist,val);
  	if(chainedData == NULL)
 	{
 		return false;

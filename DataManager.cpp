@@ -21,6 +21,7 @@ DataManager & DataManager::GetInstance()
 
 DataManager::DataManager()
 {
+    InitNext = false;
     Init = false;
     NewData = true;
     ready = false;
@@ -158,11 +159,11 @@ void DataManager::CanaddToScreen()
                         strcat(valeurAffiche,d->value);
                         if(d->Imgurl !=NULL)
                         {
-                            AddToScreen(d->value,d->Imgurl,valeurAffiche);
+                            AddToScreen(d->value,d->Imgurl,valeurAffiche,d->id);
                         }
                         else
                         {
-                            AddToScreen(d->value,"guer.jpeg",valeurAffiche);
+                            AddToScreen(d->value,"guer.jpeg",valeurAffiche,d->id);
                         }
 			while(chaineDataAlbum->GetNextAlbum() != NULL)
 			{
@@ -172,11 +173,11 @@ void DataManager::CanaddToScreen()
                                 strcat(valeurAffiche,d->value);
                                 if(d->Imgurl !=NULL)
                                 {
-                                    AddToScreen(d->value,d->Imgurl,valeurAffiche);
+                                    AddToScreen(d->value,d->Imgurl,valeurAffiche,d->id);
                                 }
                                 else
                                 {
-                                    AddToScreen(d->value,"guer.jpeg",valeurAffiche);
+                                    AddToScreen(d->value,"guer.jpeg",valeurAffiche,d->id);
                                 }
 				chaineDataAlbum = chaineDataAlbum->GetNextAlbum();
 			}
@@ -254,14 +255,14 @@ Dictionnaire * DataManager::GetNextArstist(int i)
 
 
 
-Dictionnaire *  DataManager::SearchTrack(char *d)
+Dictionnaire *  DataManager::SearchTrack(char *d,char * pid)
 {
     Dictionnaire *  dic = NULL; 
     if(ready == false)
     {
         return  dic; 
     }
-    dic = (Dictionnaire *)chainedData->SearchTrack(d);
+    dic = (Dictionnaire *)chainedData->SearchTrack(d,pid);
     return dic;
 }
 
@@ -342,14 +343,14 @@ void DataManager::AddDataToList(Dictionnaire *d)
 
 
 
-QList<QString>  DataManager::AddToPlayList(char * val , char * genre)
+QList<QString>  DataManager::AddToPlayList(char * val , char * genre,char * pid)
 {
     QList<QString> qls;
     if(SelectedIndex==-1)return qls;
    
     if(strcmp(genre,"Morceau")==0)
     {
-        Dictionnaire *d = SearchTrack(val);
+        Dictionnaire *d = SearchTrack(val,pid);
         if(d!=NULL)
         {
             if(chaineDataTrackList[SelectedIndex] == NULL)
@@ -378,7 +379,10 @@ QList<QString>  DataManager::AddToPlayList(char * val , char * genre)
     }
     else if(strcmp(genre,"Album")==0)
     {
-        ChainedData * d = chainedData->SearchAlbumPrivate(val);
+        Dictionnaire * dico= new Dictionnaire();
+        dico->parentId = new char[strlen(pid)+1];
+        strcpy(dico->parentId,pid);
+        ChainedData * d = chainedData->SearchAlbumPrivate(val,dico);
         if(d!=NULL)
         {
             if(d->GetLastTrack() != NULL)
@@ -424,8 +428,14 @@ QList<QString>  DataManager::AddToPlayList(char * val , char * genre)
                 }
             }
         }
+        delete dico->parentId;
+        delete dico;
     }
-         
+    
+    if(UpnpEventManager::GetInstance().GetNextUriSet()==false)
+    {
+        SetNextUri();
+    }
     return qls;
 }
             
@@ -464,10 +474,9 @@ void DataManager::ClearQueue()
     }
     chaineDataTrack = NULL;
   }
-  
-  
+  Init =false;
+  InitNext=false;
   SetStopUri();
-  Init = false;
 }
 
 
@@ -481,7 +490,8 @@ bool DataManager::SetStopUri()
     strcpy(d.Playurl,"");
     getDeviceTransport[SelectedIndex]->Stop();
     bool ret = getDeviceTransport[SelectedIndex]->PrepareNextUri(&d); 
-    ret = getDeviceTransport[SelectedIndex]->PrepareUri(&d); 
+    ret = getDeviceTransport[SelectedIndex]->PrepareUri(&d);
+    UpnpEventManager::GetInstance().SetDataMangerStopped(true);
     UpnpEventManager::GetInstance().SetNextUriSet(false);
     return true;
 }
@@ -517,42 +527,58 @@ bool DataManager::SetSameUri()
 }
 
 
+
+
 bool DataManager::PlayAndSetUri()
 {
         if(SelectedIndex==-1 || IsStop == true)return false;
         pthread_mutex_lock(&mutexUri);
         if(chaineDataTrack != NULL)
         {
-            if(chaineDataTrack->GetNextTrack() != NULL)
+            if(Init==false)
             {
-                Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
+                Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->ReturnValue();
                 if(dic!=NULL)
                 {
                     getDeviceTransport[SelectedIndex]->PrepareUri(dic);
                     getDeviceTransport[SelectedIndex]->Play();
-                    UpdateTitre(dic->value);
+                    //UpdateTitre(dic->value);
+                }
+                Init = true;
+            }
+            else
+            {
+                if(chaineDataTrack->GetNextTrack() != NULL)
+                {
+                    Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
+                    if(dic!=NULL)
+                    {
+                        getDeviceTransport[SelectedIndex]->PrepareUri(dic);
+                        getDeviceTransport[SelectedIndex]->Play();
+                        //UpdateTitre(dic->value);
+                        chaineDataTrack = chaineDataTrack->GetNextTrack();
+                    }
+                }
+                else
+                {
                     chaineDataTrack = chaineDataTrack->GetNextTrack();
                 }
             }
         }
         else
         {
-            if(Init==true)
+            if(InitNext==true)
             {
                 if(chaineDataTrackList[SelectedIndex] != NULL)
                 {
-                    if(chaineDataTrackList[SelectedIndex]->GetNextArtist() != NULL)
+                    Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->ReturnValue();
+                    if(dic!=NULL)
                     {
-                        Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->GetNextArtist()->ReturnValue();
-                        if(dic!=NULL)
-                        {
-                            getDeviceTransport[SelectedIndex]->PrepareUri(dic);   
-                            getDeviceTransport[SelectedIndex]->Play();
-                            UpdateTitre(dic->value);
-                            chaineDataTrackList[SelectedIndex] = chaineDataTrackList[SelectedIndex]->GetNextArtist();
-                            //qDebug() << "After next URI : " << chaineDataTrackList[SelectedIndex];
-                        }
-                    } 
+                        getDeviceTransport[SelectedIndex]->PrepareUri(dic);   
+                        getDeviceTransport[SelectedIndex]->Play();
+                        //UpdateTitre(dic->value);
+//                        chaineDataTrackList[SelectedIndex] = chaineDataTrackList[SelectedIndex]->GetNextArtist();
+                    }
                 }
             }
             else
@@ -566,11 +592,14 @@ bool DataManager::PlayAndSetUri()
                         {
                             getDeviceTransport[SelectedIndex]->PrepareUri(dic);   
                             getDeviceTransport[SelectedIndex]->Play();
-                            UpdateTitre(dic->value);
+                            //UpdateTitre(dic->value);
                             chaineDataTrackList[SelectedIndex] = chaineDataTrackList[SelectedIndex]->GetFirst();
-                            //qDebug() << "After next URI : " << chaineDataTrackList[SelectedIndex];
                         }                        
-                        Init=true;
+                        InitNext=true;
+                    }
+                    else
+                    {
+                        chaineDataTrackList[SelectedIndex] = chaineDataTrackList[SelectedIndex]->GetFirst();
                     }
                 }
             }
@@ -584,19 +613,13 @@ bool DataManager::SetNextUri()
 { 
     if(SelectedIndex==-1)return false;
     pthread_mutex_lock(&mutexUri);
-    bool continu = false;
+    bool IsSetNextUri = false;
     if(chaineDataTrack != NULL)
     {
-         Dictionnaire *dic= (Dictionnaire *)chaineDataTrack->ReturnValue();
-         if(dic != NULL)
-         {
-            UpdateTitre(dic->value); 
-         }
-         
         if(chaineDataTrack->GetNextTrack() != NULL)
         {
             
-            dic= (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
+            Dictionnaire * dic= (Dictionnaire *)chaineDataTrack->GetNextTrack()->ReturnValue();
             if(dic!=NULL)
             {
                 getDeviceTransport[SelectedIndex]->PrepareNextUri(dic); 
@@ -605,31 +628,24 @@ bool DataManager::SetNextUri()
                 {
                     chaineDataTrack = chaineDataTrack->GetNextTrack();
                 }
+                IsSetNextUri = true;
             }
         }
         else
         {
-            continu=true;
+            chaineDataTrack = chaineDataTrack->GetNextTrack();
+            UpnpEventManager::GetInstance().SetNextUriSet(false);
         }
     }
-    else
-    {
-        continu=true;
-    }
+  
     
-    if(continu==true)
+    if(IsSetNextUri==false)
     {
         if(chaineDataTrackList[SelectedIndex] != NULL)
         {
-            Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->ReturnValue();
-            if(dic!=NULL) 
+            if(InitNext == false)
             {
-                UpdateTitre(dic->value); 
-            }
-            
-            if(chaineDataTrackList[SelectedIndex]->GetNextArtist() != NULL)
-            {
-                Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->GetNextArtist()->ReturnValue();
+                Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->ReturnValue();
                 if(dic!=NULL)
                 {
                     getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);
@@ -639,23 +655,64 @@ bool DataManager::SetNextUri()
                         chaineDataTrackList[SelectedIndex] = chaineDataTrackList[SelectedIndex]->GetNextArtist();
                     }
                 }
-            } 
+                else
+                {
+                    UpnpEventManager::GetInstance().SetNextUriSet(false);
+                }
+                InitNext = true;
+            }
+            else
+            {
+                if(chaineDataTrackList[SelectedIndex]->GetNextArtist() != NULL)
+                {
+                    Dictionnaire *dic= (Dictionnaire *)chaineDataTrackList[SelectedIndex]->GetNextArtist()->ReturnValue();
+                    if(dic!=NULL)
+                    {
+                        getDeviceTransport[SelectedIndex]->PrepareNextUri(dic);
+                        UpnpEventManager::GetInstance().SetNextUriSet(true);
+                        if(chaineDataTrackList[SelectedIndex]->GetNextArtist()!=NULL)
+                        {
+                            chaineDataTrackList[SelectedIndex] = chaineDataTrackList[SelectedIndex]->GetNextArtist();
+                        }
+                    }
+                    else
+                    {
+                        UpnpEventManager::GetInstance().SetNextUriSet(false);
+                    }
+                } 
+            }
+        }
+        else
+        {
+            UpnpEventManager::GetInstance().SetNextUriSet(false);
         }
     }
     pthread_mutex_unlock(&mutexUri);
 }
 
 
-bool DataManager::UpdateTitre()
+bool DataManager::UpdateTitreFull(char * Url)
 {
-    return false;
+    if(UpnpEventManager::GetInstance().GetDataMangerStopped()==true) return true;
+    char UrlTest[500]="";
+    strcpy(UrlTest,Url);
+    Dictionnaire * dic=(Dictionnaire *)chainedData->SearchByUrl(UrlTest);
+    if(dic!=NULL)
+    { 
+        qDebug() << "Not null" << dic->value;
+        UpdateTitre(dic->value);
+    }
+    return true;
 }
 
-bool DataManager::PlayAlbum(char * val)
+bool DataManager::PlayAlbum(char * val,char * pid)
 {
     if(SelectedIndex==-1)return false;
     pthread_mutex_lock(&mutexUri);
-    ChainedData * d = chainedData->SearchAlbumPrivate(val);
+    Dictionnaire * dico= new Dictionnaire();
+    dico->parentId = new char[strlen(pid)+1];
+    strcpy(dico->parentId,pid);
+    ChainedData * d = chainedData->SearchAlbumPrivate(val,dico);
     Dictionnaire * dic =NULL;
     if(d!=NULL)
     {
@@ -669,11 +726,13 @@ bool DataManager::PlayAlbum(char * val)
                 if(res == true)
                 {
                    getDeviceTransport[SelectedIndex]->Play();
-                   UpdateTitre(dic->value);
+                   //UpdateTitre(dic->value);
                 }   
             }
         }
-     }
+    }
+    delete dico->parentId;
+    delete dico;
     pthread_mutex_unlock(&mutexUri);
     return true;
 }
@@ -688,7 +747,7 @@ bool DataManager::Play(Dictionnaire* d)
     if(res == true)
     {
        getDeviceTransport[SelectedIndex]->Play();
-       UpdateTitre(d->value);
+       //UpdateTitre(d->value);
     }
     return true;
 }
@@ -738,10 +797,10 @@ bool DataManager::Stop()
 }
 
 
-QList<QString> DataManager::getAllInfo(QString val)
+QList<QString> DataManager::getAllInfo(QString val,QString val1)
 {
     QList<QString> list; 
-    QList<Dictionnaire*> dList=chainedData->SearchTrackOfAlbum((char*)val.toStdString().c_str());
+    QList<Dictionnaire*> dList=chainedData->SearchTrackOfAlbum((char*)val.toStdString().c_str(),(char*)val1.toStdString().c_str());
     for(int i=0;i<dList.size();i++)
     {
         if(i==1)
@@ -782,6 +841,7 @@ QList<QString> DataManager::getAllInfo(QString val)
              {
                 list.push_back(dList[i]->Imgurl);
              }
+             list.push_back(dList[i]->id);
          } 
       }
       
@@ -799,6 +859,7 @@ QList<QString> DataManager::getAllInfo(QString val)
              {
                 list.push_back(dList[i]->Imgurl);
              }
+             list.push_back(dList[i]->id);
          }
       }
       
@@ -816,6 +877,7 @@ QList<QString> DataManager::getAllInfo(QString val)
              {
                 list.push_back(dList[i]->Imgurl);
              }
+             list.push_back(dList[i]->id);
          }
       }
       
