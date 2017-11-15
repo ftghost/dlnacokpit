@@ -81,12 +81,14 @@ bool UpnpEventManager::GetNextUriSet()
 
 bool UpnpEventManager::Run()
 {
+    qDebug() << "UpnpEventManager::Run()";
     //Get ssid
     bool traite = false;
     UpnpRoot u = UpnpManager::GetInstance().GetStructureDeviceByIndex(SelectedIndex);
     //qDebug() << "u.idRoot : " << u.idRoot;
     if(u.idRoot ==-1) 
     {
+        qDebug() << "u.idRoot : -1 : " << u.idRoot;
         return false;
     }
     for(int i=0;i<u.upnpListService.size();i++)
@@ -101,6 +103,7 @@ bool UpnpEventManager::Run()
     
     if(traite==false) 
     { 
+        qDebug() << "traite : false : " << u.idRoot;
         return false;
     }
     char * Sta =NULL;
@@ -108,6 +111,7 @@ bool UpnpEventManager::Run()
     inf = xmlTool::get_argument_value( e_event->ChangedVariables,"LastChange");
     if(inf==NULL)
     {
+        qDebug() << "inf Null : " << e_event->ChangedVariables;
         return false;
     }
     char * infSav =  new char[strlen(inf)+1];
@@ -156,8 +160,17 @@ bool UpnpEventManager::Run()
     Sta = xmlTool::get_CurrentTrackUrl(infSav);
     if(Sta != NULL)
     {
-        qDebug() << Sta ;//<<" QString::fromUtf8(Sta); " << QString::fromUtf8(Sta);
-        DataManager::GetInstance().UpdateTitreFull(Sta); 
+        qDebug() << Sta << " Is stopped : "<<IsStopped; //<<" QString::fromUtf8(Sta); " << QString::fromUtf8(Sta);
+        if(IsStopped == true)
+        {
+            IsStopped = false;
+            DataManager::GetInstance().UpdateTitreFull(Sta); 
+            IsStopped = true;
+        }
+        else
+        {
+            DataManager::GetInstance().UpdateTitreFull(Sta); 
+        }
         delete Sta;
         Sta=NULL;
     }
