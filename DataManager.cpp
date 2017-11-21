@@ -6,6 +6,7 @@
 #include <QDir>
 #include "htmlTool.h"
 #include "UpnpEventManager.h"
+#include "HttpClientManager.h"
 
 
 
@@ -888,7 +889,9 @@ QList<QString> DataManager::getAllInfo(QString val,QString val1)
       
       if(type=="Web")
       {
-        
+          HttpClientManager *h = new HttpClientManager();
+          h->PostUrl();
+         //delete h;
       }
           
       

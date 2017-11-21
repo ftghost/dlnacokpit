@@ -17,12 +17,16 @@ public:
     htmlTool(const htmlTool& orig);
     virtual ~htmlTool();
     static bool downloadAndSave(char * Adresse , char * fileName,char * SaveLocation);
-    static QList<QString>  SearchAndSave(char * Adresse ,char * SaveLocation,bool Again );
-    static bool SearchAndSave(char * Adresse ,char * SaveLocation);
+    static QList<QString>  SearchAndSave(char *);
     static QString ReplaceCarTohml(QString);
     static QString ReplaceHtmlToCar(QString);
     static QString ReplaceUrlToCar(QString);
 private:
+    struct MemoryStruct {
+                        char *memory;
+                        size_t size;
+                        };
+    static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp);
     static pthread_mutex_t mutexHtml;
 
 };

@@ -229,167 +229,110 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
  }
 
  
+ 
+ 
+size_t htmlTool::WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp) 
+{
+  size_t realsize = size * nmemb;
+  struct MemoryStruct *mem = (struct MemoryStruct *)userp;
+ 
+  mem->memory =(char*)realloc(mem->memory, mem->size + realsize + 1);
+  if(mem->memory == NULL) 
+  {
+    /* out of memory! */ 
+    printf("not enough memory (realloc returned NULL)\n");
+    return 0;
+  }
+ 
+  memcpy(&(mem->memory[mem->size]), contents, realsize);
+  mem->size += realsize;
+  mem->memory[mem->size] = 0;
+ 
+  return realsize;    
+}
 
  
  
-bool htmlTool::SearchAndSave(char * Adresse , char * SaveLocation)
+QList<QString> htmlTool::SearchAndSave(char * query)
  {
      
-
-     pthread_mutex_lock(&mutexHtml);  
-     char SaveAbsoluteLocation[500];
-     memset(SaveAbsoluteLocation,'\0',500);
-     strcpy(SaveAbsoluteLocation,QDir::currentPath().toStdString().c_str());
-     strcat(SaveAbsoluteLocation,SaveLocation);
-     bool retour = true;     
-     CURL *curl;
-     FILE *fp;
+    QList<QString> l;
+    QSettings settings("./conf/config.ini", QSettings::IniFormat);
+    settings.beginGroup("webSearch");
+    pthread_mutex_lock(&mutexHtml); 
+    //Save location
+    char SaveAbsoluteLocation[500];
+    memset(SaveAbsoluteLocation,'\0',500);
+    //Url
+    char UrlToCall[500];
+    memset(UrlToCall,'\0',500);
+    
+    if(settings.contains("url")==true)
+    {
+        strcpy(UrlToCall,settings.value("url").toString().toStdString().c_str());
+    }
+    else
+    {
+        pthread_mutex_unlock(&mutexHtml);  
+        return l;
+    }
+    
+    if(settings.contains("save")==true)
+    {
+        strcpy(SaveAbsoluteLocation,QDir::currentPath().toStdString().c_str());
+        strcat(SaveAbsoluteLocation,settings.value("url").toString().toStdString().c_str());
+    }
+    else
+    {
+        pthread_mutex_unlock(&mutexHtml);  
+        return l;
+    }
+    
+    CURL *curl;
+    struct MemoryStruct chunk;
+    static const char *postthis = "query=djemila guidoni";
+ 
+    
+    chunk.memory = (char*)malloc(1);  /* will be grown as needed by realloc above */ 
+    chunk.size = 0;    /* no data at this point */ 
+ 
+     curl_global_init(CURL_GLOBAL_ALL);
      curl = curl_easy_init();
      if (curl) 
      {
-        fp = fopen(SaveAbsoluteLocation,"wb");
-        if(fp == NULL) 
-        {
-             curl_easy_cleanup(curl);
-             pthread_mutex_unlock(&mutexHtml);  
-            return false;
-        }  
         
         CURLcode res;
+        /*
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, "false");
         curl_easy_setopt(curl, CURLOPT_VERBOSE, "true");
         curl_easy_setopt(curl, CURLOPT_USERAGENT, "Opera/9.80 (J2ME/MIDP; Opera Mini/4.2.14912/870; U; id) Presto/2.4.15");
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION,true);
-        curl_easy_setopt(curl, CURLOPT_URL, Adresse);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-        res = curl_easy_perform(curl);
-        if(res!=CURLE_OK) 
-            retour= false;
-        curl_easy_cleanup(curl);
-        fclose(fp);
-        pthread_mutex_unlock(&mutexHtml);  
-     }
-     return retour;
-}
- 
- 
- QList<QString> htmlTool::SearchAndSave(char * Adresse , char * SaveLocation,bool Again)
- {
-     //qDebug()<< "SearchAndSave  : " << Adresse;
-     QList<QString> l;
-     pthread_mutex_lock(&mutexHtml);  
-     char SaveAbsoluteLocation[500];
-     memset(SaveAbsoluteLocation,'\0',500);
-     strcpy(SaveAbsoluteLocation,QDir::currentPath().toStdString().c_str());
-     strcat(SaveAbsoluteLocation,SaveLocation);
-     CURL *curl;
-     FILE *fp;
-     curl = curl_easy_init();
-     if (curl) 
-     {
-        fp = fopen(SaveAbsoluteLocation,"wb");
-        if(fp == NULL) 
-        {
-            //qDebug()<< "fp NULL  : " << Adresse;
-             curl_easy_cleanup(curl);
-             pthread_mutex_unlock(&mutexHtml);  
-            return l;
-        }  
-        
-        CURLcode res;
+        */
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, "false");
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, "false");
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 GTB5");
-        curl_easy_setopt(curl, CURLOPT_URL, Adresse);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-        bool retour = true;
+        curl_easy_setopt(curl, CURLOPT_URL, UrlToCall);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postthis);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)strlen(postthis));
         res = curl_easy_perform(curl);
         if(res!=CURLE_OK) 
         {
-            //qDebug()<< "CURLE_OK FALSE  : ";
-            retour= false;
-        }
-        curl_easy_cleanup(curl);
-        fclose(fp);
-        pthread_mutex_unlock(&mutexHtml);  
-     }
-     if(Again==true)     
-     {
-        //qDebug()<< "Again  : ";
-        QString res = FileTool::ReadFile(SaveAbsoluteLocation);
-        QWebPage page;
-        page.mainFrame()->setHtml(res);
-        QWebElement htmlElement = page.mainFrame()->findFirstElement("A");
-        QString href = htmlElement.attribute("href");
-        if (!href.isEmpty())
-        {
-            //qDebug()<<"Href  : " << (char*)href.toStdString().c_str() ;
-            return SearchAndSave((char*)href.toStdString().c_str(),"/tmp/test1.txt",false);
+            qDebug()<< "retour= false";
         }
         else
         {
-            //qDebug()<<"Href  : empty";
+            qDebug()<< "memory";
+            qDebug()<< "memory : \n"<< chunk.memory;
         }
+        curl_easy_cleanup(curl);
+        curl_global_cleanup();
+        free(chunk.memory);
+        pthread_mutex_unlock(&mutexHtml);  
      }
-     else
-     {
-        QString res = FileTool::ReadFile(SaveAbsoluteLocation);
-        QWebPage page;
-        page.mainFrame()->setHtml(res);
-        QWebElementCollection collection = page.mainFrame()->findAllElements("A");
-        int i=0;
-        foreach (QWebElement element, collection)
-        {
-            
-            QString href = element.attribute("href");
-            if(href.contains("https://www.youtube.com/watch%"))
-            {
-                int pos=href.indexOf("%3Fv%3D");
-                QString id = href.mid(pos+strlen("%3Fv%3D"),11);  
-                QString url = "http://www.youtube.com/get_video_info?video_id="+id;
-                QString loc = "/tmp/info"+QString::number(i);
-
-                
-                SearchAndSave((char*)url.toStdString().c_str(),(char*)loc.toStdString().c_str());
-                QString absoluteLoc = QDir::currentPath()+loc;
-                QString resu = FileTool::ReadFile(absoluteLoc);
-                QStringList myStringList = resu.split("&");
-                QString urlJpeg="";
-                bool isJpeg = false;
-                foreach (QString el, myStringList)
-                {
-                    if(el.startsWith("iurl") && isJpeg==false)
-                    {
-                        isJpeg = true;
-                        urlJpeg = ReplaceUrlToCar(el.mid(el.indexOf("http")));
-                    }
-                    
-                    if(el.startsWith("url_encoded_fmt_stream_map"))
-                    {
-                        //qDebug()<<"Liste video info : " << el << "***" ;
-                        QStringList myStringList1 = el.split("%26");
-                        foreach (QString el1, myStringList1)
-                        {
-                            if(el1.startsWith("url%3D"))
-                            {
-                                QString e =ReplaceUrlToCar(el1.mid(strlen("url%3D")));
-                                l.append(e);
-                                l.append(urlJpeg);
-                                htmlTool::downloadAndSave((char*)e.toStdString().c_str() , "","/tmp/video.avi");
-                                //qDebug()<<"Liste jpeg info : " << e << "***" <<urlJpeg ;
-                                return l;
-                            }
-                        }
-                    }
-                }
-                i++;
-            }
-        }
-     }
-    return l; 
- }
+     return l;
+}
+ 
  
   
  

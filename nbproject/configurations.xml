@@ -30,6 +30,17 @@
       </logicalFolder>
       <itemPath>html/index.html</itemPath>
     </logicalFolder>
+    <logicalFolder name="f9"
+                   displayName="HttpClient"
+                   projectFiles="true"
+                   kind="ROOT">
+      <logicalFolder name="f1" displayName="Headers" projectFiles="true" kind="ROOT">
+        <itemPath>HttpClientManager.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f2" displayName="Sources" projectFiles="true" kind="ROOT">
+        <itemPath>HttpClientManager.cpp</itemPath>
+      </logicalFolder>
+    </logicalFolder>
     <logicalFolder name="f8" displayName="HttpServer" projectFiles="true">
       <logicalFolder name="f1" displayName="Header" projectFiles="true">
         <itemPath>ServeFiles.h</itemPath>
@@ -140,6 +151,10 @@
       </item>
       <item path="GetDeviceData.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="HttpClientManager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="HttpClientManager.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="JavaScriptOperations.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="JavaScriptOperations.h" ex="false" tool="3" flavor2="0">
@@ -234,6 +249,10 @@
       <item path="GetDeviceData.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="GetDeviceData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="HttpClientManager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="HttpClientManager.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="JavaScriptOperations.cpp" ex="false" tool="1" flavor2="0">
       </item>

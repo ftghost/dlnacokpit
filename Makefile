@@ -66,6 +66,7 @@ build: .build-post
 	mkdir -p ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/image
 	cp -R ./image  ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/
 	mkdir -p ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/tmp
+	mkdir -p ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/.sav
 	
 # clean
 clean: .clean-post
